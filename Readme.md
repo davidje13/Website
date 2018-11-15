@@ -17,7 +17,10 @@ sudo apt-get autoremove -y;
 ```
 
 The subdomain code will be refreshed automatically each day if changes
-are found
+are found.
+
+Updates to this repository can be applied by re-running the
+`installer.sh` script.
 
 # AWS Instance
 
@@ -31,6 +34,22 @@ are found
   - 443 (public)
   - 22 (your ip)
 - (assign elastic IP)
+
+## CloudWatch
+
+- "Instance Failure Restart" - Restart if instance is down for 15 minutes
+  - Whenever StatusCheckFailed_Instance > 0 for 3 out of 3 datapoints
+  - Missing data = missing
+  - Period 5 minutes
+  - When state is ALARM
+    - EC2 action: Reboot instance
+
+- "System Failure Recover" - Recover if system is down for 15 minutes
+  - Whenever StatusCheckFailed_System > 0 for 3 out of 3 datapoints
+  - Missing data = missing
+  - Period 5 minutes
+  - When state is ALARM
+    - EC2 action: Recover instance
 
 ## Route53
 
