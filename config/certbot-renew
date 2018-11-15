@@ -1,0 +1,2 @@
+#!/bin/sh
+certbot renew -q --deploy-hook "nginx -s reload";

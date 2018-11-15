@@ -1,0 +1,21 @@
+server {
+	listen 8000 default_server;
+	listen [::]:8000 default_server;
+	root /var/www/http;
+
+	keepalive_requests 1;
+	keepalive_timeout 0s;
+
+	client_header_timeout 5s;
+	client_body_timeout 5s;
+	client_max_body_size 1;
+
+	location / {
+		access_log off;
+		expires max;
+		return 301 https://$host$request_uri;
+	}
+
+	location /.well-known/acme-challenge/ {
+	}
+}

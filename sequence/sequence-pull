@@ -1,0 +1,2 @@
+#!/bin/sh
+/var/www/sequence/update.sh;
