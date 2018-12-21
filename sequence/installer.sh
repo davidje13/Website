@@ -36,7 +36,7 @@ sudo chmod 0744 /var/www/sequence/update.sh;
 
 for PORT in $SERVICE_PORTS; do
 	NAME="sequence$PORT.service";
-	sed "s/((PORT))/$PORT/g" "$BASEDIR/sequence.service" | \
+	sed "s/((PORT))/$PORT/g" "$BASEDIR/sequence.svc" | \
 		sudo tee "/lib/systemd/system/$NAME" > /dev/null;
 	sudo chmod 0644 "/lib/systemd/system/$NAME";
 	sudo systemctl enable "$NAME";
