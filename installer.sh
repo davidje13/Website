@@ -11,19 +11,20 @@ fi;
 echo 'iptables-persistent iptables-persistent/autosave_v4 boolean true' | sudo debconf-set-selections;
 echo 'iptables-persistent iptables-persistent/autosave_v6 boolean true' | sudo debconf-set-selections;
 
-sudo cp "$BASEDIR/config/20auto-upgrades" /etc/apt/apt.conf.d/20auto-upgrades;
-sudo cp "$BASEDIR/config/50unattended-upgrades" /etc/apt/apt.conf.d/50unattended-upgrades;
-
 sudo add-apt-repository ppa:certbot/certbot -y;
 sudo apt-get update;
 sudo apt-get dist-upgrade -y;
 
 sudo apt-get install -y \
+	unattended-upgrades \
 	iptables-persistent \
 	daemontools \
 	certbot \
 	nginx;
 sudo systemctl stop nginx;
+
+sudo cp "$BASEDIR/config/20auto-upgrades" /etc/apt/apt.conf.d/20auto-upgrades;
+sudo cp "$BASEDIR/config/50unattended-upgrades" /etc/apt/apt.conf.d/50unattended-upgrades;
 
 sudo mkdir -p /var/www/http/.well-known/acme-challenge;
 sudo chown -R root:www-data /var/www/http;
