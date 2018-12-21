@@ -1,0 +1,42 @@
+body {
+	font: 1em sans-serif;
+	color: #444444;
+	text-align: center;
+	padding: 50px 20px 20px;
+	margin: 0;
+	background: #F8F8F8;
+}
+.section {
+	display: inline-block;
+	margin: 2em 0 0;
+	width: 450px;
+	max-width: calc(100% - 40px);
+	padding: 1em;
+	border-radius: 3px;
+	box-shadow: 0 3px 20px rgba(0, 0, 0, 0.2);
+	background: #FFFFFF;
+	color: inherit;
+	text-decoration: none;
+}
+a .link {
+	font-size: 0.8em;
+}
+a:link .link, a:visited .link {
+	color: #4466AA;
+	text-decoration: underline;
+}
+a:active .link, a:hover .link {
+	color: #6699BB;
+	text-decoration: none;
+}
+h1 {
+	margin: 0;
+	font: bolder 2em sans-serif;
+}
+h2 {
+	margin: 0;
+	font: bolder 1.5em sans-serif;
+}
+p {
+	margin: 1em 0 0;
+}
