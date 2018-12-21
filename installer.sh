@@ -68,9 +68,8 @@ sudo certbot certonly \
 	-d "www.$DOMAIN" \
 	-d "sequence.$DOMAIN";
 
-sudo rm /etc/cron.d/certbot || true;
-sudo cp "$BASEDIR/config/certbot-renew" /etc/cron.daily/certbot-renew;
-sudo chmod 0755 /etc/cron.daily/certbot-renew;
+sudo cp "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy/certbot-deploy;
+sudo chmod 0755 /etc/letsencrypt/renewal-hooks/deploy/certbot-deploy;
 
 export DOMAIN;
 "$BASEDIR/www/installer.sh";
