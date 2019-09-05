@@ -26,12 +26,13 @@ Updates to this repository can be applied by re-running the
 
 ## EC2
 
-- Community AMI: ami-00035f41c82244dab (Ubuntu 18.04)
-- T2.micro
-- 8GB HDD (only uses ~2GB but this is the minimum)
+- AMI: ami-06358f49b5839867c (Ubuntu 18.04, x86)
+- T3a.micro
+- "T2/T2 Unlimited" off
+- 8GB HDD, encryption enabled (using alias/aws/ebs)
 - Use a security group which allows inbound traffic on:
-  - 80 (public)
-  - 443 (public)
+  - 80 (public: 0.0.0.0/0 & ::/0)
+  - 443 (public: 0.0.0.0/0 & ::/0)
   - 22 (your ip)
 - (assign elastic IP)
 
@@ -56,6 +57,9 @@ Updates to this repository can be applied by re-running the
 ```
 A   <domain>          <elastic ip>               (1day)
 A   www.<domain>      <elastic ip>               (1day)
+A   retro.<domain>    <elastic ip>               (1day)
+A   retros.<domain>   <elastic ip>               (1day)
+A   refacto.<domain>  <elastic ip>               (1day)
 A   sequence.<domain> <elastic ip>               (1day)
 CAA <domain>          0 issue "letsencrypt.org"  (1day)
 ```
@@ -66,5 +70,10 @@ Once the EC2 & Route53 config is done, log in to the box and run:
 
 ```sh
 git clone https://github.com/davidje13/Website.git
+cp env/refacto.template.env env/refacto.env
+
+vi env/refacto.env
+# fill in any appropriate options then save
+
 Website/install.sh '<domain>'
 ```

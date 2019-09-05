@@ -8,3 +8,5 @@ ssl_certificate_key /etc/letsencrypt/live/all/privkey.pem;
 ssl_stapling on;
 ssl_stapling_verify on;
 ssl_trusted_certificate /etc/letsencrypt/live/all/fullchain.pem;
+
+add_header Expect-CT "enforce, max-age=2592000";

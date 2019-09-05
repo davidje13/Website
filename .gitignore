@@ -1,3 +1,5 @@
 xcuserdata/
 .DS_Store
 /concept/
+/env/*.env
+!/env/*.template.env

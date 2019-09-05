@@ -1,0 +1,16 @@
+[Unit]
+Description=Refacto Server ((PORT))
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/www/refacto/logs/pid((PORT))
+User=refacto-runner
+EnvironmentFile=/var/www/refacto/secrets.env
+ExecStart=/var/www/refacto/runner.sh ((PORT))
+KillMode=process
+KillSignal=SIGINT
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

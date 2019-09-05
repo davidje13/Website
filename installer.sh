@@ -4,7 +4,12 @@ BASEDIR="$(dirname "$0")";
 DOMAIN="$1";
 
 if [[ -z "$DOMAIN" ]]; then
-	echo "Must specify domain! (e.g. 'davidje13.com')";
+	echo "Must specify domain! (e.g. 'davidje13.com')" >&2;
+	exit 1;
+fi;
+
+if [[ ! -f "$BASEDIR/env/refacto.env" ]]; then
+	echo "Must populate env/refacto.env (copy from env/refacto.template.env)" >&2;
 	exit 1;
 fi;
 
@@ -12,7 +17,8 @@ echo 'iptables-persistent iptables-persistent/autosave_v4 boolean true' | sudo d
 echo 'iptables-persistent iptables-persistent/autosave_v6 boolean true' | sudo debconf-set-selections;
 
 sudo add-apt-repository ppa:certbot/certbot -y;
-sudo apt-get update;
+curl -sL 'https://deb.nodesource.com/setup_12.x' | sudo -E bash -;
+# sudo apt-get update; # done by deb.nodesource.com script
 sudo apt-get dist-upgrade -y;
 
 sudo apt-get install -y \
@@ -66,6 +72,9 @@ sudo certbot certonly \
 	-w /var/www/http \
 	-d "$DOMAIN" \
 	-d "www.$DOMAIN" \
+	-d "retro.$DOMAIN" \
+	-d "retros.$DOMAIN" \
+	-d "refacto.$DOMAIN" \
 	-d "sequence.$DOMAIN";
 
 sudo cp "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy/certbot-deploy;
@@ -74,6 +83,7 @@ sudo chmod 0755 /etc/letsencrypt/renewal-hooks/deploy/certbot-deploy;
 export DOMAIN;
 "$BASEDIR/www/installer.sh";
 "$BASEDIR/sequence/installer.sh";
+"$BASEDIR/refacto/installer.sh";
 
 sudo nginx -s reload;
 

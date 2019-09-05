@@ -11,6 +11,9 @@
       location = "container:sequence">
    </FileRef>
    <FileRef
+      location = "container:refacto">
+   </FileRef>
+   <FileRef
       location = "container:.gitignore">
    </FileRef>
    <FileRef
