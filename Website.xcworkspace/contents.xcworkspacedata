@@ -14,10 +14,16 @@
       location = "container:refacto">
    </FileRef>
    <FileRef
+      location = "container:env">
+   </FileRef>
+   <FileRef
       location = "container:.gitignore">
    </FileRef>
    <FileRef
       location = "container:installer.sh">
+   </FileRef>
+   <FileRef
+      location = "container:update-now.sh">
    </FileRef>
    <FileRef
       location = "container:Readme.md">
