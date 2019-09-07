@@ -1,6 +1,7 @@
 #!/bin/bash
 BASEDIR="$(dirname "$0")";
 export PORT="$1";
+export TRUST_PROXY=true;
 
 mkdir -p "$BASEDIR/logs/log$PORT";
 
