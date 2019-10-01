@@ -10,3 +10,4 @@ ssl_stapling_verify on;
 ssl_trusted_certificate /etc/letsencrypt/live/all/fullchain.pem;
 
 add_header Expect-CT "enforce, max-age=2592000";
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";

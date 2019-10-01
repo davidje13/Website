@@ -77,3 +77,8 @@ vi env/refacto.env
 
 Website/install.sh '<domain>'
 ```
+
+## Post Setup
+
+You should add the root domain to the
+[HSTS preload list](https://hstspreload.org)
