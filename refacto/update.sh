@@ -5,7 +5,7 @@ BASEDIR="$(dirname "$0")";
 cd "$BASEDIR/src";
 
 sudo -u refacto-updater -H -s <<EOF || exit 0
-git fetch || true;
+git fetch --prune || true;
 sleep 1;
 if (( "$(git rev-list HEAD..origin/master --count)" == 0 )); then
 	exit 1;
