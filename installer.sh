@@ -17,6 +17,9 @@ fi;
 echo 'iptables-persistent iptables-persistent/autosave_v4 boolean true' | sudo debconf-set-selections;
 echo 'iptables-persistent iptables-persistent/autosave_v6 boolean true' | sudo debconf-set-selections;
 
+echo 'vm.swappiness = 1' | sudo tee /etc/sysctl.conf >/dev/null
+sudo sysctl -p
+
 sudo add-apt-repository ppa:certbot/certbot -y;
 curl -sL 'https://deb.nodesource.com/setup_12.x' | sudo -E bash -;
 # sudo apt-get update; # done by deb.nodesource.com script
