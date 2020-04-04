@@ -35,7 +35,7 @@ sudo mkdir -p /var/www/refacto;
 sudo mv ~/Refacto /var/www/refacto/src;
 sudo chown -R refacto-updater:refacto-updater /var/www/refacto/src;
 sudo -u refacto-updater -H -s <<EOF
-cd /var/www/refacto/src && npm run build; cd - > /dev/null;
+cd /var/www/refacto/src && PARALLEL_BUILD=false npm run build; cd - > /dev/null;
 cd /var/www/refacto/src/build && DISABLE_OPENCOLLECTIVE=1 npm install --production; cd - > /dev/null;
 EOF
 
