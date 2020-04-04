@@ -15,7 +15,7 @@ EOF
 sudo -u refacto-updater -H -s <<EOF
 git pull;
 npm run clean;
-npm run build;
+PARALLEL_BUILD=false npm run build;
 cd build && DISABLE_OPENCOLLECTIVE=1 npm install --production; cd -;
 EOF
 
