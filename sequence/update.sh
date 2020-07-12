@@ -13,7 +13,7 @@ fi;
 EOF
 
 sudo -u sequence-updater -H -s <<EOF
-git pull;
+git pull --ff-only;
 EOF
 
 chmod -R g-w .;
