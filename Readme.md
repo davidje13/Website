@@ -83,6 +83,22 @@ after the restart completes. The script will pause and wait for input
 before it needs the DNS records configured, so you do not have to set
 up the DNS before running the script.
 
+## Backup and restore
+
+You can backup and restore the Refacto database using the commands:
+
+```sh
+Website/refacto/backup.sh # generates backup-*.tar.gz
+```
+
+```sh
+# restore from backup-2020-10-03T12-00-00.tar.gz
+Website/refacto/restore.sh backup-2020-10-03T12-00-00.tar.gz
+```
+
+There is also an option to restore data from a backup file during
+installation.
+
 ## Post Setup
 
 You should add the root domain to the
