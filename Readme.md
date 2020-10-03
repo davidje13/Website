@@ -75,10 +75,10 @@ cp Website/env/refacto.template.env Website/env/refacto.env
 vi Website/env/refacto.env
 # fill in any appropriate options then save
 
-Website/install.sh '<domain>'
+Website/installer.sh '<domain>'
 ```
 
-You may need to restart and run `Website/install.sh '<domain>'` again
+You may need to restart and run `Website/installer.sh '<domain>'` again
 after the restart completes. The script will pause and wait for input
 before it needs the DNS records configured, so you do not have to set
 up the DNS before running the script.

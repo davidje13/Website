@@ -4,6 +4,7 @@ set -ex
 BACKUP_FILE="$1";
 
 if [[ -z "$BACKUP_FILE" ]]; then
+  set +x;
   echo "Must specify backup file (.tar.gz)" >&2;
   exit 1;
 fi;

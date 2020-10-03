@@ -8,4 +8,5 @@ mongodump;
 tar -czf "$BACKUP_FILE" dump;
 rm -rf dump;
 
+set +x;
 echo "Created $BACKUP_FILE";

@@ -8,11 +8,13 @@ NODE_VERSION="14";
 # Check inputs
 
 if [[ -z "$DOMAIN" ]]; then
+  set +x;
   echo "Must specify domain! (e.g. 'davidje13.com')" >&2;
   exit 1;
 fi;
 
 if [[ ! -f "$BASEDIR/env/refacto.env" ]]; then
+  set +x;
   echo "Must populate env/refacto.env (copy from env/refacto.template.env)" >&2;
   exit 1;
 fi;
@@ -31,6 +33,7 @@ fi;
 sudo apt-get dist-upgrade -y;
 
 if [[ -f /var/run/reboot-required ]]; then
+  set +x;
   echo;
   echo;
   echo "Restart required. Restart now then re-run this script.";
@@ -116,10 +119,12 @@ DOMAIN="$DOMAIN" "$BASEDIR/refacto/installer.sh";
 sudo systemctl start nginx;
 
 if [[ ! -f /etc/letsencrypt/live/all/fullchain.pem ]]; then
+  set +x;
   echo;
   echo;
   echo "Ready to configure certificate. Please ensure the DNS records for $DOMAIN are configured to use an IP address bound to this instance then press Enter to continue.";
   read;
+  set -x;
 fi;
 
 sudo certbot certonly \
