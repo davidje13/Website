@@ -21,7 +21,7 @@ cd ~/SequenceDiagram && DISABLE_OPENCOLLECTIVE=1 npm install --production; cd - 
 # Shutdown existing services if found
 
 for PORT in $SERVICE_PORTS; do
-	sudo systemctl stop "sequence$PORT.service" || true;
+  sudo systemctl stop "sequence$PORT.service" || true;
 done;
 sudo rm -r /var/www/sequence || true;
 
@@ -43,12 +43,12 @@ sudo chmod 0544 /var/www/sequence/runner.sh /var/www/sequence/update.sh;
 # Start new services
 
 for PORT in $SERVICE_PORTS; do
-	NAME="sequence$PORT.service";
-	sed "s/((PORT))/$PORT/g" "$BASEDIR/sequence.svc" | \
-		sudo tee "/lib/systemd/system/$NAME" > /dev/null;
-	sudo chmod 0644 "/lib/systemd/system/$NAME";
-	sudo systemctl enable "$NAME";
-	sudo systemctl start "$NAME";
+  NAME="sequence$PORT.service";
+  sed "s/((PORT))/$PORT/g" "$BASEDIR/sequence.svc" | \
+    sudo tee "/lib/systemd/system/$NAME" > /dev/null;
+  sudo chmod 0644 "/lib/systemd/system/$NAME";
+  sudo systemctl enable "$NAME";
+  sudo systemctl start "$NAME";
 done;
 
 # Configure auto-update
@@ -59,5 +59,4 @@ sudo chmod 0755 /etc/cron.daily/sequence-pull;
 # Add NGINX config
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
-	sudo tee /etc/nginx/sites-available/sequence > /dev/null;
-sudo ln -s /etc/nginx/sites-available/sequence /etc/nginx/sites-enabled/sequence;
+  sudo tee /etc/nginx/sites-available/sequence > /dev/null;

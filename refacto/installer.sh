@@ -4,8 +4,8 @@ BASEDIR="$(dirname "$0")";
 SERVICE_PORTS="4080 4081";
 
 if [[ ! -f "$BASEDIR/../env/refacto.env" ]]; then
-	echo "Must populate env/refacto.env" >&2;
-	exit 1;
+  echo "Must populate env/refacto.env" >&2;
+  exit 1;
 fi;
 
 # Make Users
@@ -25,7 +25,7 @@ git clone https://github.com/davidje13/Refacto.git ~/Refacto;
 # Shutdown existing services if found
 
 for PORT in $SERVICE_PORTS; do
-	sudo systemctl stop "refacto$PORT.service" || true;
+  sudo systemctl stop "refacto$PORT.service" || true;
 done;
 sudo rm -r /var/www/refacto || true;
 
@@ -59,12 +59,12 @@ sudo chmod 0544 /var/www/refacto/runner.sh /var/www/refacto/update.sh;
 # Start new services
 
 for PORT in $SERVICE_PORTS; do
-	NAME="refacto$PORT.service";
-	sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.svc" | \
-		sudo tee "/lib/systemd/system/$NAME" > /dev/null;
-	sudo chmod 0644 "/lib/systemd/system/$NAME";
-	sudo systemctl enable "$NAME";
-	sudo systemctl start "$NAME";
+  NAME="refacto$PORT.service";
+  sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.svc" | \
+    sudo tee "/lib/systemd/system/$NAME" > /dev/null;
+  sudo chmod 0644 "/lib/systemd/system/$NAME";
+  sudo systemctl enable "$NAME";
+  sudo systemctl start "$NAME";
 done;
 
 # Configure auto-update
@@ -75,5 +75,4 @@ sudo chmod 0755 /etc/cron.daily/refacto-pull;
 # Add NGINX config
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
-	sudo tee /etc/nginx/sites-available/refacto > /dev/null;
-sudo ln -s /etc/nginx/sites-available/refacto /etc/nginx/sites-enabled/refacto;
+  sudo tee /etc/nginx/sites-available/refacto > /dev/null;

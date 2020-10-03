@@ -9,11 +9,10 @@ sudo rm -r /var/www/https || true;
 sudo mkdir -p /var/www/https;
 sudo cp "$BASEDIR/style.css" "$BASEDIR/favicon.png" "$BASEDIR/robots.txt" /var/www/https/;
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/index.htm" | \
-	sudo tee /var/www/https/index.htm > /dev/null;
+  sudo tee /var/www/https/index.htm > /dev/null;
 sudo chown -R root:www-data /var/www/https;
 
 # Add NGINX config
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
-	sudo tee /etc/nginx/sites-available/root > /dev/null;
-sudo ln -s /etc/nginx/sites-available/root /etc/nginx/sites-enabled/root;
+  sudo tee /etc/nginx/sites-available/root > /dev/null;

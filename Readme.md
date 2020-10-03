@@ -26,9 +26,9 @@ Updates to this repository can be applied by re-running the
 
 ## EC2
 
-- AMI: ami-06358f49b5839867c (Ubuntu 18.04, x86)
-- T3a.micro
-- "T2/T2 Unlimited" off
+- AMI: ami-03ec287fa560a6ccc (Ubuntu 20.04, Arm)
+- T4g.micro
+- "Credit specification": "Unlimited" off
 - 8GB HDD, encryption enabled (using alias/aws/ebs)
 - Use a security group which allows inbound traffic on:
   - 80 (public: 0.0.0.0/0 & ::/0)
@@ -70,13 +70,18 @@ Once the EC2 & Route53 config is done, log in to the box and run:
 
 ```sh
 git clone https://github.com/davidje13/Website.git
-cp env/refacto.template.env env/refacto.env
+cp Website/env/refacto.template.env Website/env/refacto.env
 
-vi env/refacto.env
+vi Website/env/refacto.env
 # fill in any appropriate options then save
 
 Website/install.sh '<domain>'
 ```
+
+You may need to restart and run `Website/install.sh '<domain>'` again
+after the restart completes. The script will pause and wait for input
+before it needs the DNS records configured, so you do not have to set
+up the DNS before running the script.
 
 ## Post Setup
 
