@@ -13,6 +13,8 @@ if [[ -z "$DOMAIN" ]]; then
   exit 1;
 fi;
 
+if [[ ! -f "$BASEDIR/skip-to-cert" ]]; then
+
 if [[ ! -f "$BASEDIR/env/refacto.env" ]]; then
   set +x;
   echo "Must populate env/refacto.env (copy from env/refacto.template.env)" >&2;
@@ -114,17 +116,25 @@ DOMAIN="$DOMAIN" "$BASEDIR/www/installer.sh";
 DOMAIN="$DOMAIN" "$BASEDIR/sequence/installer.sh";
 DOMAIN="$DOMAIN" "$BASEDIR/refacto/installer.sh";
 
+fi; # end of skip-to-cert section
+
 # Request SSL certificate
 
 sudo systemctl start nginx;
 
 if [[ ! -f /etc/letsencrypt/live/all/fullchain.pem ]]; then
-  set +x;
-  echo;
-  echo;
-  echo "Ready to configure certificate. Please ensure the DNS records for $DOMAIN are configured to use an IP address bound to this instance then press Enter to continue.";
-  read;
-  set -x;
+  SITE_IP="$(dig +short "$DOMAIN" @8.8.8.8)";
+  MY_IP="$(dig +short myip.opendns.com @resolver1.opendns.com)";
+  if [[ "$SITE_IP" != "$MY_IP" ]]; then
+    touch "$BASEDIR/skip-to-cert";
+    set +x;
+    echo;
+    echo;
+    echo "Ready to configure certificate.";
+    echo "Please change the DNS records for $DOMAIN to use an IP address bound to this instance (or reassign the IP address)";
+    echo "(you will probably lose SSH connection when changing IP address - reconnect once done and run this script again to continue)";
+    exit 1;
+  fi;
 fi;
 
 sudo certbot certonly \
@@ -150,6 +160,13 @@ sudo ln -s /etc/nginx/sites-available/sequence /etc/nginx/sites-enabled/sequence
 sudo ln -s /etc/nginx/sites-available/refacto /etc/nginx/sites-enabled/refacto;
 
 sudo nginx -s reload;
+
+rm "$BASEDIR/skip-to-cert" || true;
+
+set +x;
+echo
+echo
+echo "Done.";
 
 # thanks,
 # https://gist.github.com/nrollr/9a39bb636a820fb97eec2ed85e473d38

@@ -1,4 +1,3 @@
-ssl on;
 ssl_session_cache shared:SSL:5m;
 ssl_protocols TLSv1.2;
 ssl_prefer_server_ciphers on;

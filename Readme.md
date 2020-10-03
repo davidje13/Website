@@ -38,19 +38,23 @@ Updates to this repository can be applied by re-running the
 
 ## CloudWatch
 
-- "Instance Failure Restart" - Restart if instance is down for 15 minutes
-  - Whenever StatusCheckFailed_Instance > 0 for 3 out of 3 datapoints
-  - Missing data = missing
-  - Period 5 minutes
-  - When state is ALARM
-    - EC2 action: Reboot instance
+- Restart if instance is down for 15 minutes
+  - No notification
+  - Action: "Reboot"
+  - Thresholds:
+    - StatusCheckFailed: Instance
+    - Period: 5 minutes
+    - Consecutive Periods: 3
 
-- "System Failure Recover" - Recover if system is down for 15 minutes
-  - Whenever StatusCheckFailed_System > 0 for 3 out of 3 datapoints
-  - Missing data = missing
-  - Period 5 minutes
-  - When state is ALARM
-    - EC2 action: Recover instance
+- Recover if system is down for 15 minutes
+  - No notification
+  - Action: "Recover"
+  - Thresholds:
+    - StatusCheckFailed: System
+    - Period: 5 minutes
+    - Consecutive Periods: 3
+
+Note: The CloudWatch web UI seems to have a few bugs; you may need to check the alarms were created correctly (particularly whether they include the chosen action). It may not be possible to create the "recover" action (https://forums.aws.amazon.com/thread.jspa?threadID=329133)
 
 ## Route53
 
