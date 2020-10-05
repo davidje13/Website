@@ -75,6 +75,7 @@ sudo rm /etc/update-motd.d/10-help-text || true;
 install_config 20auto-upgrades /etc/apt/apt.conf.d;
 install_config 50unattended-upgrades /etc/apt/apt.conf.d;
 install_config 50-swappiness.conf /etc/sysctl.d;
+install_config 50-hardening.conf /etc/sysctl.d;
 sudo sysctl --system
 
 # Configure iptables
