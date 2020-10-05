@@ -21,11 +21,11 @@ body {
 a .link {
 	font-size: 0.8em;
 }
-a:link .link, a:visited .link {
+a:link .link, a:visited .link, a:link:not(.section), a:visited:not(.section) {
 	color: #4466AA;
 	text-decoration: underline;
 }
-a:active .link, a:hover .link {
+a:active .link, a:hover .link, a:active:not(.section), a:hover:not(.section) {
 	color: #6699BB;
 	text-decoration: none;
 }
@@ -39,4 +39,13 @@ h2 {
 }
 p {
 	margin: 1em 0 0;
+}
+
+.error header {
+	margin: 30px 0 40px;
+}
+
+.error header p {
+	font-size: 0.6em;
+	color: #888888;
 }
