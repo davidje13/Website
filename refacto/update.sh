@@ -13,7 +13,8 @@ fi;
 EOF
 
 sudo -u refacto-updater -H -s <<EOF
-git co .; # ensure clean git repo
+set -e;
+git checkout .; # ensure clean git repo
 git pull --ff-only;
 npm run clean;
 PARALLEL_BUILD=false npm run build;

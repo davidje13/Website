@@ -13,7 +13,8 @@ fi;
 EOF
 
 sudo -u sequence-updater -H -s <<EOF
-git co .; # ensure clean git repo
+set -e;
+git checkout .; # ensure clean git repo
 git pull --ff-only;
 EOF
 
