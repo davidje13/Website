@@ -17,7 +17,7 @@ set -e;
 git checkout .; # ensure clean git repo
 git pull --ff-only;
 npm run clean;
-npm install;
+SKIP_E2E_DEPS=true npm install;
 EOF
 
 # refacto build uses ~0.7GB RAM, and instance has only 1GB total,
