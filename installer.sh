@@ -76,6 +76,13 @@ install_config 20auto-upgrades /etc/apt/apt.conf.d;
 install_config 50unattended-upgrades /etc/apt/apt.conf.d;
 install_config 50-swappiness.conf /etc/sysctl.d;
 install_config 50-hardening.conf /etc/sysctl.d;
+install_config keepalive.conf /etc/ssh/sshd_config.d;
+if sudo sshd -t; then
+  sudo service sshd reload;
+else
+  echo "Keepalive config broke SSHD; reverting";
+  sudo rm /etc/ssh/sshd_config.d/keepalive.conf;
+fi;
 sudo sysctl --system
 
 # Configure iptables
