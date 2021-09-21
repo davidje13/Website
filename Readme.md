@@ -103,6 +103,27 @@ Website/refacto/restore.sh backup-2020-10-03T12-00-00.tar.gz
 There is also an option to restore data from a backup file during
 installation.
 
+## Checking logs
+
+Services store logs in:
+
+- `/var/www/sequence/logs/log*/*`
+- `/var/www/refacto/logs/log*/*`
+- `/var/log/nginx/*`
+
+Sequence and Refacto use `multilog`'s `tai64n` format for timestamps.
+These are not human-readable, but can be viewed with:
+
+```sh
+tai64nlocal < "my-log-file-here" | less
+```
+
+Old logs are `gzip`'ed. These can be viewed with:
+
+```sh
+gunzip -c "my-old-log-file-here.gz" | less
+```
+
 ## Post Setup
 
 You should add the root domain to the
