@@ -73,7 +73,7 @@ install_config motd-news /etc/default;
 sudo rm /etc/update-motd.d/10-help-text || true;
 
 install_config 20auto-upgrades /etc/apt/apt.conf.d;
-install_config 50unattended-upgrades /etc/apt/apt.conf.d;
+install_config 51unattended-upgrades-local /etc/apt/apt.conf.d;
 install_config 50-swappiness.conf /etc/sysctl.d;
 install_config 50-hardening.conf /etc/sysctl.d;
 install_config keepalive.conf /etc/ssh/sshd_config.d;
@@ -185,6 +185,7 @@ echo "Done.";
 # http://tumblr.intranation.com/post/766288369/using-nginx-reverse-proxy
 # https://certbot.eff.org/
 # https://help.ubuntu.com/lts/serverguide/automatic-updates.html
+# https://github.com/mvo5/unattended-upgrades
 # https://cloud-images.ubuntu.com/locator/ec2/
 # https://gist.github.com/alonisser/a2c19f5362c2091ac1e7
 # https://www.freedesktop.org/software/systemd/man/systemd.service.html
