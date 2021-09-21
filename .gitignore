@@ -3,3 +3,4 @@ xcuserdata/
 /concept/
 /env/*.env
 !/env/*.template.env
+skip-to-cert
