@@ -16,7 +16,7 @@ sudo useradd --system --user-group --password '' refacto-runner || true;
 
 # Load dependencies
 
-sudo apt-get install -y nodejs mongodb jq;
+sudo apt-get install -y nodejs mongodb jq build-essential;
 
 # Install boilerplate
 
@@ -45,7 +45,7 @@ done;
 
 # Update to first version
 
-"$BASEDIR/update.sh" --force --nostart;
+sudo "$BASEDIR/update.sh" --force --nostart;
 
 # Add NGINX config
 

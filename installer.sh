@@ -3,7 +3,7 @@ set -ex
 
 BASEDIR="$(dirname "$0")";
 DOMAIN="$1";
-NODE_VERSION="14";
+NODE_VERSION="16";
 
 # Check inputs
 
