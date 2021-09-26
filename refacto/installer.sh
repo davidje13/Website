@@ -16,42 +16,18 @@ sudo useradd --system --user-group --password '' refacto-runner || true;
 
 # Load dependencies
 
-sudo apt-get install -y nodejs mongodb;
+sudo apt-get install -y nodejs mongodb jq;
 
-# Load repository
+# Install boilerplate
 
-mkdir -p ~/Refacto;
-git clone https://github.com/davidje13/Refacto.git ~/Refacto;
-
-# Shutdown existing services if found
-
-for PORT in $SERVICE_PORTS; do
-  sudo systemctl stop "refacto$PORT.service" || true;
-done;
 sudo rm -r /var/www/refacto || true;
-
-# Build
-
-sudo mkdir -p /var/www/refacto;
-sudo mv ~/Refacto /var/www/refacto/src;
-sudo chown -R refacto-updater:refacto-updater /var/www/refacto/src;
-sudo -u refacto-updater -H -s <<EOF
-cd /var/www/refacto/src && PARALLEL_BUILD=false npm run build; cd - > /dev/null;
-cd /var/www/refacto/src/build && DISABLE_OPENCOLLECTIVE=1 npm install --production; cd - > /dev/null;
-EOF
-
-# Install
-
-sudo chmod -R g-w /var/www/refacto/src/build;
-sudo chown -R root:refacto-runner /var/www/refacto/src/build;
-sudo mv /var/www/refacto/src/build /var/www/refacto/build;
 sudo mkdir -p /var/www/refacto/logs;
-
 sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
 sudo cp "$BASEDIR/runner.sh" /var/www/refacto/runner.sh;
 sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
 
 sudo chown root:refacto-runner /var/www/refacto/secrets.env /var/www/refacto/update.sh;
+sudo chown refacto-updater:refacto-updater /var/www/refacto/current;
 sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
 sudo chown refacto-runner:refacto-runner /var/www/refacto/runner.sh;
 sudo chmod 0400 /var/www/refacto/secrets.env;
@@ -67,10 +43,9 @@ for PORT in $SERVICE_PORTS; do
   sudo systemctl enable "$NAME";
 done;
 
-# Configure auto-update
+# Update to first version
 
-sudo cp "$BASEDIR/refacto-pull" /etc/cron.daily/refacto-pull;
-sudo chmod 0755 /etc/cron.daily/refacto-pull;
+"$BASEDIR/update.sh" --force --nostart;
 
 # Add NGINX config
 
@@ -95,3 +70,8 @@ fi;
 for PORT in $SERVICE_PORTS; do
   sudo systemctl start "refacto$PORT.service";
 done;
+
+# Configure auto-update
+
+sudo cp "$BASEDIR/refacto-pull" /etc/cron.daily/refacto-pull;
+sudo chmod 0755 /etc/cron.daily/refacto-pull;

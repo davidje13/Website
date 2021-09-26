@@ -2,51 +2,43 @@
 set -e
 BASEDIR="$(dirname "$0")";
 
-cd "$BASEDIR/src";
+TEMP_INSTALL_DIR="$BASEDIR/update";
+rm -rf "$TEMP_INSTALL_DIR" || true;
+mkdir -p "$TEMP_INSTALL_DIR";
 
-sudo -u refacto-updater -H -s <<EOF || [[ "$1" == "--force" ]] || exit 0
-git fetch --prune || true;
-sleep 1;
-if (( "$(git rev-list HEAD..origin/master --count)" == 0 )); then
-  exit 1;
+curl 'https://api.github.com/repos/davidje13/Refacto/releases/latest' >"$TEMP_INSTALL_DIR/release_info.json";
+RELEASE_ID="$(jq '.id' <"$TEMP_INSTALL_DIR/release_info.json")";
+if [[ " $* " != *" --force "* && -f "$BASEDIR/current" && "$(cat "$BASEDIR/current")" == "$RELEASE_ID" ]]; then
+  exit 0;
 fi;
-EOF
 
+sudo chown -R refacto-updater:refacto-updater "$TEMP_INSTALL_DIR";
+
+echo "$(date) - installing release $RELEASE_ID";
+
+cd "$TEMP_INSTALL_DIR";
 sudo -u refacto-updater -H -s <<EOF
 set -e;
-git checkout .; # ensure clean git repo
-git pull --ff-only;
-npm run clean;
-SKIP_E2E_DEPS=true npm install;
+DOWNLOAD_URL="$(jq '.assets[] <release_info.json | select(.name == "build.tar.gz") | .browser_download_url')";
+curl -L "$DOWNLOAD_URL" >build.tar.gz;
+tar -xf build.tar.gz;
+rm build.tar.gz release_info.json;
+npm install --production;
 EOF
+cd - > /dev/null;
+sudo chmod -R g-w "$TEMP_INSTALL_DIR";
+sudo chown -R root:refacto-runner "$TEMP_INSTALL_DIR";
 
-# refacto build uses ~0.7GB RAM, and instance has only 1GB total,
-# so shut down current services to give it the most space
-# (downtime begins!)
-echo "$(date) - downtime begins (rebuilding Refacto)";
-systemctl stop refacto4080.service;
-systemctl stop refacto4081.service;
-systemctl stop mongodb;
+sudo rm -rf /var/www/refacto/build || true;
+sudo mv "$TEMP_INSTALL_DIR" /var/www/refacto/build;
+echo "$RELEASE_ID" | sudo tee /var/www/refacto/current >/dev/null;
+sudo chown refacto-updater:refacto-updater /var/www/refacto/current;
 
-echo "$(date) - building";
-sudo -u refacto-updater -H -s <<EOF || ( echo "rebuild failed; starting old services"; systemctl start mongodb; systemctl start refacto4080.service; systemctl start refacto4081.service; echo "downtime ends"; false; )
-set -e;
-PARALLEL_BUILD=false npm run build;
-cd build && DISABLE_OPENCOLLECTIVE=1 npm install --production; cd -;
-EOF
+if [[ " $* " != *" --nostart "* ]]; then
+  echo "$(date) - starting services";
 
-echo "$(date) - build complete";
+  sudo systemctl restart refacto4080.service;
+  sudo systemctl restart refacto4081.service;
+fi;
 
-chmod -R g-w /var/www/refacto/src/build;
-chown -R root:refacto-runner /var/www/refacto/src/build;
-
-rm -rf /var/www/refacto/build || true;
-mv /var/www/refacto/src/build /var/www/refacto/build;
-
-echo "$(date) - starting services";
-
-systemctl start mongodb;
-systemctl restart refacto4080.service;
-systemctl restart refacto4081.service;
-
-echo "$(date) - downtime ends";
+echo "$(date) - update complete";
