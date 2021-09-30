@@ -1,3 +1,9 @@
+h1, h2, p, a, section {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
 html {
 	min-height: 100%;
 }
@@ -18,15 +24,26 @@ h1 {
 
 .item {
 	--col: white;
+	--outlinecol: #0050C0;
 	display: block;
 	color: inherit;
 	text-decoration: none;
-	transition: 0.2s ease background-color, 0.2s ease transform;
-	background: var(--col);
+	border-radius: 5px;
 	max-width: 26rem;
 	margin: 0 auto 1rem;
+}
+.item>section {
 	padding: 1.5rem;
 	border-radius: 5px;
+	background: var(--col);
+	transition: 0.2s ease background, 0.2s ease transform;
+}
+.item:active>section, .item:hover>section {
+	transform: scale(0.95);
+}
+.item:focus {
+	outline: none;
+	box-shadow: 0 0 0 2px var(--outlinecol);
 }
 .item:nth-child(1):hover { --col: #AACCFF; }
 .item:nth-child(2):hover { --col: #FFEEAA; }
@@ -66,38 +83,42 @@ h1 {
 	}
 
 	.item {
-		--col: white;
+		--grow: 0px;
 		position: relative;
-		margin: 0;
-		padding: 0;
-		width: var(--size);
+		margin: var(--space) calc(var(--size) * 0.25 + var(--space) * 0.866025403784439 - var(--grow));
+		width: calc(var(--size) + var(--grow) * 2);
 		height: calc(var(--size) * 1.732050807568877);
-		background: var(--col) padding-box;
-		border-width: var(--space) calc(var(--size) * 0.25 + var(--space) * 0.866025403784439);
-		border-style: solid;
-		border-color: transparent;
-		box-sizing: content-box;
 		border-radius: 0;
+		z-index: 1;
 	}
-	.item::before, .item::after {
+	.item>section {
+		position: absolute;
+		padding: 0;
+		border-radius: 0;
+		top: 0;
+		left: var(--grow);
+		right: var(--grow);
+		bottom: 0;
+		z-index: 1;
+	}
+	.item>section, .item>section::before, .item>section::after {
+		background: var(--col);
+		transition: 0.2s ease background, 0.2s ease transform;
+	}
+	.item::before, .item::after, .item>section::before, .item>section::after {
 		content: "";
 		position: absolute;
 		top: 0;
+		left: 0;
+		right: 0;
 		bottom: 0;
-		border-width: calc(var(--size) * 0.866025403784439) calc(var(--size) * 0.5);
-		border-style: solid;
-		border-color: transparent var(--col) transparent var(--col);
-		transition: 0.2s ease border-color;
-		pointer-events: none;
 		z-index: -1;
 	}
-	.item::before {
-		right: calc(100% - 0.5px);
-		border-left: none;
+	.item::before, .item>section::before {
+		transform: rotate(60deg);
 	}
-	.item::after {
-		left: calc(100% - 0.5px);
-		border-right: none;
+	.item::after, .item>section::after {
+		transform: rotate(-60deg);
 	}
 
 	main {
@@ -120,8 +141,11 @@ h1 {
 	.item .link {
 		margin: 0 -2rem;
 	}
-	.item:active, .item:hover {
-		transform: scale(0.95);
+	.item:focus {
+		--grow: 4px;
+	}
+	.item:focus, .item:focus::before, .item:focus::after {
+		box-shadow: 0 -5px 0 -3px var(--outlinecol), 0 5px 0 -3px var(--outlinecol);
 	}
 }
 
