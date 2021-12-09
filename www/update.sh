@@ -23,6 +23,9 @@ sudo cp \
   "$BASEDIR/robots.txt" \
   "$BASEDIR/ads.txt" \
   "$INSTALL_TEMP_DIR/";
+sudo cp -r \
+  "$BASEDIR/.well-known" \
+  "$INSTALL_TEMP_DIR/";
 
 sed \
   "s/((DOMAIN))/$DOMAIN/g" \
