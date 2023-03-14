@@ -11,7 +11,7 @@ if [[ ! -f /etc/letsencrypt/live/all/fullchain.pem ]]; then
     fi;
     echo "DNS not ready - ensure domain DNS points to this instance.";
     sleep 10;
-  fi;
+  done;
   set -x
 fi;
 
