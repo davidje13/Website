@@ -6,7 +6,7 @@ TEMP_INSTALL_DIR="$BASEDIR/update";
 rm -rf "$TEMP_INSTALL_DIR" || true;
 mkdir -p "$TEMP_INSTALL_DIR";
 
-curl 'https://api.github.com/repos/davidje13/Refacto/releases/latest' >"$TEMP_INSTALL_DIR/release_info.json";
+curl -f 'https://api.github.com/repos/davidje13/Refacto/releases/latest' >"$TEMP_INSTALL_DIR/release_info.json";
 RELEASE_ID="$(jq -r '.id' <"$TEMP_INSTALL_DIR/release_info.json")";
 if [[ " $* " != *" --force "* && -f "$BASEDIR/current" && "$(cat "$BASEDIR/current")" == "$RELEASE_ID" ]]; then
   exit 0;
@@ -21,7 +21,7 @@ sudo -u refacto-updater -H -s <<"EOF"
 set -e;
 DOWNLOAD_URL="$(jq -r '.assets[] | select(.name == "build.tar.gz") | .browser_download_url' <release_info.json)";
 echo "$(date) - download from $DOWNLOAD_URL";
-curl -L "$DOWNLOAD_URL" >build.tar.gz;
+curl -fL "$DOWNLOAD_URL" >build.tar.gz;
 tar -xf build.tar.gz;
 rm build.tar.gz release_info.json;
 echo "$(date) - install dependencies";

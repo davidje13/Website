@@ -3,6 +3,11 @@ set -ex
 BASEDIR="$(dirname "$0")";
 SERVICE_PORTS="4080 4081";
 
+if [[ -f /etc/nginx/sites-available/refacto ]]; then
+  # already installed
+  exit 0;
+fi;
+
 if [[ ! -f "$BASEDIR/../env/refacto.env" ]]; then
   set +x;
   echo "Must populate env/refacto.env" >&2;
@@ -47,11 +52,6 @@ done;
 
 sudo "$BASEDIR/update.sh" --force --nostart;
 
-# Add NGINX config
-
-sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
-  sudo tee /etc/nginx/sites-available/refacto > /dev/null;
-
 # Import data
 
 set +x;
@@ -75,3 +75,8 @@ done;
 
 sudo cp "$BASEDIR/refacto-pull" /etc/cron.daily/refacto-pull;
 sudo chmod 0755 /etc/cron.daily/refacto-pull;
+
+# Add NGINX config
+
+sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
+  sudo tee /etc/nginx/sites-available/refacto > /dev/null;

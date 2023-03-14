@@ -2,7 +2,7 @@ set -ex
 
 BASEDIR="$(dirname "$0")";
 
-DOMAIN="$DOMAIN" "$BASEDIR/update.sh"
+DOMAIN="$DOMAIN" "$BASEDIR/update.sh";
 
 # Add NGINX config
 

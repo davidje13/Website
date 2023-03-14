@@ -3,6 +3,11 @@ set -ex
 BASEDIR="$(dirname "$0")";
 SERVICE_PORTS="8080 8081";
 
+if [[ -f /etc/nginx/sites-available/sequence ]]; then
+  # already installed
+  exit 0;
+fi;
+
 # Make Users
 
 sudo useradd --create-home --user-group --password '' sequence-updater || true;
