@@ -69,7 +69,7 @@ if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   echo
   echo "Done.";
 else
-  nohup sudo "$BASEDIR/proxy/get-certificate.sh" </dev/null >/dev/null 2>&1 &;
+  nohup sudo "$BASEDIR/proxy/get-certificate.sh" </dev/null >/dev/null 2>&1 &
   set +x;
   echo
   echo

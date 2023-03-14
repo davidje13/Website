@@ -6,7 +6,7 @@ install_config() {
     return 1;
   fi;
   sudo cp "$SOURCE" "$TARGET";
-  sudo chown root:root "$TARGET§§";
+  sudo chown root:root "$TARGET";
   sudo chmod "$PERM" "$TARGET";
 }
 

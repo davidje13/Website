@@ -1,6 +1,7 @@
 set -ex
 
 BASEDIR="$(dirname "$0")";
+. "$BASEDIR/../common/utils.sh";
 SERVICE_PORTS="4080 4081";
 
 if [[ -f /etc/nginx/sites-available/refacto ]]; then

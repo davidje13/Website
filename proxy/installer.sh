@@ -2,6 +2,7 @@
 set -ex
 
 BASEDIR="$(dirname "$0")";
+. "$BASEDIR/../common/utils.sh";
 
 # Install & reset nginx
 
