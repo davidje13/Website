@@ -5,7 +5,7 @@ set -ex
 
 if [[ ! -f /etc/letsencrypt/live/all/fullchain.pem ]]; then
   set +x
-  while [[ "$(dig +short "$(head -n1 "/var/www/domains.txt")" @8.8.8.8)" != "$(dig +short myip.opendns.com @resolver1.opendns.com)" ]]; then
+  while [[ "$(dig +short "$(head -n1 "/var/www/domains.txt")" @8.8.8.8)" != "$(dig +short myip.opendns.com @resolver1.opendns.com)" ]]; do
     if [[ " $* " == *" --immediate "* ]]; then
       exit 1;
     fi;
