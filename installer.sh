@@ -87,3 +87,4 @@ fi;
 # https://gist.github.com/alonisser/a2c19f5362c2091ac1e7
 # https://www.freedesktop.org/software/systemd/man/systemd.service.html
 # https://github.com/nodesource/distributions#manual-installation
+# https://www.belle-aurore.com/mike/ubuntu-upgrade-woes/removing-canonicals-ubuntu-advantage-ssh-login-spam/

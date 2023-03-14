@@ -33,10 +33,23 @@ if ! [[ -d /usr/share/netfilter-persistent ]]; then
   sudo apt-get install -y iptables-persistent;
 fi;
 
-# Configure system
+# Remove Canonical adverts
 
 install_config "$BASEDIR/config/motd-news" /etc/default || true;
 sudo rm /etc/update-motd.d/10-help-text || true;
+sudo systemctl stop ua-timer.timer || true;
+sudo systemctl mask ua-timer.timer || true;
+sudo systemctl stop ua-timer.service || true;
+sudo systemctl mask ua-timer.service || true;
+sudo systemctl stop esm-cache.service || true;
+sudo systemctl mask esm-cache.service || true;
+sudo systemctl stop apt-news.service || true;
+sudo systemctl mask apt-news.service || true;
+sudo rm -f /etc/apt/apt.conf.d/20apt-esm-hook.conf || true;
+sudo rm -f /etc/update-motd.d/88-esm-announce || true;
+sudo rm -f /etc/update-motd.d/91-contract-ua-esm-status || true;
+
+# Configure system
 
 install_config "$BASEDIR/config/20auto-upgrades" /etc/apt/apt.conf.d || true;
 install_config "$BASEDIR/config/51unattended-upgrades-local" /etc/apt/apt.conf.d || true;
