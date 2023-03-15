@@ -24,7 +24,7 @@ certbot certonly \
   --cert-name all \
   --webroot \
   -w /var/www/http \
-  $(< "/var/www/domains.txt" sed 's/[^a-zA-Z0-9.].*//' | grep '.\+' | sort | uniq | sed 's/^/-d /');
+  $(< "/var/www/domains.txt" sed 's/[^a-zA-Z0-9.].*//' | grep '.\+' | sed 's/^/-d /');
 
 # Enable applications
 
