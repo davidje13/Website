@@ -14,12 +14,6 @@ if [[ -z "$DOMAIN" ]]; then
   exit 1;
 fi;
 
-if [[ ! -f "$BASEDIR/env/refacto.env" ]]; then
-  set +x;
-  echo "Must populate env/refacto.env (copy from env/refacto.template.env)" >&2;
-  exit 1;
-fi;
-
 # Stop previous deploy if still ongoing
 kill_process_by_name_fragment 'get-certificate.sh';
 
