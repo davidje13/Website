@@ -10,10 +10,15 @@ if [[ -f /etc/nginx/sites-available/refacto ]]; then
 fi;
 
 if [[ ! -f "$BASEDIR/../env/refacto.env" ]]; then
-  set +x;
-  echo "Must populate env/refacto.env" >&2;
-  exit 1;
+  if [[ ! -f /var/www/refacto/secrets.env ]]; then
+    set +x;
+    echo "Must populate env/refacto.env" >&2;
+    exit 1;
+  fi;
+  # Preserve existing secrets if re-installing without new secrets
+  sudo cp /var/www/refacto/secrets.env "$BASEDIR/../env/refacto.env";
 fi;
+sudo chmod 0400 "$BASEDIR/../env/refacto.env";
 
 # Make Users
 
@@ -24,9 +29,15 @@ sudo useradd --system --user-group --password '' refacto-runner || true;
 
 sudo apt-get install -y nodejs mongodb jq build-essential;
 
+# Shutdown existing services if found
+
+for PORT in $SERVICE_PORTS; do
+  sudo systemctl stop "refacto$PORT.service" || true;
+done;
+sudo rm -r /var/www/refacto || true;
+
 # Install boilerplate
 
-sudo rm -r /var/www/refacto || true;
 sudo mkdir -p /var/www/refacto/logs;
 sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
 sudo cp "$BASEDIR/runner.sh" /var/www/refacto/runner.sh;
