@@ -4,21 +4,18 @@ BASEDIR="$(dirname "$0")";
 
 cd "$BASEDIR";
 
-sudo -u sequence-updater -H -s <<EOF || [[ "$1" == "--force" ]] || exit 0
-git fetch --prune || true;
+echo 'git fetch --prune' | sudo -u sequence-updater -H -s;
 sleep 1;
-if (( "$(git rev-list HEAD..origin/master --count)" == 0 )); then
+CHANGES="$(echo 'git rev-list HEAD..origin/master --count' | sudo -u sequence-updater -H -s)";
+if (( "$CHANGES" == 0 )) && [[ "$1" != "--force" ]]; then
   exit 1;
 fi;
-EOF
 
-sudo -u sequence-updater -H -s <<EOF
-set -e;
-git checkout .; # ensure clean git repo
-git pull --ff-only;
-EOF
+echo 'git checkout .' | sudo -u sequence-updater -H -s; # ensure clean git repo
+echo 'git pull --ff-only' | sudo -u sequence-updater -H -s;
 
 chmod -R g-w .;
+chgrp -R sequence-runner .;
 
 systemctl restart sequence8080.service;
 systemctl restart sequence8081.service;
