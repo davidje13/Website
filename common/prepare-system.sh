@@ -48,6 +48,7 @@ sudo systemctl mask apt-news.service || true;
 sudo rm -f /etc/apt/apt.conf.d/20apt-esm-hook.conf || true;
 sudo rm -f /etc/update-motd.d/88-esm-announce || true;
 sudo rm -f /etc/update-motd.d/91-contract-ua-esm-status || true;
+sudo rm /var/log/ubuntu-advantage* || true
 
 # Configure system
 

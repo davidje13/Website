@@ -20,6 +20,7 @@ sudo ln -s /usr/share/nginx/modules-available/mod-stream.conf /etc/nginx/modules
 install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
 install_config "$BASEDIR/config/custom.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
+install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
 
 sudo mkdir -p /etc/nginx/sites-ready; # staging location for sites to enable once SSL is ready
 
@@ -39,9 +40,15 @@ install_config "$BASEDIR/config/shared-ssl.inc" /etc/nginx/sites-available || tr
 sudo mkdir -p /var/www/http/.well-known/acme-challenge;
 sudo chown -R root:www-data /var/www/http;
 
-install_config "$BASEDIR/config/http" /etc/nginx/sites-available || true;
+sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/http.conf" | \
+  sudo tee /etc/nginx/sites-available/http > /dev/null;
 sudo ln -s /etc/nginx/sites-available/http /etc/nginx/sites-ready/http || true;
 sudo ln -s /etc/nginx/sites-available/http /etc/nginx/sites-enabled/http || true;
+
+sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/nohost.conf" | \
+  sudo tee /etc/nginx/sites-available/nohost > /dev/null;
+sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-ready/nohost || true;
+sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-enabled/nohost || true;
 
 install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy 0755 || true;
 

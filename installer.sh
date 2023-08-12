@@ -34,7 +34,7 @@ fi;
 
 "$BASEDIR/common/prepare-system.sh";
 sudo rm -f /etc/nginx/sites-ready/* || true;
-"$BASEDIR/proxy/installer.sh";
+DOMAIN="$DOMAIN" "$BASEDIR/proxy/installer.sh";
 
 # Install applications
 

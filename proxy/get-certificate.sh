@@ -29,5 +29,5 @@ certbot certonly \
 # Enable applications
 
 rm /etc/nginx/sites-enabled/* || true;
-cp /etc/nginx/sites-ready/* /etc/nginx/sites-enabled;
+cp -P /etc/nginx/sites-ready/* /etc/nginx/sites-enabled;
 nginx -s reload;
