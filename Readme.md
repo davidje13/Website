@@ -77,8 +77,8 @@ To enable IPv6:
    2. Add the route destination: `::/0`, target: "Internet Gateway"
       (then select the same value already used for `0.0.0.0/0`)
    3. Save
-4. Ensure the EC2 Security Group has been set up with `::/0` inbound rules, as described above
-   Also ensure it has an outbound rule for all traffic to `::/0` (will be auto-created by
+4. Ensure the EC2 Security Group has been set up with `::/0` inbound rules, as described above.
+   Also ensure it has an outbound rule for all traffic to `::/0` (this will be auto-created by
    the earlier steps, unless outbound rules have been customised)
 5. Go to the EC2 Instance
    1. Select "Actions" &rarr; "Networking" &rarr; "Manage IP addresses"
@@ -111,6 +111,16 @@ A    sequence.<domain> <elastic ip>               (7days)
 AAAA sequence.<domain> <ipv6>                     (1day)
 CAA  <domain>          0 issue "letsencrypt.org"  (7days)
 ```
+
+If the domain will not send email, the following should also be added:
+
+```
+TXT <domain>              v=spf1 -all                      (1day)
+TXT *._domainkey.<domain> v=DKIM1;p=                       (1day)
+TXT _dmarc.<domain>       v=DMARC1;p=reject;adkim=s;aspf=s (1day)
+```
+
+([source](https://www.cloudflare.com/learning/dns/dns-records/protect-domains-without-email/))
 
 ## Installation
 
