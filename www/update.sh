@@ -43,11 +43,13 @@ make_error_page() {
     sudo tee "$INSTALL_TEMP_DIR/errors/$CODE.htm" > /dev/null;
 }
 
+set +x; # avoid super-verbose log output while copying error pages
 while IFS='' read -r LINE; do
   if [[ -n "$LINE" ]]; then
     make_error_page "${LINE%%,*}" "${LINE#*,}";
   fi;
 done < "$BASEDIR/http_statuses";
+set -x;
 
 sudo chown -R root:www-data "$INSTALL_TEMP_DIR";
 
