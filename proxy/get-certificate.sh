@@ -4,15 +4,28 @@ set -ex
 # this script runs as root
 
 if [[ ! -f /etc/letsencrypt/live/all/fullchain.pem ]]; then
-  set +x
-  while [[ "$(dig +short "$(head -n1 "/var/www/domains.txt")" @8.8.8.8)" != "$(dig +short myip.opendns.com @resolver1.opendns.com)" ]]; do
+  set +x;
+  while true; do
+    # fetch own IP address(es) from AWS internal service
+    # (could also use 'dig +short myip.opendns.com AAAA @resolver1.opendns.com' outside AWS)
+    MYIP6="$(curl -s http://169.254.169.254/latest/meta-data/ipv6)";
+    DNS_AAAA="$(dig +short "$(head -n1 "/var/www/domains.txt")" AAAA @8.8.8.8)";
+    if [[ "$DNS_AAAA" == "$MYIP6" ]]; then break; fi;
+
+    # only check IPv4 if there is no IPv6 record, since certbot will always prefer IPv6 if present
+    if [[ "$DNS_AAAA" == "" ]]; then
+      MYIP4="$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)";
+      DNS_A="$(dig +short "$(head -n1 "/var/www/domains.txt")" A @8.8.8.8)";
+      if [[ "$DNS_A" == "$MYIP4" ]]; then break; fi;
+    fi;
+
     if [[ " $* " == *" --immediate "* ]]; then
       exit 1;
     fi;
     echo "DNS not ready - ensure domain DNS points to this instance.";
     sleep 10;
   done;
-  set -x
+  set -x;
 fi;
 
 certbot certonly \
