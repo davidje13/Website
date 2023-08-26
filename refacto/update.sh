@@ -9,7 +9,7 @@ mkdir -p "$TEMP_INSTALL_DIR";
 curl -f 'https://api.github.com/repos/davidje13/Refacto/releases/latest' >"$TEMP_INSTALL_DIR/release_info.json";
 RELEASE_ID="$(jq -r '.id' <"$TEMP_INSTALL_DIR/release_info.json")";
 if [[ " $* " != *" --force "* && -f "$BASEDIR/current" && "$(cat "$BASEDIR/current")" == "$RELEASE_ID" ]]; then
-  exit 0;
+  exit 0; # nothing to update
 fi;
 
 sudo chown -R refacto-updater:refacto-updater "$TEMP_INSTALL_DIR";
