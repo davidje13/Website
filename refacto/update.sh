@@ -25,7 +25,7 @@ curl -fL "$DOWNLOAD_URL" >build.tar.gz;
 tar -xf build.tar.gz;
 rm build.tar.gz release_info.json;
 echo "$(date) - install dependencies";
-npm install --production;
+npm install --omit=dev;
 EOF
 cd - > /dev/null;
 sudo chmod -R g-w "$TEMP_INSTALL_DIR";

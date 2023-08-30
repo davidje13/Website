@@ -22,7 +22,7 @@ sudo apt-get install -y nodejs;
 
 mkdir -p ~/SequenceDiagram;
 git clone https://github.com/davidje13/SequenceDiagram.git ~/SequenceDiagram;
-cd ~/SequenceDiagram && DISABLE_OPENCOLLECTIVE=1 npm install --production; cd - > /dev/null;
+cd ~/SequenceDiagram && DISABLE_OPENCOLLECTIVE=1 npm install --omit=dev; cd - > /dev/null;
 
 # Shutdown existing services if found
 
