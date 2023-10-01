@@ -20,6 +20,7 @@ sudo mkdir -p "$INSTALL_TEMP_DIR/errors";
 
 cd "$BASEDIR/static";
 find . -type f | while IFS='' read -r LINE; do
+  sudo mkdir -p "$INSTALL_TEMP_DIR/${LINE%/*}";
   if [[ "$LINE" =~ \.(txt|htm|xml)$ ]]; then
     sed \
       -e "s/((DOMAIN))/$DOMAIN/g" \
