@@ -20,3 +20,5 @@ User-agent: AdsBot-Google
 User-agent: facebot
 User-agent: GPTBot
 Disallow: /
+
+Sitemap: https://((DOMAIN))/sitemap.xml

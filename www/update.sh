@@ -17,16 +17,19 @@ sudo rm -r "$INSTALL_TEMP_DIR" || true;
 
 # Install
 sudo mkdir -p "$INSTALL_TEMP_DIR/errors";
-sudo cp -r \
-  "$BASEDIR/static/"* \
-  "$BASEDIR/static/.well-known" \
-  "$INSTALL_TEMP_DIR/";
 
-sed \
-  -e "s:./static/:/:g" \
-  -e "s/((DOMAIN))/$DOMAIN/g" \
-  "$BASEDIR/index.htm" | \
-  sudo tee "$INSTALL_TEMP_DIR/index.htm" > /dev/null;
+cd "$BASEDIR/static";
+find . -type f | while IFS='' read -r LINE; do
+  if [[ "$LINE" =~ \.(txt|htm|xml)$ ]]; then
+    sed \
+      -e "s/((DOMAIN))/$DOMAIN/g" \
+      "$LINE" | \
+      sudo tee "$INSTALL_TEMP_DIR/$LINE" > /dev/null;
+  else
+    sudo cp "$LINE" "$INSTALL_TEMP_DIR/$LINE"
+  fi;
+done;
+cd - >/dev/null;
 
 make_error_page() {
   CODE="$1";
