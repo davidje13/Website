@@ -113,7 +113,8 @@ After creation:
   - No notification
   - Action: "Reboot"
   - Thresholds:
-    - StatusCheckFailed: Instance
+    - Data: StatusCheckFailed: Instance
+    - Group: Maximum
     - Period: 5 minutes
     - Consecutive Periods: 3
 
@@ -121,14 +122,10 @@ After creation:
   - No notification
   - Action: "Recover"
   - Thresholds:
-    - StatusCheckFailed: System
+    - Data: StatusCheckFailed: System
+    - Group: Maximum
     - Period: 5 minutes
     - Consecutive Periods: 3
-
-Note: The CloudWatch web UI seems to have a few bugs; you may need to
-check the alarms were created correctly (particularly whether they
-include the chosen action). It may not be possible to create the
-"recover" action (https://forums.aws.amazon.com/thread.jspa?threadID=329133)
 
 ## IPv6
 
@@ -267,6 +264,12 @@ These are not human-readable, but can be viewed with:
 
 ```sh
 tai64nlocal < "my-log-file-here" | less
+```
+
+For example to see how often sequence diagram's render API is called:
+
+```sh
+cat /var/www/sequence/logs/log*/{*.s,current} | grep RENDER | sort
 ```
 
 Old logs are `gzip`'ed. These can be viewed with:
