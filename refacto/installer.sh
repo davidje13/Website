@@ -65,7 +65,7 @@ done;
 
 # Update to first version
 
-sudo "$BASEDIR/update.sh" --force --nostart;
+sudo /var/www/refacto/update.sh --force --nostart;
 
 # Import data
 
