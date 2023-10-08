@@ -46,6 +46,7 @@ sudo ln -s /etc/nginx/sites-available/http /etc/nginx/sites-enabled/http || true
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/nohost.conf" | \
   sudo tee /etc/nginx/sites-available/nohost > /dev/null;
 sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-ready/nohost || true;
+sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-enabled/nohost || true;
 
 sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy;
 install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy 0755 || true;

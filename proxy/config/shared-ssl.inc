@@ -11,9 +11,6 @@ ssl_certificate_key /etc/letsencrypt/live/all/privkey.pem;
 # Reduce server load by using shared cache
 ssl_session_cache shared:SSL:5m;
 
-# Reject handshakes with incorrect host (without this they will just fail later when the client checks the host)
-ssl_reject_handshake on;
-
 # Enable OCSP Stapling (reduce overhead of initial connection for clients)
 ssl_stapling on;
 ssl_stapling_verify on;
