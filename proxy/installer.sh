@@ -8,6 +8,8 @@ BASEDIR="$(dirname "$0")";
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx;
 
+sudo rm /etc/nginx/conf.d/default.conf || true;
+install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
 install_config "$BASEDIR/config/custom.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/log.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
@@ -46,7 +48,10 @@ sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/nohost.conf" | \
 sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-ready/nohost || true;
 sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-enabled/nohost || true;
 
+sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy;
 install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy 0755 || true;
+
+sudo nginx -t;
 
 sudo systemctl enable nginx; # start at boot
 sudo systemctl start nginx;

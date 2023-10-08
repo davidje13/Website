@@ -52,6 +52,7 @@ Launch an instance with the following config:
   - Encryption enabled (KMS key can be left as default, using aws/ebs)
   - IOPS: 3000
   - Throughput: 125
+- Instance auto-recovery: Default
 - Termination protection: Enable
 - Credit specification: Standard
 
@@ -71,7 +72,7 @@ Launch an instance with the following config:
         "Encrypted": true,
         "DeleteOnTermination": true,
         "Iops": 3000,
-        "SnapshotId": "<fill-in>",
+        "SnapshotId": "snap-05b63c7cce6fcdf1e",
         "VolumeSize": 8,
         "VolumeType": "gp3",
         "Throughput": 125
@@ -82,9 +83,7 @@ Launch an instance with the following config:
     {
       "AssociatePublicIpAddress": true,
       "DeviceIndex": 0,
-      "Groups": [
-        "<fill-in>"
-      ]
+      "Groups": ["<fill in>"]
     }
   ],
   "CreditSpecification": {
@@ -94,13 +93,16 @@ Launch an instance with the following config:
     "HostnameType": "ip-name",
     "EnableResourceNameDnsARecord": true,
     "EnableResourceNameDnsAAAARecord": false
+  },
+  "MaintenanceOptions": {
+    "AutoRecovery": "default"
   }
 }
 ```
 
 After creation:
 
-- assign an elastic IP.
+- assign an elastic IP (this can be done after the install script completes waiting on DNS changes if migrating an existing deployment)
 - assign an IPv6 address (see below, from step 5 if IPv6 already configured for VPC)
 - Disable metadata (Actions &rarr; Instance settings &rarr; Modify instance metadata options)
   Note: do not disable this when creating the instance, as it is required by AWS for configuring SSH keys.
@@ -188,10 +190,20 @@ If the domain will not send email, the following should also be added:
 
 ## Installation
 
-Once the EC2 & Route53 config is done, log in to the box and run:
+Once the EC2 & Route53 config is done, log in to the box:
+
+```sh
+ssh -i ~/.ssh/website ubuntu@<public-address>
+```
+
+and run:
 
 ```sh
 git clone https://github.com/davidje13/Website.git
+Website/installer.sh
+# this will probably ask for a restart, or will eventually complain about not having a domain
+sudo shutdown -r now # SSH session will terminate - reconnect
+
 cp Website/env/refacto.template.env Website/env/refacto.env
 
 vi Website/env/refacto.env
@@ -200,10 +212,8 @@ vi Website/env/refacto.env
 Website/installer.sh '<domain>'
 ```
 
-You may need to restart and run `Website/installer.sh '<domain>'` again
-after the restart completes. The script will pause and wait for input
-before it needs the DNS records configured, so you do not have to set
-up the DNS before running the script.
+The script will automatically wait for DNS records to be configured when
+needed, so you do not have to set up the DNS before running the script.
 
 ## Backup and restore
 

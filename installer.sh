@@ -6,18 +6,10 @@ DOMAIN="$1";
 
 . "$BASEDIR/common/utils.sh";
 
-# Check inputs
-
-if [[ -z "$DOMAIN" ]]; then
-  set +x;
-  echo "Must specify domain! (e.g. 'davidje13.com')" >&2;
-  exit 1;
-fi;
-
 # Stop previous deploy if still ongoing
 kill_process_by_name_fragment 'get-certificate.sh';
 
-# Update and configure system
+# Update packages
 
 set_node_version 18;
 set_nginx_latest;
@@ -32,6 +24,16 @@ if [[ -f /var/run/reboot-required ]]; then
   echo "sudo shutdown -r now";
   exit 1;
 fi;
+
+# Check inputs
+
+if [[ -z "$DOMAIN" ]]; then
+  set +x;
+  echo "Must specify domain! (e.g. 'davidje13.com')" >&2;
+  exit 1;
+fi;
+
+# Configure system
 
 "$BASEDIR/common/prepare-system.sh";
 sudo rm -f /etc/nginx/sites-ready/* || true;
