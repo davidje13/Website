@@ -40,7 +40,7 @@ set_node_version() {
   fi;
 }
 
-set_nginx_latest() {
+set_nginx_repo() {
   local KEYRING="/etc/apt/keyrings/nginx.gpg";
   local SOURCES="/etc/apt/sources.list.d/nginx.list";
   local PIN="/etc/apt/preferences.d/nginx-pin";
@@ -49,5 +49,15 @@ set_nginx_latest() {
     curl -fsSL "https://nginx.org/keys/nginx_signing.key" | sudo gpg --dearmor -o "$KEYRING";
     echo "deb [signed-by=$KEYRING] http://nginx.org/packages/ubuntu $(lsb_release -sc) nginx" | sudo tee "$SOURCES" >/dev/null;
     printf 'Package: nginx\nPin: release o=Ubuntu\nPin-Priority: -10\n' | sudo tee "$PIN" >/dev/null;
+  fi;
+}
+
+set_mongodb_repo() {
+  local KEYRING="/etc/apt/keyrings/mongodb-org-7.gpg";
+  local SOURCES="/etc/apt/sources.list.d/mongodb-org-7.list";
+
+  if [[ ! -f "$SOURCES" ]]; then
+    curl -fsSL "https://pgp.mongodb.com/server-7.0.asc" | sudo gpg --dearmor -o "$KEYRING";
+    echo "deb [arch=amd64,arm64 signed-by=$KEYRING] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee "$SOURCES" >/dev/null;
   fi;
 }

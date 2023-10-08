@@ -12,7 +12,8 @@ kill_process_by_name_fragment 'get-certificate.sh';
 # Update packages
 
 set_node_version 18;
-set_nginx_latest;
+set_nginx_repo;
+set_mongodb_repo;
 sudo apt-get update;
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y;
 

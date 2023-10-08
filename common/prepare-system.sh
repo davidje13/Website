@@ -62,6 +62,7 @@ fi;
 install_config "$BASEDIR/config/20auto-upgrades" /etc/apt/apt.conf.d || true;
 install_config "$BASEDIR/config/51unattended-upgrades-local" /etc/apt/apt.conf.d || true;
 install_config "$BASEDIR/config/50-swappiness.conf" /etc/sysctl.d || true;
+install_config "$BASEDIR/config/50-nginx.conf" /etc/sysctl.d || true;
 install_config "$BASEDIR/config/50-hardening.conf" /etc/sysctl.d || true;
 sudo sysctl --system;
 

@@ -27,7 +27,10 @@ sudo useradd --system --user-group --password '' refacto-runner || true;
 
 # Load dependencies
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs mongodb jq build-essential;
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs mongodb-org jq build-essential;
+
+sudo systemctl enable mongod;
+sudo systemctl start mongod;
 
 # Shutdown existing services if found
 

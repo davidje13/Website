@@ -1,10 +1,12 @@
 Unattended-Upgrade::Allowed-Origins {
+	/* These values match the 'o' and 'a' fields of `apt-cache policy` */
 	"${distro_id}:${distro_codename}";
 	"${distro_id}:${distro_codename}-updates";
 	"${distro_id}:${distro_codename}-security";
 	"${distro_id}ESMApps:${distro_codename}-apps-security";
 	"${distro_id}ESM:${distro_codename}-infra-security";
-	"Node Source:";
+	"nginx:stable";
+	". nodistro:nodistro"; /* nodesource */
 }
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
