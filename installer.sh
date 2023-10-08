@@ -63,14 +63,14 @@ add_domain "refacto.$DOMAIN";
 
 if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   set +x;
-  echo
-  echo
+  echo;
+  echo;
   echo "Done.";
 else
   nohup sudo "$BASEDIR/proxy/get-certificate.sh" </dev/null >"$HOME/get-certificate.log" 2>&1 &
   set +x;
-  echo
-  echo
+  echo;
+  echo;
   echo "Created background task waiting for $DOMAIN DNS to point to this instance (see ~/get-certificate.log)";
 fi;
 
