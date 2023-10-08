@@ -231,6 +231,29 @@ Website/refacto/restore.sh backup-2020-10-03T12-00-00.tar.gz
 There is also an option to restore data from a backup file during
 installation.
 
+## Migrating
+
+When migrating from an old server, downtime can be minimised by waiting until
+the new server requests a backup file to load before shutting down and backing
+up the old server:
+
+1. Begin deployment of new server (follow steps above) until prompted with:
+   "Enter filename to import refacto data from"
+2. On old server, run:
+   ```sh
+   sudo systemctl stop refacto4080.service
+   sudo systemctl stop refacto4081.service
+   Website/refacto/backup.sh
+   ```
+3. Copy the generated backup file to the new server
+4. Enter the filename in the prompt
+5. Wait for the script to prompt:
+   "Created background task waiting for (domain) DNS to point to this instance"
+6. Reassign the elastic IPv4, and update the AAAA DNS entry to point to the new
+   instance's IPv6.
+   _Note: this will cause SSH sessions to end if they are using IPv4_
+7. Installation should complete automatically.
+
 ## Checking logs
 
 Services store logs in:

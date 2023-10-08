@@ -49,5 +49,5 @@ certbot certonly \
 
 rm /etc/nginx/sites-enabled/* || true;
 cp -P /etc/nginx/sites-ready/* /etc/nginx/sites-enabled;
-sudo nginx -t;
+nginx -t;
 nginx -s reload;
