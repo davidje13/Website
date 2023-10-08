@@ -13,7 +13,7 @@ kill_process_by_name_fragment 'get-certificate.sh';
 
 set_node_version 18;
 set_nginx_repo;
-set_mongodb_repo;
+set_mongodb_version '7.0';
 sudo apt-get update;
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y;
 

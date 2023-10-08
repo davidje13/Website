@@ -52,12 +52,13 @@ set_nginx_repo() {
   fi;
 }
 
-set_mongodb_repo() {
-  local KEYRING="/etc/apt/keyrings/mongodb-org-7.gpg";
-  local SOURCES="/etc/apt/sources.list.d/mongodb-org-7.list";
+set_mongodb_version() {
+  local MONGO_VERSION="$1";
+  local KEYRING="/etc/apt/keyrings/mongodb-org.gpg";
+  local SOURCES="/etc/apt/sources.list.d/mongodb-org.list";
 
-  if [[ ! -f "$SOURCES" ]]; then
-    curl -fsSL "https://pgp.mongodb.com/server-7.0.asc" | sudo gpg --dearmor -o "$KEYRING";
-    echo "deb [signed-by=$KEYRING] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee "$SOURCES" >/dev/null;
+  if [[ ! -f "$SOURCES" ]] || ! grep "mongodb-org/$MONGO_VERSION " "$SOURCES" > /dev/null; then
+    curl -fsSL "https://pgp.mongodb.com/server-$MONGO_VERSION.asc" | sudo gpg --dearmor -o "$KEYRING";
+    echo "deb [signed-by=$KEYRING] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/$MONGO_VERSION multiverse" | sudo tee "$SOURCES" >/dev/null;
   fi;
 }
