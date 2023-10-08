@@ -47,7 +47,7 @@ sudo cp "$BASEDIR/runner.sh" /var/www/refacto/runner.sh;
 sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
 
 sudo chown root:refacto-runner /var/www/refacto/secrets.env /var/www/refacto/update.sh;
-sudo chown refacto-updater:refacto-updater /var/www/refacto/current;
+sudo chown refacto-updater:refacto-updater /var/www/refacto/current || true;
 sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
 sudo chown refacto-runner:refacto-runner /var/www/refacto/runner.sh;
 sudo chmod 0400 /var/www/refacto/secrets.env;

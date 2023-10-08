@@ -58,6 +58,6 @@ set_mongodb_repo() {
 
   if [[ ! -f "$SOURCES" ]]; then
     curl -fsSL "https://pgp.mongodb.com/server-7.0.asc" | sudo gpg --dearmor -o "$KEYRING";
-    echo "deb [arch=amd64,arm64 signed-by=$KEYRING] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee "$SOURCES" >/dev/null;
+    echo "deb [signed-by=$KEYRING] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee "$SOURCES" >/dev/null;
   fi;
 }

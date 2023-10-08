@@ -7,6 +7,7 @@ Unattended-Upgrade::Allowed-Origins {
 	"${distro_id}ESM:${distro_codename}-infra-security";
 	"nginx:stable";
 	". nodistro:nodistro"; /* nodesource */
+	"mongodb:jammy/mongodb-org/7.0";
 }
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
