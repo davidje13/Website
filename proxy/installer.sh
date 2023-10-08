@@ -4,25 +4,21 @@ set -ex
 BASEDIR="$(dirname "$0")";
 . "$BASEDIR/../common/utils.sh";
 
-# Install & reset nginx
-
-if ! which nginx; then
-  sudo apt-get install -y nginx;
-  sudo systemctl stop nginx;
-  sudo rm /etc/nginx/sites-enabled/* || true;
-fi;
-
 # Configure nginx
 
-sudo rm /etc/nginx/modules-enabled/* || true;
-sudo ln -s /usr/share/nginx/modules-available/mod-stream.conf /etc/nginx/modules-enabled/50-mod-stream.conf || true;
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx;
 
-install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
 install_config "$BASEDIR/config/custom.conf" /etc/nginx/conf.d || true;
+install_config "$BASEDIR/config/log.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
 
+sudo mkdir -p /etc/systemd/system/nginx.service.d;
+install_config "$BASEDIR/config/auto-restart.conf" /etc/systemd/system/nginx.service.d || true;
+
+sudo mkdir -p /etc/nginx/sites-available;
 sudo mkdir -p /etc/nginx/sites-ready; # staging location for sites to enable once SSL is ready
+sudo mkdir -p /etc/nginx/sites-enabled;
 
 # Prepare SSL
 
@@ -38,7 +34,7 @@ install_config "$BASEDIR/config/shared-ssl.inc" /etc/nginx/sites-available || tr
 # Prepare for certbot challenge
 
 sudo mkdir -p /var/www/http/.well-known/acme-challenge;
-sudo chown -R root:www-data /var/www/http;
+sudo chown -R root:nginx /var/www/http;
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/http.conf" | \
   sudo tee /etc/nginx/sites-available/http > /dev/null;
@@ -52,4 +48,5 @@ sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-enabled/nohost || 
 
 install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy 0755 || true;
 
+sudo systemctl enable nginx; # start at boot
 sudo systemctl start nginx;

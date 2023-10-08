@@ -10,15 +10,6 @@ install_config() {
   sudo chmod "$PERM" "$TARGET";
 }
 
-add_nat_rule() {
-  if ! sudo iptables -t nat -C PREROUTING "$@"; then
-    sudo iptables -t nat -A PREROUTING "$@";
-  fi;
-  if ! sudo ip6tables -t nat -C PREROUTING "$@"; then
-    sudo ip6tables -t nat -A PREROUTING "$@";
-  fi;
-}
-
 clear_domains() {
   printf '' | sudo tee "/var/www/domains.txt" > /dev/null;
 }
@@ -29,7 +20,7 @@ add_domain() {
 
 kill_process_by_name_fragment() {
   local NAME="$1";
-  local OLD_PID="$(ps aux | grep "$NAME" | grep -v grep | awk '{ print $2 }')";
+  local OLD_PID="$(ps -A -o pid -o command | awk 'index($0, "'"$NAME"'") && $2 != "awk" { print $1 }')"
   if [[ -n "$OLD_PID" ]]; then
     kill "$OLD_PID";
   fi;
@@ -37,15 +28,26 @@ kill_process_by_name_fragment() {
 
 set_node_version() {
   local NODE_VERSION="$1";
-  if ! apt-cache show nodejs | grep "Version: $NODE_VERSION." > /dev/null; then
-    KEYRING="/usr/share/keyrings/nodesource.gpg";
-    SOURCES="/etc/apt/sources.list.d/nodesource.list";
-    DISTRO="$(lsb_release -s -c)";
+  local KEYRING="/etc/apt/keyrings/nodesource.gpg";
+  local SOURCES="/etc/apt/sources.list.d/nodesource.list";
+  local PIN="/etc/apt/preferences.d/nodesource-pin";
 
-    curl -fsSL "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" | gpg --dearmor | sudo tee "$KEYRING" >/dev/null;
+  if [[ ! -f "$SOURCES" ]] || ! grep "node_$NODE_VERSION." "$SOURCES" > /dev/null; then
+    curl -fsSL "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key" | sudo gpg --dearmor -o "$KEYRING";
     #gpg --no-default-keyring --keyring "$KEYRING" --list-keys;
-    sudo chmod 0644 "$KEYRING";
-    echo "deb [signed-by=$KEYRING] https://deb.nodesource.com/node_$NODE_VERSION.x $DISTRO main" | sudo tee "$SOURCES"
-    echo "deb-src [signed-by=$KEYRING] https://deb.nodesource.com/node_$NODE_VERSION.x $DISTRO main" | sudo tee -a "$SOURCES"
+    echo "deb [signed-by=$KEYRING] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | sudo tee "$SOURCES" >/dev/null;
+    printf 'Package: nodejs\nPin: release o=Ubuntu\nPin-Priority: -10\n' | sudo tee "$PIN" >/dev/null;
+  fi;
+}
+
+set_nginx_latest() {
+  local KEYRING="/etc/apt/keyrings/nginx.gpg";
+  local SOURCES="/etc/apt/sources.list.d/nginx.list";
+  local PIN="/etc/apt/preferences.d/nginx-pin";
+
+  if [[ ! -f "$SOURCES" ]]; then
+    curl -fsSL "https://nginx.org/keys/nginx_signing.key" | sudo gpg --dearmor -o "$KEYRING";
+    echo "deb [signed-by=$KEYRING] http://nginx.org/packages/ubuntu $(lsb_release -sc) nginx" | sudo tee "$SOURCES" >/dev/null;
+    printf 'Package: nginx\nPin: release o=Ubuntu\nPin-Priority: -10\n' | sudo tee "$PIN" >/dev/null;
   fi;
 }

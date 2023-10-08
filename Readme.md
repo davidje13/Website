@@ -26,15 +26,84 @@ Updates to this repository can be applied by re-running the
 
 ## EC2
 
-- AMI: `ami-03ec287fa560a6ccc` (Ubuntu 20.04, Arm)
-- T4g.micro
-- "Credit specification": "Unlimited" off
-- 8GB HDD, encryption enabled (using alias/aws/ebs)
+Use an ED25519 key pair
+- for best security, generate a key locally:
+   ```sh
+   ssh-keygen -t ed25519 -N '' -C "website" -f ~/.ssh/website
+   ```
+- import the public key into AWS either via the UI
+  (Network & Security &rarr; Key Pairs &rarr; Actions &rarr; Import Key Pair, copy contents of `website.pub` into box),
+  or via the CLI:
+  ```
+  aws ec2 import-key-pair --key-name "website" --public-key-material "$(cat ~/.ssh/website.pub)"
+  ```
+
+Launch an instance with the following config:
+
+- AMI: `ami-090b049bea4780001` (Ubuntu 22.04, 64-bit, Arm)
+- Architecture: ARM
+- Instance Type: t4g.micro
+- Key pair: as created earlier
 - Use a security group which allows inbound traffic on:
   - 80 (public: `0.0.0.0/0` & `::/0`)
   - 443 (public: `0.0.0.0/0` & `::/0`)
   - 22 (your ip)
-- (assign elastic IP)
+- Storage: 8GiB gp3
+  - Encryption enabled (KMS key can be left as default, using aws/ebs)
+  - IOPS: 3000
+  - Throughput: 125
+- Termination protection: Enable
+- Credit specification: Standard
+
+```json
+{
+  "MaxCount": 1,
+  "MinCount": 1,
+  "ImageId": "ami-090b049bea4780001",
+  "InstanceType": "t4g.micro",
+  "KeyName": "website",
+  "DisableApiTermination": true,
+  "EbsOptimized": true,
+  "BlockDeviceMappings": [
+    {
+      "DeviceName": "/dev/sda1",
+      "Ebs": {
+        "Encrypted": true,
+        "DeleteOnTermination": true,
+        "Iops": 3000,
+        "SnapshotId": "<fill-in>",
+        "VolumeSize": 8,
+        "VolumeType": "gp3",
+        "Throughput": 125
+      }
+    }
+  ],
+  "NetworkInterfaces": [
+    {
+      "AssociatePublicIpAddress": true,
+      "DeviceIndex": 0,
+      "Groups": [
+        "<fill-in>"
+      ]
+    }
+  ],
+  "CreditSpecification": {
+    "CpuCredits": "standard"
+  },
+  "PrivateDnsNameOptions": {
+    "HostnameType": "ip-name",
+    "EnableResourceNameDnsARecord": true,
+    "EnableResourceNameDnsAAAARecord": false
+  }
+}
+```
+
+After creation:
+
+- assign an elastic IP.
+- assign an IPv6 address (see below, from step 5 if IPv6 already configured for VPC)
+- Disable metadata (Actions &rarr; Instance settings &rarr; Modify instance metadata options)
+  Note: do not disable this when creating the instance, as it is required by AWS for configuring SSH keys.
 
 ## CloudWatch
 
@@ -94,31 +163,26 @@ Full guide from AWS: <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migra
 
 ## Route53
 
-(skip `AAAA` records if IPv6 has not been configured)
+(skip `AAAA` record if IPv6 has not been configured)
 
-```
-A    <domain>          <elastic ip>               (7days)
-AAAA <domain>          <ipv6>                     (1day)
-A    www.<domain>      <elastic ip>               (7days)
-AAAA www.<domain>      <ipv6>                     (1day)
-A    retro.<domain>    <elastic ip>               (7days)
-AAAA retro.<domain>    <ipv6>                     (1day)
-A    retros.<domain>   <elastic ip>               (7days)
-AAAA retros.<domain>   <ipv6>                     (1day)
-A    refacto.<domain>  <elastic ip>               (7days)
-AAAA refacto.<domain>  <ipv6>                     (1day)
-A    sequence.<domain> <elastic ip>               (7days)
-AAAA sequence.<domain> <ipv6>                     (1day)
-CAA  <domain>          0 issue "letsencrypt.org"  (7days)
-```
+| type  | name                | value                       | ttl    |
+|-------|---------------------|-----------------------------|--------|
+| A     | `<domain>`          | `<elastic ip>`              | 1 hour |
+| AAAA  | `<domain>`          | `<ipv6>`                    | 1 hour |
+| CNAME | `www.<domain>`      | `<domain>`                  | 7 days |
+| CNAME | `retro.<domain>`    | `<domain>`                  | 7 days |
+| CNAME | `retros.<domain>`   | `<domain>`                  | 7 days |
+| CNAME | `refacto.<domain>`  | `<domain>`                  | 7 days |
+| CNAME | `sequence.<domain>` | `<domain>`                  | 7 days |
+| CAA   | `<domain>`          | `0 issue "letsencrypt.org"` | 7 days |
 
 If the domain will not send email, the following should also be added:
 
-```
-TXT <domain>              v=spf1 -all                      (1day)
-TXT *._domainkey.<domain> v=DKIM1;p=                       (1day)
-TXT _dmarc.<domain>       v=DMARC1;p=reject;adkim=s;aspf=s (1day)
-```
+| type | name                    | value                              | ttl   |
+|------|-------------------------|------------------------------------|-------|
+| TXT  | `<domain>`              | `v=spf1 -all`                      | 1 day |
+| TXT  | `*._domainkey.<domain>` | `v=DKIM1;p=`                       | 1 day |
+| TXT  | `_dmarc.<domain>`       | `v=DMARC1;p=reject;adkim=s;aspf=s` | 1 day |
 
 ([source](https://www.cloudflare.com/learning/dns/dns-records/protect-domains-without-email/))
 
@@ -176,6 +240,25 @@ Old logs are `gzip`'ed. These can be viewed with:
 
 ```sh
 gunzip -c "my-old-log-file-here.gz" | less
+```
+
+To view all recent nginx error logs:
+
+```sh
+( cat /var/log/nginx/error.log /var/log/nginx/error.log.1; gunzip -c /var/log/nginx/error.log.*.gz ) \
+| sort | cut -d' ' -f1,2,5- | less
+```
+
+To view current firewall stats (e.g. number of packets to particular ports):
+
+```sh
+sudo nft list table inet filter
+```
+
+To view packets sent to unknown ports:
+
+```sh
+grep ' kernel:' < /var/log/syslog
 ```
 
 ## Post Setup

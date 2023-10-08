@@ -16,7 +16,7 @@ sudo useradd --system --user-group --password '' sequence-runner || true;
 
 # Load dependencies
 
-sudo apt-get install -y nodejs;
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs;
 
 # Load repository
 

@@ -6,17 +6,17 @@ set -ex
 if [[ ! -f /etc/letsencrypt/live/all/fullchain.pem ]]; then
   set +x;
   while true; do
-    # fetch own IP address(es) from AWS internal service
-    # (could also use 'dig +short myip.opendns.com AAAA @resolver1.opendns.com' outside AWS)
-    MYIP6="$(curl -s http://169.254.169.254/latest/meta-data/ipv6)";
+    # fetch own IPv6 address
+    MYIP6="$(dig -6 +short myip.opendns.com AAAA @resolver1.opendns.com)";
     DNS_AAAA="$(dig +short "$(head -n1 "/var/www/domains.txt")" AAAA @8.8.8.8)";
-    if [[ "$DNS_AAAA" == "$MYIP6" ]]; then break; fi;
+    if [[ -n "$DNS_AAAA" && "$DNS_AAAA" == "$MYIP6" ]]; then break; fi;
 
     # only check IPv4 if there is no IPv6 record, since certbot will always prefer IPv6 if present
-    if [[ "$DNS_AAAA" == "" ]]; then
-      MYIP4="$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)";
+    if [[ -z "$DNS_AAAA" ]]; then
+      # can also use e.g. $(curl -s4 https://checkip.amazonaws.com)
+      MYIP4="$(dig -4 +short myip.opendns.com A @resolver1.opendns.com)";
       DNS_A="$(dig +short "$(head -n1 "/var/www/domains.txt")" A @8.8.8.8)";
-      if [[ "$DNS_A" == "$MYIP4" ]]; then break; fi;
+      if [[ -n "$DNS_A" && "$DNS_A" == "$MYIP4" ]]; then break; fi;
     fi;
 
     if [[ " $* " == *" --immediate "* ]]; then

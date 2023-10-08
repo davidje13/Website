@@ -20,8 +20,9 @@ kill_process_by_name_fragment 'get-certificate.sh';
 # Update and configure system
 
 set_node_version 18;
+set_nginx_latest;
 sudo apt-get update;
-sudo apt-get dist-upgrade -y;
+sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y;
 
 if [[ -f /var/run/reboot-required ]]; then
   set +x;
@@ -82,3 +83,8 @@ fi;
 # https://www.freedesktop.org/software/systemd/man/systemd.service.html
 # https://github.com/nodesource/distributions#manual-installation
 # https://www.belle-aurore.com/mike/ubuntu-upgrade-woes/removing-canonicals-ubuntu-advantage-ssh-login-spam/
+# https://wiki.archlinux.org/title/Simple_stateful_firewall
+# https://www.linode.com/docs/guides/how-to-use-nftables/
+# https://wiki.nftables.org/wiki-nftables/index.php/Scripting
+# https://wiki.archlinux.org/title/nftables
+# https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes

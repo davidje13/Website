@@ -52,7 +52,7 @@ while IFS='' read -r LINE; do
 done < "$BASEDIR/http_statuses.csv";
 set -x;
 
-sudo chown -R root:www-data "$INSTALL_TEMP_DIR";
+sudo chown -R root:nginx "$INSTALL_TEMP_DIR";
 
 # Remove existing site if found and move new site in place
 sudo rm -r "$INSTALL_DIR" || true;
