@@ -13,6 +13,7 @@ install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
 install_config "$BASEDIR/config/custom.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/log.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
+install_config "$BASEDIR/config/ratelimit.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
 
 sudo mkdir -p /etc/systemd/system/nginx.service.d;
@@ -32,6 +33,7 @@ if ! [[ -f /etc/nginx/dhparam.pem ]]; then
 fi;
 
 install_config "$BASEDIR/config/shared-ssl.inc" /etc/nginx/sites-available || true;
+install_config "$BASEDIR/config/proxy-common.inc" /etc/nginx/sites-available || true;
 install_config "$BASEDIR/config/hacker.inc" /etc/nginx/sites-available || true;
 
 # Prepare for certbot challenge
