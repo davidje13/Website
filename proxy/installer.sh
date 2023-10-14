@@ -13,6 +13,7 @@ install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
 install_config "$BASEDIR/config/custom.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/log.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
+install_config "$BASEDIR/config/proxy.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/ratelimit.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
 
