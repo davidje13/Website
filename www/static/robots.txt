@@ -1,11 +1,14 @@
 User-agent: *
 Allow: /
+Disallow: /admin
 
 User-agent: archive.org_bot
 Allow: /
+Disallow: /admin
 
 User-agent: CCBot
 Allow: /
+Disallow: /admin
 
 User-agent: AhrefsBot
 User-agent: BLEXBot

@@ -6,7 +6,7 @@ BASEDIR="$(dirname "$0")";
 
 # Configure nginx
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx;
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx nodejs;
 
 sudo rm /etc/nginx/conf.d/default.conf || true;
 install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
@@ -32,6 +32,7 @@ if ! [[ -f /etc/nginx/dhparam.pem ]]; then
 fi;
 
 install_config "$BASEDIR/config/shared-ssl.inc" /etc/nginx/sites-available || true;
+install_config "$BASEDIR/config/hacker.inc" /etc/nginx/sites-available || true;
 
 # Prepare for certbot challenge
 
@@ -50,6 +51,19 @@ sudo ln -s /etc/nginx/sites-available/nohost /etc/nginx/sites-enabled/nohost || 
 
 sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy;
 install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/deploy 0755 || true;
+
+# generate a "bomb" file to send to attackers
+
+# (disabled for now because gzip loads full content in memory, and these instances are small)
+if false; then
+  BOMB_TEMP="$HOME";
+  node "$BASEDIR/generate-bomb.mjs" --zipped | gzip -nc9 > "$BOMB_TEMP/bomb.htm.gz";
+  node "$BASEDIR/generate-bomb.mjs" > "$BOMB_TEMP/bomb.htm";
+
+  sudo chown root:nginx "$BOMB_TEMP/bomb.htm.gz" "$BOMB_TEMP/bomb.htm";
+  sudo chmod 0644 "$BOMB_TEMP/bomb.htm.gz" "$BOMB_TEMP/bomb.htm";
+  sudo mv "$BOMB_TEMP/bomb.htm.gz" "$BOMB_TEMP/bomb.htm" /var/www/http;
+fi;
 
 sudo nginx -t;
 
