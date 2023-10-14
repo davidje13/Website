@@ -1,5 +1,6 @@
 Unattended-Upgrade::Allowed-Origins {
 	/* These values match the 'o' and 'a' fields of `apt-cache policy` */
+	/* use `sudo unattended-upgrade --dry-run` to test */
 	"${distro_id}:${distro_codename}";
 	"${distro_id}:${distro_codename}-updates";
 	"${distro_id}:${distro_codename}-security";
