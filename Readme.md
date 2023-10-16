@@ -285,6 +285,13 @@ To view all recent nginx error logs:
 | sort | cut -d' ' -f1,2,5- | less
 ```
 
+To view all recent nginx access logs:
+
+```sh
+( cat /var/log/nginx/access.log /var/log/nginx/access.log.1; gunzip -c /var/log/nginx/access.log.*.gz ) \
+| awk '{ print $4 " " $5 " " $1 " " substr($0, length($1 $2 $3 $4 $5) + 6) }' | sort | less
+```
+
 To view current firewall stats (e.g. number of packets to particular ports):
 
 ```sh

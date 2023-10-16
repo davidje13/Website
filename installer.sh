@@ -93,3 +93,4 @@ fi;
 # https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes
 # https://www.nginx.com/blog/rate-limiting-nginx/
 # https://www.nginx.com/blog/avoiding-top-10-nginx-configuration-mistakes/
+# https://github.com/Skyedra/UnspamifyUbuntu
