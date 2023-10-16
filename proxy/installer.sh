@@ -58,6 +58,7 @@ install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/d
 # generate a "bomb" file to send to attackers
 
 install_web_file() {
+  local FILE="$1";
   sudo chown root:nginx "$FILE";
   sudo chmod 0644 "$FILE";
   sudo mv "$FILE" /var/www/http;
