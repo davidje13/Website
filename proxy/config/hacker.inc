@@ -1,5 +1,6 @@
 root /var/www/http;
 gzip_static on;
+keepalive_timeout 0s;
 lingering_close off;
 
 location ~ .ya?ml$ {
