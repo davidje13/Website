@@ -1,14 +1,24 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-
-User-agent: archive.org_bot
-Allow: /
-Disallow: /admin
-
-User-agent: CCBot
-Allow: /
-Disallow: /admin
+Disallow: /ansible
+Disallow: /aws
+Disallow: /backup
+Disallow: /bc
+Disallow: /bk
+Disallow: /debug
+Disallow: /django
+Disallow: /docker
+Disallow: /ecp
+Disallow: /ecs
+Disallow: /elastic
+Disallow: /kubernetes
+Disallow: /maven
+Disallow: /php
+Disallow: /telescope
+Disallow: /travis
+Disallow: /wordpress
+Disallow: /wp
 
 User-agent: AhrefsBot
 User-agent: BLEXBot

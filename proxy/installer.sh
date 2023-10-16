@@ -57,16 +57,33 @@ install_config "$BASEDIR/config/certbot-deploy" /etc/letsencrypt/renewal-hooks/d
 
 # generate a "bomb" file to send to attackers
 
-# (disabled for now because gzip loads full content in memory, and these instances are small)
-if false; then
-  BOMB_TEMP="$HOME";
-  node "$BASEDIR/generate-bomb.mjs" --zipped | gzip -nc9 > "$BOMB_TEMP/bomb.htm.gz";
-  node "$BASEDIR/generate-bomb.mjs" > "$BOMB_TEMP/bomb.htm";
+install_web_file() {
+  sudo chown root:nginx "$FILE";
+  sudo chmod 0644 "$FILE";
+  sudo mv "$FILE" /var/www/http;
+}
 
-  sudo chown root:nginx "$BOMB_TEMP/bomb.htm.gz" "$BOMB_TEMP/bomb.htm";
-  sudo chmod 0644 "$BOMB_TEMP/bomb.htm.gz" "$BOMB_TEMP/bomb.htm";
-  sudo mv "$BOMB_TEMP/bomb.htm.gz" "$BOMB_TEMP/bomb.htm" /var/www/http;
-fi;
+generate_bomb() {
+  local BOMB_TEMP="$HOME";
+  local EXTENSION="$1";
+
+  node "$BASEDIR/generate-bomb.mjs" "$EXTENSION" > "$BOMB_TEMP/bomb.$EXTENSION";
+  install_web_file "$BOMB_TEMP/bomb.$EXTENSION";
+
+  # (disabled for now because gzip loads full content in memory, and these instances are small)
+  if false; then
+    node "$BASEDIR/generate-bomb.mjs" "$EXTENSION" --zipped | gzip -nc9 > "$BOMB_TEMP/bomb.$EXTENSION.gz";
+  fi;
+  # pick up gzipped file if it was added manually
+  if [ -f "$BOMB_TEMP/bomb.$EXTENSION.gz" ]; then
+    install_web_file "$BOMB_TEMP/bomb.$EXTENSION.gz";
+  fi;
+}
+
+generate_bomb html;
+generate_bomb xml;
+generate_bomb json;
+generate_bomb yaml;
 
 sudo nginx -t;
 
