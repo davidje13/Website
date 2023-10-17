@@ -7,6 +7,17 @@ function o(t, n = 1) {
   process.stdout.write(t.repeat(n));
 }
 
+function shell() {
+  o('\n', zipped ? 1000000 : 10000);
+  o('\u001B]0;');
+  o('?', zipped ? 10000000 : 10000);
+  o('\u0007\u001B[?1049h');
+  o('\u001B[41m \u001B[42m%', zipped ? 1000000 : 5000);
+  o('\u001B[2m\u001B[5m\u001B[8m\u001B[30m\u001B[40m\u001B[38:2:0:0:0m\u001B[48:2:0:0:0m\u001B[?25l\u001B[?2004l\u001B[=1h\u001B[97;8p\u001B[101;8p\u001B[105;8p\u001B[111;8p\u001B[117;8p\u001B[13;8p');
+  o('\u0007', zipped ? 100000000 : 10000);
+  o('\u001BX\u001B[');
+}
+
 switch (ext) {
   case 'html':
     o('<!DOCTYPE html><html><head><title>Loading...</title></head><body>');
@@ -17,12 +28,12 @@ switch (ext) {
     o('/', zipped ? 1000000 : 10000);
     o('?', zipped ? 1000000 : 10000);
     o(' a');
-    o('>', zipped ? 10000000 : 10000);
+    o('>', zipped ? 70000000 : 10000);
     o('<form ');
     o('action=', zipped ? 100000 : 1000);
     o('<a ');
     o('href=', zipped ? 100000 : 1000);
-    o(' ', zipped ? 200000000 : 0);
+    shell();
     break;
   case 'xml': {
     // extended "billion laughs"
@@ -33,20 +44,20 @@ switch (ext) {
       o(`&l${i};`, 50);
       o(`">`);
     }
-    o(`]><r>`);
-    if (zipped) {
-      o('.', 200000000);
-    }
+    o(`]><r>&l${levels};`);
+    o('\n', zipped ? 1000000 : 10000);
+    o('.', zipped ? 200000000 : 10000);
     o(`</r>`);
     break;
   }
   case 'json':
     o('{"data":');
     o('{"v":', zipped ? 1000000 : 10000);
-    o('[', zipped ? 200000000 : 50000);
+    o('[', zipped ? 100000000 : 50000);
     o('0');
     o(',1', zipped ? 1000000 : 50000);
-    o(']');
+    o('],"');
+    shell();
     break;
   case 'yaml': {
     const levels = 50;
@@ -57,10 +68,11 @@ switch (ext) {
       o(']\n');
     }
     o('n: ');
-    o('[', zipped ? 200000000 : 100000);
+    o('[', zipped ? 100000000 : 100000);
     o('0');
     o(',1', zipped ? 1000000 : 50000);
-    o(']');
+    o('],"');
+    shell();
     break;
   }
   default:
