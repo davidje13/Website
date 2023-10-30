@@ -1,10 +1,11 @@
+#!/bin/sh
 set -ex
 
 BASEDIR="$(dirname "$0")";
 . "$BASEDIR/../common/utils.sh";
 SERVICE_PORTS="8080 8081";
 
-if [[ ! -f /etc/nginx/sites-available/sequence ]]; then
+if ! [ -f /etc/nginx/sites-available/sequence ]; then
   # Make Users
 
   sudo useradd --create-home --user-group --password '' sequence-updater || true;

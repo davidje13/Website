@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -ex
 
 BACKUP_FILE="backup-$(date "+%Y-%m-%dT%H-%M-%S").tar.gz";

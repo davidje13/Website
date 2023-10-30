@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 set -ex
 
-if [[ -z "$DOMAIN" ]]; then
+if [ -z "$DOMAIN" ]; then
   set +x;
   echo "Must specify DOMAIN environment variable! (e.g. 'davidje13.com')" >&2;
   exit 1;
@@ -24,7 +24,9 @@ compress_gzip_static() {
   gzip -nk9 "$TARGET_FILE";
   # if compression (plus overhead to account for headers / time
   # decompressing) did not reduce size, always serve uncompressed
-  if (( "$(wc -c < "$TARGET_FILE.gz")" + 300 > "$(wc -c < "$TARGET_FILE")" )); then
+  RAW_SIZE="$(wc -c < "$TARGET_FILE")";
+  GZ_SIZE="$(wc -c < "$TARGET_FILE.gz")";
+  if [ "$((GZ_SIZE + 300))" -gt "$RAW_SIZE" ]; then
     rm "$TARGET_FILE.gz";
   else
     chmod 0644 "$TARGET_FILE.gz";
@@ -36,11 +38,14 @@ find . -type f | while IFS='' read -r SOURCE_FILE; do
   TARGET_FILE="$INSTALL_TEMP_DIR/$SOURCE_FILE";
   mkdir -p "${TARGET_FILE%/*}";
   chmod 0755 "${TARGET_FILE%/*}";
-  if [[ "$SOURCE_FILE" =~ \.(txt|htm|xml)$ ]]; then
+  case "$SOURCE_FILE" in
+  *.txt|*.htm|*.xml)
     sed -e "s/((DOMAIN))/$DOMAIN/g" "$SOURCE_FILE" > "$TARGET_FILE";
-  else
+    ;;
+  *)
     cp "$SOURCE_FILE" "$TARGET_FILE";
-  fi;
+    ;;
+  esac;
   chmod 0644 "$TARGET_FILE";
   compress_gzip_static "$TARGET_FILE";
 done;
@@ -62,7 +67,7 @@ make_error_page() {
 
 set +x; # avoid super-verbose log output while copying error pages
 while IFS='' read -r LINE; do
-  if [[ -n "$LINE" ]]; then
+  if [ -n "$LINE" ]; then
     make_error_page "${LINE%%,*}" "${LINE#*,}";
   fi;
 done < "$BASEDIR/http_statuses.csv";

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -ex
 
 BASEDIR="$(dirname "$0")";
@@ -17,7 +17,7 @@ set_mongodb_version '7.0';
 sudo apt-get update;
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y;
 
-if [[ -f /var/run/reboot-required ]]; then
+if [ -f /var/run/reboot-required ]; then
   set +x;
   echo;
   echo;
@@ -28,7 +28,7 @@ fi;
 
 # Check inputs
 
-if [[ -z "$DOMAIN" ]]; then
+if [ -z "$DOMAIN" ]; then
   set +x;
   echo "Must specify domain! (e.g. 'davidje13.com')" >&2;
   exit 1;

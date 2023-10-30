@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -ex
 
 BASEDIR="$(dirname "$0")";
@@ -26,7 +26,7 @@ sudo mkdir -p /etc/nginx/sites-enabled;
 
 # Prepare SSL
 
-if ! [[ -f /etc/nginx/dhparam.pem ]]; then
+if ! [ -f /etc/nginx/dhparam.pem ]; then
   openssl dhparam -out dhparam.pem 2048;
   sudo mv dhparam.pem /etc/nginx/dhparam.pem;
   sudo chmod 0600 /etc/nginx/dhparam.pem;

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -ex
 
 sudo /var/www/sequence/update.sh;
