@@ -11,7 +11,7 @@ kill_process_by_name_fragment 'get-certificate.sh';
 
 # Update packages
 
-set_node_version 18;
+set_node_version 20;
 set_nginx_repo;
 set_mongodb_version '7.0';
 sudo apt-get update;
