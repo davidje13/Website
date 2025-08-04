@@ -29,7 +29,7 @@ Updates to this repository can be applied by re-running the
 Use an ED25519 key pair
 - for best security, generate a key locally:
    ```sh
-   ssh-keygen -t ed25519 -N '' -C "website" -f ~/.ssh/website
+   ssh-keygen -t ed25519 -N '' -C "website" -f ~/.ssh/website.pem
    ```
 - import the public key into AWS either via the UI
   (Network & Security &rarr; Key Pairs &rarr; Actions &rarr; Import Key Pair, copy contents of `website.pub` into box),

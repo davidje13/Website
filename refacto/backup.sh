@@ -1,7 +1,7 @@
 #!/bin/sh
 set -ex
 
-BACKUP_FILE="backup-$(date "+%Y-%m-%dT%H-%M-%S").tar.gz";
+BACKUP_FILE="backup-refacto-$(date "+%Y-%m-%dT%H-%M-%S").tar.gz";
 
 rm -rf dump || true;
 mongodump;

@@ -16,18 +16,16 @@ if install_config "$BASEDIR/config/keepalive.conf" /etc/ssh/sshd_config.d; then
   fi;
 fi;
 
+# Remove conflicting packages and unused AWS services
+
+sudo apt-get remove -y --autoremove iptables awscli python3-awscrt;
+
 # Install required packages
 
-# update-notifier-common enables automatic restart after unattended-upgrades completes
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  unattended-upgrades \
-  update-notifier-common \
   daemontools \
-  certbot;
-
-# Remove conflicting packages and unused AWS services
-sudo apt-get remove -y --autoremove iptables awscli python3-awscrt;
-sudo apt-get install nftables;
+  certbot \
+  nftables;
 
 # Configure system
 
