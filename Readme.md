@@ -196,6 +196,7 @@ ssh -i ~/.ssh/website admin@<public-address>
 and run:
 
 ```sh
+sudo apt-get install -y git
 git clone https://github.com/davidje13/Website.git
 Website/installer.sh
 # this will probably ask for a restart, or will eventually complain about not having a domain
