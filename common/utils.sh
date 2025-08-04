@@ -27,7 +27,7 @@ set_node_version() {
   if ! [ -f "$SOURCES" ] || ! grep "node_$NODE_VERSION." "$SOURCES" > /dev/null; then
     curl -fsSL "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key" | sudo gpg --dearmor -o "$KEYRING";
     #gpg --no-default-keyring --keyring "$KEYRING" --list-keys;
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING] https://deb.nodesource.com/node_$NODE_VERSION nodistro main" | sudo tee "$SOURCES" >/dev/null;
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | sudo tee "$SOURCES" >/dev/null;
     printf 'Package: nodejs\nPin: origin deb.nodesource.com\nPin-Priority: 600\n' | sudo tee "$PIN" >/dev/null;
   fi;
 }
