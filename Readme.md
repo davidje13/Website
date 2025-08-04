@@ -40,11 +40,11 @@ Use an ED25519 key pair
 
 Launch an instance with the following config:
 
-- AMI: `ami-090b049bea4780001` (Ubuntu 22.04, 64-bit, Arm)
+- AMI: `ami-00d714618e1e1a7b0` (Debian 12, 64-bit, Arm)
 - Architecture: ARM
 - Instance Type: t4g.micro
 - Key pair: as created earlier
-- Use a security group which allows inbound traffic on:
+- Use a security group which allows "All traffic" outbound (IPv4 and IPv6), and inbound traffic on:
   - 80 (public: `0.0.0.0/0` & `::/0`)
   - 443 (public: `0.0.0.0/0` & `::/0`)
   - 22 (your ip)
@@ -60,7 +60,7 @@ Launch an instance with the following config:
 {
   "MaxCount": 1,
   "MinCount": 1,
-  "ImageId": "ami-090b049bea4780001",
+  "ImageId": "ami-00d714618e1e1a7b0",
   "InstanceType": "t4g.micro",
   "KeyName": "website",
   "DisableApiTermination": true,
@@ -190,7 +190,7 @@ If the domain will not send email, the following should also be added:
 Once the EC2 & Route53 config is done, log in to the box:
 
 ```sh
-ssh -i ~/.ssh/website ubuntu@<public-address>
+ssh -i ~/.ssh/website admin@<public-address>
 ```
 
 and run:
