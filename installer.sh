@@ -12,7 +12,7 @@ kill_process_by_name_fragment 'get-certificate.sh';
 # Update packages
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gnupg;
-set_node_version 24;
+set_node_version 22;
 set_nginx_repo;
 set_mongodb_version '7.0';
 sudo apt-get update;
