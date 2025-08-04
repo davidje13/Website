@@ -11,7 +11,7 @@ kill_process_by_name_fragment 'get-certificate.sh';
 
 # Update packages
 
-set_node_version 20;
+set_node_version 24;
 set_nginx_repo;
 set_mongodb_version '7.0';
 sudo apt-get update;
@@ -42,24 +42,21 @@ DOMAIN="$DOMAIN" "$BASEDIR/proxy/installer.sh";
 
 # Install applications
 
-clear_domains;
-
 DOMAIN="$DOMAIN" "$BASEDIR/www/installer.sh";
-sudo ln -s /etc/nginx/sites-available/root /etc/nginx/sites-ready/root;
-add_domain "$DOMAIN";
-add_domain "www.$DOMAIN";
-
 DOMAIN="$DOMAIN" "$BASEDIR/sequence/installer.sh";
-sudo ln -s /etc/nginx/sites-available/sequence /etc/nginx/sites-ready/sequence;
-add_domain "sequence.$DOMAIN";
-
 DOMAIN="$DOMAIN" "$BASEDIR/refacto/installer.sh";
-sudo ln -s /etc/nginx/sites-available/refacto /etc/nginx/sites-ready/refacto;
-add_domain "retro.$DOMAIN";
-add_domain "retros.$DOMAIN";
-add_domain "refacto.$DOMAIN";
+if [ -d "$HOME/additional-sites" ]; then
+  for APP in $(ls "$HOME/additional-sites"); do
+    echo "Installing additional site ~/additional-sites/$APP...";
+    DOMAIN="$DOMAIN" "$HOME/additional-sites/$APP/installer.sh";
+  done;
+fi;
 
 # Request SSL certificate
+
+for DOMAIN in $(grep -h 'server_name' /etc/nginx/sites-ready/* | sed -e 's/server_name//' -e 's/;//g'); do
+  echo "$DOMAIN";
+done | grep -v '^\.' | sort | uniq | sudo tee "/var/www/domains.txt" > /dev/null;
 
 if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   set +x;
@@ -67,11 +64,19 @@ if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   echo;
   echo "Done.";
 else
-  nohup sudo "$BASEDIR/proxy/get-certificate.sh" </dev/null >"$HOME/get-certificate.log" 2>&1 &
-  set +x;
   echo;
   echo;
-  echo "Created background task waiting for $DOMAIN DNS to point to this instance (see ~/get-certificate.log)";
+  printf "Poll until DNS is ready? [y/N]: ";
+  read POLL;
+  echo;
+  if [ "$POLL" = "y" ]; then
+    nohup sudo "$BASEDIR/proxy/get-certificate.sh" </dev/null >"$HOME/get-certificate.log" 2>&1 &
+    set +x;
+    echo "Created background task waiting for $DOMAIN DNS to point to this instance (see ~/get-certificate.log)";
+  else
+    echo "Not polling. Polling can be started later by re-running this script, or running:"
+    echo "sudo $BASEDIR/proxy/get-certificate.sh";
+  fi;
 fi;
 
 # thanks,

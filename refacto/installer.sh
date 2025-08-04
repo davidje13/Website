@@ -98,3 +98,5 @@ sudo chmod 0755 /etc/cron.daily/refacto-pull;
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
   sudo tee /etc/nginx/sites-available/refacto > /dev/null;
+
+sudo ln -s /etc/nginx/sites-available/refacto /etc/nginx/sites-ready/refacto;

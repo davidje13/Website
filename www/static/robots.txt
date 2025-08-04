@@ -30,6 +30,8 @@ User-agent: serpstatbot
 User-agent: webprosbot
 User-agent: Mediapartners-Google
 User-agent: AdsBot-Google
+User-agent: Google-CloudVertexBot
+User-agent: Google-Extended
 User-agent: facebot
 User-agent: GPTBot
 Disallow: /

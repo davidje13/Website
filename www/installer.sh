@@ -9,3 +9,5 @@ DOMAIN="$DOMAIN" "$BASEDIR/update.sh";
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
   sudo tee /etc/nginx/sites-available/root > /dev/null;
+
+sudo ln -s /etc/nginx/sites-available/root /etc/nginx/sites-ready/root;

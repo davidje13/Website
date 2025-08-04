@@ -64,3 +64,5 @@ sudo chmod 0755 /etc/cron.daily/sequence-pull;
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
   sudo tee /etc/nginx/sites-available/sequence > /dev/null;
+
+sudo ln -s /etc/nginx/sites-available/sequence /etc/nginx/sites-ready/sequence;

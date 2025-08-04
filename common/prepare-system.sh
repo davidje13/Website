@@ -27,7 +27,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 sudo apt-get remove -y --autoremove iptables;
 
-# Remove Canonical adverts
+# Ubuntu only: Remove Canonical adverts
 
 install_config "$BASEDIR/config/motd-news" /etc/default || true;
 sudo systemctl stop ua-timer.timer || true;
@@ -44,9 +44,9 @@ sudo rm -f /etc/update-motd.d/88-esm-announce || true;
 sudo rm -f /etc/update-motd.d/91-contract-ua-esm-status || true;
 sudo rm /var/log/ubuntu-advantage* || true
 
-# Build and install a placebo version of ubuntu-advantage-tools
+# Ubuntu only: Build and install a placebo version of ubuntu-advantage-tools
 # (cannot just uninstall since core packages "depend" on it)
-if ! dpkg -l fake-ubuntu-advantage-tools >/dev/null 2>&1; then
+if dpkg -l ubuntu-advantage-tools >/dev/null 2>&1 && ! dpkg -l fake-ubuntu-advantage-tools >/dev/null 2>&1; then
   dpkg -b "$BASEDIR/fake-ubuntu-advantage-tools" "$BASEDIR/fake-ubuntu-advantage-tools.deb";
   # TODO: tested with apt-get install, not dpkg -i, but apt warns about permissions.
   # Haven't confirmed dpkg -i successfully replaces the bundled package.
@@ -55,7 +55,7 @@ if ! dpkg -l fake-ubuntu-advantage-tools >/dev/null 2>&1; then
   sudo dpkg --purge ubuntu-advantage-tools || true;
 fi;
 
-# Remove unused AWS services and snap
+# Ubuntu only: Remove unused AWS services and snap
 
 if which snap >/dev/null; then
   sudo systemctl stop snap.amazon-ssm-agent.amazon-ssm-agent.service || true;

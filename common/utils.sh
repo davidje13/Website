@@ -10,14 +10,6 @@ install_config() {
   sudo chmod "$PERM" "$TARGET";
 }
 
-clear_domains() {
-  printf '' | sudo tee "/var/www/domains.txt" > /dev/null;
-}
-
-add_domain() {
-  echo "$1" | sudo tee -a "/var/www/domains.txt" > /dev/null;
-}
-
 kill_process_by_name_fragment() {
   local NAME="$1";
   local OLD_PID="$(ps -A -o pid -o command | awk 'index($0, "'"$NAME"'") && $2 != "awk" { print $1 }')"
