@@ -16,21 +16,22 @@ fi;
 
 echo "Preparing new server";
 ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  'sudo apt-get install -y git && git clone https://github.com/davidje13/Website.git ~/Website; Website/installer.sh || true; sudo shutdown -r now';
+  'sudo apt-get update && sudo apt-get install -y git && git clone https://github.com/davidje13/Website.git ~/Website; Website/installer.sh || true; if [ -f /var/run/reboot-required ]; then sudo shutdown -r now; fi';
 
 # Ensure old server scripts are up-to-date, make initial backup (later a second - offline - backup will be used to ensure no loss of data)
 echo "Creating online backup";
 ssh -Ti "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER" \
-  'cd Website && git stash && git pull; cd ..; mkdir -p old-backups; mv backup-*.tar.gz old-backups || true; Website/refacto/backup.sh && mv backup-refacto-*.tar.gz backup-refacto-migrate-online.tar.gz';
+  'cd Website && git stash && git pull; cd ..; mkdir -p old-backups; rm backup-*-online.tar.gz backup-*-offline.tar.gz || true; mv backup-*.tar.gz old-backups || true; Website/refacto/backup.sh && cp backup-refacto-*.tar.gz backup-refacto-migrate-online.tar.gz';
 
 # Wait for new server to be available again after reboot
 echo "Waiting for new server to restart";
-while ! ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER"; do
+while ! ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" true; do
   sleep 1
 done;
 
 # Copy backup files
 echo "Transferring online backup";
+rm backup-*-online.tar.gz || true;
 scp -i "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER:/home/$OLD_SERVER_USER/backup-refacto-migrate-online.tar.gz" backup-refacto-migrate-online.tar.gz;
 scp -i "$NEW_KEY" backup-refacto-migrate-online.tar.gz "$NEW_SERVER_USER@$NEW_SERVER:/home/$NEW_SERVER_USER/backup-refacto-migrate-online.tar.gz";
 
@@ -111,10 +112,11 @@ fi;
 echo "Shutting down old server and creating offline backup";
 echo "$(date) Full outage begins";
 ssh -Ti "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER" \
-  'mv backup-*.tar.gz old-backups || true; Website/refacto/backup.sh --offline && mv backup-refacto-*.tar.gz backup-refacto-migrate-offline.tar.gz';
+  'rm backup-*-online.tar.gz backup-*-offline.tar.gz || true; Website/refacto/backup.sh --offline && cp backup-refacto-*.tar.gz backup-refacto-migrate-offline.tar.gz';
 
 # Copy offline backup to new server
 echo "Transferring offline backup";
+rm backup-*-offline.tar.gz || true;
 scp -i "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER:/home/$OLD_SERVER_USER/backup-refacto-migrate-offline.tar.gz" backup-refacto-migrate-offline.tar.gz;
 scp -i "$NEW_KEY" backup-refacto-migrate-offline.tar.gz "$NEW_SERVER_USER@$NEW_SERVER:/home/$NEW_SERVER_USER/backup-refacto-migrate-offline.tar.gz";
 

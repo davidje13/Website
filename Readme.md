@@ -51,7 +51,7 @@ Launch an instance with the following config:
 
 - AMI: `ami-0306865c645d1899c` (Debian 12, 64-bit, Intel)
 - Architecture: Intel (note: MongoDB does not currently provide binaries for Debian on ARM)
-- Instance Type: t4g.micro
+- Instance Type: t3.micro
 - Key pair: as created earlier
 - Use a security group which allows "All traffic" outbound (IPv4 and IPv6), and inbound traffic on:
   - 80 (public: `0.0.0.0/0` & `::/0`)
@@ -70,7 +70,7 @@ Launch an instance with the following config:
   "MaxCount": 1,
   "MinCount": 1,
   "ImageId": "ami-0306865c645d1899c",
-  "InstanceType": "t4g.micro",
+  "InstanceType": "t3.micro",
   "KeyName": "website",
   "DisableApiTermination": true,
   "EbsOptimized": true,
