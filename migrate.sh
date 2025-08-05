@@ -8,10 +8,16 @@ NEW_KEY="$4"
 NEW_SERVER_USER="$5"
 NEW_SERVER="$6"
 DOMAIN="$7"
+HOSTS_BACKUP="/etc/hosts-webmigrate-original";
 
 if [ -z "$DOMAIN" ]; then
   echo "Must specify: $0 old_key old_server_user old_server_host new_key new_server_user new_server_host domain";
   exit 1;
+fi;
+
+if [ -f "$HOSTS_BACKUP" ]; then
+  sudo cp -fp "$HOSTS_BACKUP" /etc/hosts;
+  sudo rm "$HOSTS_BACKUP";
 fi;
 
 echo "Preparing new server";
@@ -55,7 +61,7 @@ read NEXT;
 # Build new server
 echo "Building new server";
 ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  "REFACTO_DATA_FILE=backup-refacto-migrate-online.tar.gz Website/installer.sh '$DOMAIN'";
+  "REFACTO_DATA_FILE=backup-refacto-migrate-online.tar.gz NO_DNS_POLL=y Website/installer.sh '$DOMAIN'";
 
 echo "Fetching new server details for local testing";
 
@@ -66,11 +72,12 @@ TEST_NEW_IP="$(ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" 'dig -4 +short
 TEST_NEW_DOMAINS="$(ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" 'cat /var/www/domains.txt')";
 
 # Get certificate of new server
-ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" 'sudo cat /var/www/selfsigned.crt' > selfsigned.crt;
+ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
+  'sudo cat /var/www/selfsigned.crt' > selfsigned.crt;
 
 # Update /etc/hosts on local machine for testing
 echo "Updating /etc/hosts for testing";
-sudo cp -p /etc/hosts /etc/hosts-original;
+sudo cp -p /etc/hosts "$HOSTS_BACKUP";
 {
   printf '\n\n# TEMP TESTING:\n';
   for SUBDOMAIN in $TEST_NEW_DOMAINS; do
@@ -85,8 +92,8 @@ echo "Press enter to continue";
 read NEXT;
 
 echo "Restoring /etc/hosts";
-sudo cp -fp /etc/hosts-original /etc/hosts;
-sudo rm /etc/hosts-original;
+sudo cp -fp "$HOSTS_BACKUP" /etc/hosts;
+sudo rm "$HOSTS_BACKUP";
 
 # Shut down nginx on new server so that nobody accesses/modifies the current data
 echo "Shutting down new server";

@@ -64,7 +64,7 @@ if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   echo;
   echo;
   echo "Done.";
-else
+elif [ -z "NO_DNS_POLL" ]; then
   echo;
   echo;
   printf "Poll until DNS is ready? [y/N]: ";

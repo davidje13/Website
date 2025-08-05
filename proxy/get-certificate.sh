@@ -53,7 +53,7 @@ extendedKeyUsage=serverAuth
 subjectAltName=@alternate_names
 
 [alternate_names]
-$(for DOMAIN in cat /var/www/domains.txt; do echo "$DNSID.DNS=$DOMAIN"; DNSID=$((DNSID+1)); done;)
+$(for DOMAIN in cat /var/www/domains.txt; do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
 EOF
   openssl req -config /var/www/selfsigned.conf -x509 \
     -out /var/www/selfsigned.crt -keyout /var/www/selfsigned.key \
