@@ -23,6 +23,7 @@ install_config "$BASEDIR/config/auto-restart.conf" /etc/systemd/system/nginx.ser
 sudo mkdir -p /etc/nginx/sites-available;
 sudo mkdir -p /etc/nginx/sites-ready; # staging location for sites to enable once SSL is ready
 sudo mkdir -p /etc/nginx/sites-enabled;
+sudo rm /etc/nginx/sites-enabled/* || true;
 
 # Prepare SSL
 

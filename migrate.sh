@@ -16,7 +16,7 @@ fi;
 
 echo "Preparing new server";
 ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  'sudo apt-get update && sudo apt-get install -y git && git clone https://github.com/davidje13/Website.git ~/Website; Website/installer.sh || true; if [ -f /var/run/reboot-required ]; then sudo shutdown -r now; fi';
+  'sudo apt-get update && sudo apt-get install -y git && git clone --depth=1 https://github.com/davidje13/Website.git ~/Website; cd Website && git pull; cd ..; Website/installer.sh || true; if [ -f /var/run/reboot-required ]; then sudo shutdown -r now; fi';
 
 # Ensure old server scripts are up-to-date, make initial backup (later a second - offline - backup will be used to ensure no loss of data)
 echo "Creating online backup";
@@ -40,7 +40,7 @@ echo "Copying secrets";
 ssh -qTi "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER" \
   'sudo cat /var/www/refacto/secrets.env' \
 | ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  'cat > Website/env/refacto.env && chmod 0400 Website/env/refacto.env';
+  'cat > Website/env/refacto.env && chmod 0600 Website/env/refacto.env';
 
 # Install additional sites
 echo;
