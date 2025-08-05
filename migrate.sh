@@ -15,10 +15,17 @@ if [ -z "$DOMAIN" ]; then
   exit 1;
 fi;
 
-if [ -f "$HOSTS_BACKUP" ]; then
-  sudo cp -fp "$HOSTS_BACKUP" /etc/hosts;
-  sudo rm "$HOSTS_BACKUP";
-fi;
+restore_hosts() {
+  if [ -f "$HOSTS_BACKUP" ]; then
+    echo "Found an old hosts backup. Restoring (password required)";
+    sudo cp -fp "$HOSTS_BACKUP" /etc/hosts;
+    sudo rm "$HOSTS_BACKUP";
+    sudo dscacheutil -flushcache;
+    sudo killall -HUP mDNSResponder;
+  fi;
+}
+
+restore_hosts;
 
 echo "Preparing new server";
 ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
@@ -76,24 +83,25 @@ ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
   'sudo cat /var/www/selfsigned.crt' > selfsigned.crt;
 
 # Update /etc/hosts on local machine for testing
-echo "Updating /etc/hosts for testing";
+echo "Updating /etc/hosts for testing (password required to modify hosts file)";
 sudo cp -p /etc/hosts "$HOSTS_BACKUP";
 {
   printf '\n\n# TEMP TESTING:\n';
   for SUBDOMAIN in $TEST_NEW_DOMAINS; do
-    printf "$SUBDOMAIN\t\t$TEST_NEW_IP\n";
+    printf "$TEST_NEW_IP\t$SUBDOMAIN\n";
   done;
-} | tee -a /etc/hosts >/dev/null;
+} | sudo tee -a /etc/hosts >/dev/null;
+sudo dscacheutil -flushcache;
+sudo killall -HUP mDNSResponder;
 
 echo; # Manual check opportunity
 echo "Action required: Add self-signed certificate (selfsigned.crt) to browser, then test site locally.";
-echo "  for Firefox: Settings -> Privacy & Security -> View Certificates -> Authorities -> Import";
-echo "Press enter to continue";
+echo "  for Firefox: Settings -> Privacy & Security -> View Certificates -> Authorities -> Import. Also ensure DNS Over HTTPs is off, then restart Firefox to honour the new /etc/hosts config.";
+echo "Press enter once testing is complete.";
 read NEXT;
 
 echo "Restoring /etc/hosts";
-sudo cp -fp "$HOSTS_BACKUP" /etc/hosts;
-sudo rm "$HOSTS_BACKUP";
+restore_hosts;
 
 # Shut down nginx on new server so that nobody accesses/modifies the current data
 echo "Shutting down new server";

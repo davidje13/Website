@@ -37,11 +37,10 @@ reload_nginx() {
 
 make_self_signed() {
   # https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates
-  DNSID=0;
+  DNSID=1;
   cat >/var/www/selfsigned.conf <<EOF ;
 [req]
 distinguished_name=dn
-req_extensions=ext
 prompt=no
 
 [dn]
@@ -55,7 +54,9 @@ subjectAltName=@alternate_names
 [alternate_names]
 $(for DOMAIN in cat /var/www/domains.txt; do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
 EOF
-  openssl req -config /var/www/selfsigned.conf -x509 \
+  echo "Generating self-signed certificate, config:";
+  cat /var/www/selfsigned.conf;
+  openssl req -config /var/www/selfsigned.conf -extensions ext -x509 \
     -out /var/www/selfsigned.crt -keyout /var/www/selfsigned.key \
     -newkey rsa:2048 -nodes -sha256 -days 1;
   rm /var/www/selfsigned.conf;
