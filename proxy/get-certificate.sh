@@ -40,7 +40,15 @@ make_self_signed() {
   rm -r /var/www/selfsigned || true;
   mkdir -p /var/www/selfsigned;
   DNSID=1;
-  cat >/var/www/selfsigned/req.conf <<EOF ;
+  cat >/var/www/selfsigned/root.conf <<EOF ;
+[req]
+distinguished_name=dn
+prompt=no
+
+[dn]
+CN=$ANYDOMAIN
+EOF
+  cat >/var/www/selfsigned/site.conf <<EOF ;
 [req]
 distinguished_name=dn
 prompt=no
@@ -56,20 +64,22 @@ subjectAltName=@alternate_names
 [alternate_names]
 $(for DOMAIN in $(cat /var/www/domains.txt); do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
 EOF
-  echo "Generating self-signed certificate, config:";
-  cat /var/www/selfsigned/req.conf;
-  openssl req -x509 -new -nodes -sha256 -days 1 \
+  echo "Generating self-signed root CA";
+  openssl req -config /var/www/selfsigned/root.conf -x509 -new -nodes -sha256 -days 1 \
     -newkey rsa:4096 \
     -keyout /var/www/selfsigned/root.key -out /var/www/selfsigned/root.crt;
-  openssl req -config /var/www/selfsigned/req.conf -nodes -sha256 -days 1 \
+  echo "Generating CSR, config:";
+  cat /var/www/selfsigned/site.conf;
+  openssl req -config /var/www/selfsigned/site.conf -nodes -sha256 -days 1 \
     -newkey rsa:2048 \
     -keyout /var/www/selfsigned/site.key -out /var/www/selfsigned/site.csr;
-  openssl x509 -config /var/www/selfsigned/req.conf -extensions ext -req -sha256 -days 1 \
+  echo "Self-signing certificate";
+  openssl x509 -config /var/www/selfsigned/site.conf -extensions ext -req -sha256 -days 1 \
     -in /var/www/selfsigned/site.csr \
     -CA /var/www/selfsigned/root.crt -CAkey /var/www/selfsigned/root.key -CAcreateserial \
     -out /var/www/selfsigned/site.crt;
   cat /var/www/selfsigned/root.crt /var/www/selfsigned/site.crt > /var/www/selfsigned/full.crt;
-  rm /var/www/selfsigned/req.conf /var/www/selfsigned/root.key /var/www/selfsigned/site.crt;
+  rm /var/www/selfsigned/*.conf /var/www/selfsigned/root.key /var/www/selfsigned/site.crt;
 
   cat > /etc/nginx/sites-available/ssl-keys.inc <<EOF ;
 # self-signed key
