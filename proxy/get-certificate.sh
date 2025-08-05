@@ -52,7 +52,7 @@ extendedKeyUsage=serverAuth
 subjectAltName=@alternate_names
 
 [alternate_names]
-$(for DOMAIN in cat /var/www/domains.txt; do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
+$(for DOMAIN in $(cat /var/www/domains.txt); do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
 EOF
   echo "Generating self-signed certificate, config:";
   cat /var/www/selfsigned.conf;
