@@ -39,7 +39,7 @@ make_self_signed() {
   # https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates
   rm -r /var/www/selfsigned || true;
   mkdir -p /var/www/selfsigned;
-  DNSID=1;
+
   cat >/var/www/selfsigned/root.conf <<EOF ;
 [req]
 distinguished_name=dn
@@ -48,6 +48,7 @@ prompt=no
 [dn]
 CN=$ANYDOMAIN
 EOF
+
   cat >/var/www/selfsigned/site.conf <<EOF ;
 [req]
 distinguished_name=dn
@@ -55,8 +56,10 @@ prompt=no
 
 [dn]
 CN=$ANYDOMAIN
+EOF
 
-[ext]
+  DNSID=1;
+  cat >/var/www/selfsigned/domains.ext <<EOF ;
 keyUsage=digitalSignature
 extendedKeyUsage=serverAuth
 subjectAltName=@alternate_names
@@ -64,6 +67,7 @@ subjectAltName=@alternate_names
 [alternate_names]
 $(for DOMAIN in $(cat /var/www/domains.txt); do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
 EOF
+
   echo "Generating self-signed root CA";
   openssl req -config /var/www/selfsigned/root.conf -x509 -new -nodes -sha256 -days 1 \
     -newkey rsa:4096 \
@@ -74,8 +78,8 @@ EOF
     -newkey rsa:2048 \
     -keyout /var/www/selfsigned/site.key -out /var/www/selfsigned/site.csr;
   echo "Self-signing certificate";
-  openssl x509 -config /var/www/selfsigned/site.conf -extensions ext -req -sha256 -days 1 \
-    -in /var/www/selfsigned/site.csr \
+  openssl x509 -req -sha256 -days 1 \
+    -in /var/www/selfsigned/site.csr -extfile /var/www/selfsigned/domains.ext \
     -CA /var/www/selfsigned/root.crt -CAkey /var/www/selfsigned/root.key -CAcreateserial \
     -out /var/www/selfsigned/site.crt;
   cat /var/www/selfsigned/root.crt /var/www/selfsigned/site.crt > /var/www/selfsigned/full.crt;
