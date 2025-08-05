@@ -82,12 +82,11 @@ EOF
     -in /var/www/selfsigned/site.csr -extfile /var/www/selfsigned/domains.ext \
     -CA /var/www/selfsigned/root.crt -CAkey /var/www/selfsigned/root.key -CAcreateserial \
     -out /var/www/selfsigned/site.crt;
-  cat /var/www/selfsigned/root.crt /var/www/selfsigned/site.crt > /var/www/selfsigned/full.crt;
-  rm /var/www/selfsigned/*.conf /var/www/selfsigned/root.key /var/www/selfsigned/site.crt;
+  rm /var/www/selfsigned/*.conf /var/www/selfsigned/*.csr /var/www/selfsigned/root.key;
 
   cat > /etc/nginx/sites-available/ssl-keys.inc <<EOF ;
 # self-signed key
-ssl_certificate /var/www/selfsigned/full.crt;
+ssl_certificate /var/www/selfsigned/site.crt;
 ssl_certificate_key /var/www/selfsigned/site.key;
 EOF
   echo "Using a self-signed certificate: /var/www/root.crt" >&2;
