@@ -9,7 +9,7 @@ is_dns_ready() {
   # fetch own IPv6 address
   MYIP6="$(dig -6 +short myip.opendns.com AAAA @resolver1.opendns.com)";
   DNS_AAAA="$(dig +short "$ANYDOMAIN" AAAA @8.8.8.8)";
-  if [ -n "$DNS_AAAA" ] && [ "$DNS_AAAA" == "$MYIP6" ]; then
+  if [ -n "$DNS_AAAA" ] && [ "$DNS_AAAA" = "$MYIP6" ]; then
     echo "IPv6 address $MYIP6 matches domain $ANYDOMAIN";
     return 0;
   fi;
@@ -19,7 +19,7 @@ is_dns_ready() {
     # can also use e.g. $(curl -s4 https://checkip.amazonaws.com)
     MYIP4="$(dig -4 +short myip.opendns.com A @resolver1.opendns.com)";
     DNS_A="$(dig +short "$ANYDOMAIN" A @8.8.8.8)";
-    if [ -n "$DNS_A" ] && [ "$DNS_A" == "$MYIP4" ]; then
+    if [ -n "$DNS_A" ] && [ "$DNS_A" = "$MYIP4" ]; then
       echo "IPv4 address $MYIP4 matches domain $ANYDOMAIN (IPv6 not configured)";
       return 0;
     fi;

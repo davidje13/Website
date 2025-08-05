@@ -8,7 +8,7 @@ mkdir -p "$TEMP_INSTALL_DIR";
 
 curl -f 'https://api.github.com/repos/davidje13/Refacto/releases/latest' >"$TEMP_INSTALL_DIR/release_info.json";
 RELEASE_ID="$(jq -r '.id' <"$TEMP_INSTALL_DIR/release_info.json")";
-if ! echo " $* " | grep ' --force ' >/dev/null && [ -f "$BASEDIR/current" ] && [ "$(cat "$BASEDIR/current")" == "$RELEASE_ID" ]; then
+if ! echo " $* " | grep ' --force ' >/dev/null && [ -f "$BASEDIR/current" ] && [ "$(cat "$BASEDIR/current")" = "$RELEASE_ID" ]; then
   exit 0; # nothing to update
 fi;
 
