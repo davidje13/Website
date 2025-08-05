@@ -131,7 +131,7 @@ ssl_certificate_key /etc/letsencrypt/live/all/privkey.pem;
 # Enable OCSP Stapling (reduce overhead of initial connection for clients)
 ssl_stapling on;
 ssl_stapling_verify on;
-ssl_trusted_certificate /etc/letsencrypt/live/all/fullchain.pem;
+ssl_trusted_certificate /etc/letsencrypt/live/all/chain.pem;
 EOF
 
 # Enable applications

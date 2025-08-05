@@ -127,7 +127,7 @@ fi;
 echo "Shutting down old server and creating offline backup";
 echo "$(date) Full outage begins";
 ssh -Ti "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER" \
-  'rm backup-*-online.tar.gz backup-*-offline.tar.gz || true; Website/refacto/backup.sh --offline && cp backup-refacto-*.tar.gz backup-refacto-migrate-offline.tar.gz';
+  'mkdir -p old-backups; rm backup-*-online.tar.gz backup-*-offline.tar.gz || true; mv backup-*.tar.gz old-backups || true; Website/refacto/backup.sh --offline && cp backup-refacto-*.tar.gz backup-refacto-migrate-offline.tar.gz';
 
 # Copy offline backup to new server
 echo "Transferring offline backup";
@@ -141,6 +141,11 @@ ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
   'Website/refacto/restore.sh backup-refacto-migrate-offline.tar.gz && sudo systemctl enable nginx && sudo systemctl start nginx && sudo Website/proxy/get-certificate.sh';
 
 echo "$(date) Outage ends";
+
+# Turn off nginx on old server so that any left-over keepalive connections are forced to close
+echo "Turning off nginx on old server";
+ssh -Ti "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER" \
+  'sudo systemctl stop nginx && sudo systemctl disable nginx';
 
 echo;
 echo "Deployment complete. The old server is still running. You may wish to download logs before terminating it.";
