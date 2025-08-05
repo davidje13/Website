@@ -80,7 +80,7 @@ TEST_NEW_DOMAINS="$(ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" 'cat /var
 
 # Get certificate of new server
 ssh -qTi "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  'sudo cat /var/www/selfsigned.crt' > selfsigned.crt;
+  'sudo cat /var/www/selfsigned/root.crt' > selfsigned-ca.crt;
 
 # Update /etc/hosts on local machine for testing
 echo "Updating /etc/hosts for testing (password required to modify hosts file)";
@@ -95,7 +95,7 @@ sudo dscacheutil -flushcache;
 sudo killall -HUP mDNSResponder;
 
 echo; # Manual check opportunity
-echo "Action required: Add self-signed certificate (selfsigned.crt) to browser, then test site locally.";
+echo "Action required: Add self-signed certificate (selfsigned-ca.crt) to browser, then test site locally.";
 echo "  for Firefox: Settings -> Privacy & Security -> View Certificates -> Authorities -> Import. Also ensure DNS Over HTTPs is off, then restart Firefox to honour the new /etc/hosts config.";
 echo "Press enter once testing is complete.";
 read NEXT;

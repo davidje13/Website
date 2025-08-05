@@ -37,8 +37,10 @@ reload_nginx() {
 
 make_self_signed() {
   # https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates
+  rm -r /var/www/selfsigned || true;
+  mkdir -p /var/www/selfsigned;
   DNSID=1;
-  cat >/var/www/selfsigned.conf <<EOF ;
+  cat >/var/www/selfsigned/req.conf <<EOF ;
 [req]
 distinguished_name=dn
 prompt=no
@@ -55,18 +57,26 @@ subjectAltName=@alternate_names
 $(for DOMAIN in $(cat /var/www/domains.txt); do echo "DNS.$DNSID=$DOMAIN"; DNSID=$((DNSID+1)); done;)
 EOF
   echo "Generating self-signed certificate, config:";
-  cat /var/www/selfsigned.conf;
-  openssl req -config /var/www/selfsigned.conf -extensions ext -x509 \
-    -out /var/www/selfsigned.crt -keyout /var/www/selfsigned.key \
-    -newkey rsa:2048 -nodes -sha256 -days 1;
-  rm /var/www/selfsigned.conf;
+  cat /var/www/selfsigned/req.conf;
+  openssl req -x509 -new -nodes -sha256 -days 1 \
+    -newkey rsa:4096 \
+    -keyout /var/www/selfsigned/root.key -out /var/www/selfsigned/root.crt;
+  openssl req -config /var/www/selfsigned/req.conf -nodes -sha256 -days 1 \
+    -newkey rsa:2048 \
+    -keyout /var/www/selfsigned/site.key -out /var/www/selfsigned/site.csr;
+  openssl x509 -config /var/www/selfsigned/req.conf -extensions ext -req -sha256 -days 1 \
+    -in /var/www/selfsigned/site.csr \
+    -CA /var/www/selfsigned/root.crt -CAkey /var/www/selfsigned/root.key -CAcreateserial \
+    -out /var/www/selfsigned/site.crt;
+  cat /var/www/selfsigned/root.crt /var/www/selfsigned/site.crt > /var/www/selfsigned/full.crt;
+  rm /var/www/selfsigned/req.conf /var/www/selfsigned/root.key /var/www/selfsigned/site.crt;
 
   cat > /etc/nginx/sites-available/ssl-keys.inc <<EOF ;
 # self-signed key
-ssl_certificate /var/www/selfsigned.crt;
-ssl_certificate_key /var/www/selfsigned.key;
+ssl_certificate /var/www/selfsigned/full.crt;
+ssl_certificate_key /var/www/selfsigned/site.key;
 EOF
-  echo "Using a self-signed certificate: /var/www/selfsigned.crt" >&2;
+  echo "Using a self-signed certificate: /var/www/root.crt" >&2;
 }
 
 if ! [ -f /etc/letsencrypt/live/all/fullchain.pem ]; then
@@ -115,4 +125,4 @@ EOF
 reload_nginx;
 
 # Remove any temporary self-signed certificate (cleanup)
-rm /var/www/selfsigned.crt /var/www/selfsigned.key || true;
+rm -r /var/www/selfsigned || true;
