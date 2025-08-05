@@ -22,6 +22,15 @@ are found.
 Updates to this repository can be applied by re-running the
 `installer.sh` script.
 
+Deployment can be migrated to a new server (preserving data) using the `./migrate.sh` script:
+
+```sh
+./migrate.sh \
+  ~/.ssh/old-key old-user old-host \
+  ~/.ssh/new-key admin new-host \
+  davidje13.com
+```
+
 # AWS Instance
 
 ## EC2
@@ -40,8 +49,8 @@ Use an ED25519 key pair
 
 Launch an instance with the following config:
 
-- AMI: `ami-00d714618e1e1a7b0` (Debian 12, 64-bit, Arm)
-- Architecture: ARM
+- AMI: `ami-0306865c645d1899c` (Debian 12, 64-bit, Intel)
+- Architecture: Intel (note: MongoDB does not currently provide binaries for Debian on ARM)
 - Instance Type: t4g.micro
 - Key pair: as created earlier
 - Use a security group which allows "All traffic" outbound (IPv4 and IPv6), and inbound traffic on:
@@ -60,7 +69,7 @@ Launch an instance with the following config:
 {
   "MaxCount": 1,
   "MinCount": 1,
-  "ImageId": "ami-00d714618e1e1a7b0",
+  "ImageId": "ami-0306865c645d1899c",
   "InstanceType": "t4g.micro",
   "KeyName": "website",
   "DisableApiTermination": true,

@@ -45,6 +45,10 @@ set_nginx_repo() {
 }
 
 set_mongodb_version() {
+  # MongoDB is not available for Debian ARM (https://www.mongodb.com/try/download/community-edition/releases)
+  # Request to add it from several years ago: https://feedback.mongodb.com/forums/924280-database/suggestions/46410079-arm-support
+  # So for now we need to stick to Intel - maybe switch from Mongo to NodeJS's built-in SQLite later to be able to use ARM for cost savings
+
   local MONGO_VERSION="$1";
   local KEYRING="/etc/apt/keyrings/mongodb-org.gpg";
   local SOURCES="/etc/apt/sources.list.d/mongodb-org.list";
