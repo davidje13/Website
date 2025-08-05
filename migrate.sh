@@ -111,6 +111,7 @@ ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
 # Update DNS or elastic IP (partial outage begins)
 echo;
 echo "Action required: Update DNS records or elastic IP - this will begin the service outage window.";
+echo "Also remember to remove the self-signed certificate from your browser.";
 echo "Press enter to continue.";
 read NEXT;
 echo;
