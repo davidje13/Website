@@ -3,6 +3,11 @@ gzip_static on;
 keepalive_timeout 0s;
 lingering_close off;
 
+# block attempts to reduce the volume of data returned
+max_ranges 0;
+if_modified_since off;
+etag off;
+
 location ~ .ya?ml$ {
 	try_files /bomb.yaml =444;
 }
