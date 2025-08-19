@@ -17,9 +17,12 @@ for BACKUP_SCRIPT in "$HOME/additional-sites/"*/backup.sh; do
 done;
 
 mkdir logs;
-cp /var/log/nginx/* logs;
-cp -R /var/www/refacto/logs/log* logs;
-cp -R /var/www/sequence/logs/log* logs;
+sudo cp /var/log/nginx/* logs;
+sudo cp -R /var/www/refacto/logs/log* logs;
+sudo cp -R /var/www/sequence/logs/log* logs;
+sudo chmod -R 0700 logs;
+find logs -type f -exec chmod 600 {} \;;
+sudo chown -R "$(whoami)" logs;
 
 cd ..;
 tar -czf "$FOLDER.tar.gz" "$FOLDER";
