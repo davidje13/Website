@@ -9,6 +9,21 @@ DOMAIN="$1";
 # Stop previous deploy if still ongoing
 kill_process_by_name_fragment 'get-certificate.sh';
 
+# Fix some cloud-init issues before the first restart
+
+if [ -f /etc/netplan/50-cloud-init.yaml ]; then
+  # Fix permissions warning due to old version of cloud-init on Debian
+  # https://github.com/canonical/cloud-init/issues/6405
+  sudo chmod 0600 /etc/netplan/50-cloud-init.yaml;
+fi;
+
+if ! [ -f /etc/cloud/cloud-init.disabled ]; then
+  # Disable cloud-init for subsequent boots
+  # Fix issue where all SSH host keys are regenerated on restart when metadata endpoint is disabled
+  # similar to https://github.com/canonical/cloud-init/issues/6270
+  sudo touch /etc/cloud/cloud-init.disabled;
+fi;
+
 # Update packages
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gnupg;
