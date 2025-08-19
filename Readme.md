@@ -202,7 +202,13 @@ Once the EC2 & Route53 config is done, log in to the box:
 ssh -i ~/.ssh/website admin@<public-address>
 ```
 
-and run:
+The key fingerprint can be verified from the EC2 dashboard;
+
+1. Select the instance
+2. Select Actions -> Monitor and troubleshoot -> Get system log (this shows the same logs as running `journalctl` on the instance)
+3. Find the `BEGIN SSH HOST KEY FINGERPRINTS` section
+
+Once connected, run:
 
 ```sh
 sudo apt-get install -y git

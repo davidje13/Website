@@ -39,3 +39,10 @@ sudo sysctl --system;
 install_config "$BASEDIR/config/nftables.conf" /etc 0744 || true;
 sudo systemctl enable nftables;
 sudo systemctl restart nftables;
+
+# Fix warning due to old version of cloud-init on Debian: https://github.com/canonical/cloud-init/issues/6405
+sudo chmod 0600 /etc/netplan/50-cloud-init.yaml;
+
+# Disable cloud-init for subsequent boots
+# (fixes issue where all SSH host keys are regenerated on restart when metadata endpoint is disabled - similar to https://github.com/canonical/cloud-init/issues/6270)
+sudo touch /etc/cloud/cloud-init.disabled;
