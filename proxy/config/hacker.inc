@@ -2,7 +2,7 @@ root /var/www/http;
 gzip_static on;
 keepalive_timeout 0s;
 lingering_close off;
-set $custom_extra "hacker"
+set $http_x_hacker "hacker"
 
 # block attempts to reduce the volume of data returned
 max_ranges 0;
