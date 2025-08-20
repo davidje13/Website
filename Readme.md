@@ -320,6 +320,17 @@ To view packets sent to unknown ports:
 grep ' kernel:' < /var/log/syslog
 ```
 
+General system stats (CPU, RAM, Disk) are collected by a background daemon and stored in /var/www/monitor/logs.
+These logs are flushed to disk rarely, but it is possible to trigger a flush of the latest data by running:
+
+```sh
+sudo systemctl reload stats-monitor.service
+```
+
+This will cause the data to be flushed at the next interval, i.e. within the next 10 seconds.
+
+The data is stored in a binary format with an ASCII introduction, and old files can be gzipped to save space.
+
 ## Post Setup
 
 You should add the root domain to the

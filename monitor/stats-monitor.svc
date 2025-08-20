@@ -1,0 +1,14 @@
+[Unit]
+Description=System stats monitor
+
+[Service]
+Type=exec
+User=monitor-runner
+ExecStart=/var/www/monitor/monitor /var/www/monitor/logs/stats
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

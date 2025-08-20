@@ -3,4 +3,5 @@ xcuserdata/
 /concept/
 /env/*.env
 !/env/*.template.env
+monitor/monitor
 skip-to-cert

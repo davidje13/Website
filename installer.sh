@@ -56,6 +56,9 @@ fi;
 sudo rm -f /etc/nginx/sites-ready/* || true;
 DOMAIN="$DOMAIN" "$BASEDIR/proxy/installer.sh";
 
+# Install monitor
+"$BASEDIR/monitor/installer.sh";
+
 # Install applications
 
 DOMAIN="$DOMAIN" "$BASEDIR/www/installer.sh";
