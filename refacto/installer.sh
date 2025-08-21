@@ -31,6 +31,8 @@ if ! [ -f /etc/nginx/sites-available/refacto ]; then
     jq \
     build-essential;
 
+  #sudo apt-get install mongodb-mongosh; # debug tool: connect to DB manually
+
   sudo systemctl enable mongod;
   sudo systemctl start mongod;
 
@@ -95,6 +97,11 @@ fi;
 
 sudo cp "$BASEDIR/refacto-pull" /etc/cron.daily/refacto-pull;
 sudo chmod 0755 /etc/cron.daily/refacto-pull;
+
+# Configure rotation of mongo logs
+
+sudo cp "$BASEDIR/clean-mongo-log" /etc/cron.daily/clean-mongo-log;
+sudo chmod 0755 /etc/cron.daily/clean-mongo-log;
 
 # Add NGINX config
 
