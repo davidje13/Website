@@ -8,8 +8,8 @@ SERVICE_PORTS="8080 8081";
 if ! [ -f /etc/nginx/sites-available/sequence ]; then
   # Make Users
 
-  sudo useradd --create-home --user-group --password '' sequence-updater || true;
-  sudo useradd --system --user-group --password '' sequence-runner || true;
+  sudo useradd --create-home --user-group sequence-updater || true;
+  sudo useradd --system --user-group sequence-runner || true;
 
   # Load dependencies
 

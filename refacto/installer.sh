@@ -19,8 +19,8 @@ if ! [ -f /etc/nginx/sites-available/refacto ]; then
 
   # Make Users
 
-  sudo useradd --create-home --user-group --password '' refacto-updater || true;
-  sudo useradd --system --user-group --password '' refacto-runner || true;
+  sudo useradd --create-home --user-group refacto-updater || true;
+  sudo useradd --system --user-group refacto-runner || true;
 
   # Load dependencies
 
