@@ -28,6 +28,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   certbot \
   nftables;
 
+# Disable extraneous home files which may leak sensitive data
+
+echo 'set viminfo=""' | sudo tee /etc/vim/vimrc.local >/dev/null;
+echo 'export LESSHISTFILE=-' | sudo tee /etc/profile.d/lockdown.sh >/dev/null;
+rm "$HOME/.viminfo" "$HOME/.lesshst" || true;
+
 # Configure system
 
 install_config "$BASEDIR/config/20auto-upgrades-local" /etc/apt/apt.conf.d || true;
