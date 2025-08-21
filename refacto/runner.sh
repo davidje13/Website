@@ -1,7 +1,9 @@
 #!/bin/bash
 BASEDIR="$(dirname "$0")";
 export PORT="$1";
-export TRUST_PROXY=true;
+export TRUST_PROXY="true";
+export ANALYTICS_EVENT_DETAIL="message";
+export ANALYTICS_CLIENT_ERROR_DETAIL="version";
 
 # configure ws optional dependencies
 export WS_NO_BUFFER_UTIL=true; # do not look for bufferutil dependency which is not installed
