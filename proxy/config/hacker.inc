@@ -8,17 +8,17 @@ max_ranges 0;
 if_modified_since off;
 etag off;
 
-location ~ .ya?ml$ {
+location ~* \.ya?ml$ {
 	set $custom_extra "hacker";
 	try_files /bomb.yaml =444;
 }
 
-location ~ .json$ {
+location ~* \.json$ {
 	set $custom_extra "hacker";
 	try_files /bomb.json =444;
 }
 
-location ~ .xml$ {
+location ~* \.xml$ {
 	set $custom_extra "hacker";
 	try_files /bomb.xml =444;
 }
