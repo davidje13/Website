@@ -5,74 +5,77 @@ BASEDIR="$(dirname "$0")";
 . "$BASEDIR/../common/utils.sh";
 SERVICE_PORTS="4080 4081";
 
-if ! [ -f /etc/nginx/sites-available/refacto ]; then
-  if ! [ -f "$BASEDIR/../env/refacto.env" ]; then
-    if ! [ -f /var/www/refacto/secrets.env ]; then
-      set +x;
-      echo "Must populate env/refacto.env" >&2;
-      exit 1;
-    fi;
-    # Preserve existing secrets if re-installing without new secrets
-    sudo cp /var/www/refacto/secrets.env "$BASEDIR/../env/refacto.env";
+# Check / preserve secrets
+
+if ! [ -f "$BASEDIR/../env/refacto.env" ]; then
+  if ! [ -f /var/www/refacto/secrets.env ]; then
+    set +x;
+    echo "Must populate env/refacto.env" >&2;
+    exit 1;
   fi;
-  sudo chmod 0400 "$BASEDIR/../env/refacto.env";
+  # Preserve existing secrets if re-installing without new secrets
+  sudo cp /var/www/refacto/secrets.env "$BASEDIR/../env/refacto.env";
+fi;
+sudo chmod 0400 "$BASEDIR/../env/refacto.env";
 
-  # Make Users
+# Is this the first install / a fresh install
 
-  sudo useradd --create-home --user-group refacto-updater || true;
-  sudo useradd --system --user-group refacto-runner || true;
-
-  # Load dependencies
-
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    nodejs \
-    mongodb-org-server \
-    mongodb-database-tools \
-    jq \
-    build-essential;
-
-  #sudo apt-get install mongodb-mongosh; # debug tool: connect to DB manually
-
-  sudo systemctl enable mongod;
-  sudo systemctl start mongod;
+LOAD_BACKUP=false;
+if ! [ -f /etc/nginx/sites-available/refacto ]; then
+  sudo rm -r /var/www/refacto || true;
+  LOAD_BACKUP=true;
 
   # Shutdown existing services if found
 
   for PORT in $SERVICE_PORTS; do
     sudo systemctl stop "refacto$PORT.service" || true;
   done;
-  sudo rm -r /var/www/refacto || true;
+fi;
 
-  # Install boilerplate
+# Make users
 
-  sudo mkdir -p /var/www/refacto/logs;
-  sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
-  sudo cp "$BASEDIR/runner.sh" /var/www/refacto/runner.sh;
-  sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
+if ! id -u refacto-updater >/dev/null 2>&1; then
+  sudo useradd --create-home --user-group refacto-updater;
+fi;
+if ! id -u refacto-runner >/dev/null 2>&1; then
+  sudo useradd --system --user-group refacto-runner;
+fi;
 
-  sudo chown root:refacto-runner /var/www/refacto/secrets.env /var/www/refacto/update.sh;
-  sudo chown refacto-updater:refacto-updater /var/www/refacto/current || true;
-  sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
-  sudo chown refacto-runner:refacto-runner /var/www/refacto/runner.sh;
-  sudo chmod 0400 /var/www/refacto/secrets.env;
-  sudo chmod 0544 /var/www/refacto/runner.sh /var/www/refacto/update.sh;
+# Load dependencies
 
-  # Create new services
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  nodejs \
+  mongodb-org-server \
+  mongodb-database-tools \
+  jq \
+  build-essential;
 
-  for PORT in $SERVICE_PORTS; do
-    NAME="refacto$PORT.service";
-    sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.svc" | \
-      sudo tee "/lib/systemd/system/$NAME" > /dev/null;
-    sudo chmod 0644 "/lib/systemd/system/$NAME";
-    sudo systemctl enable "$NAME";
-  done;
+sudo systemctl enable mongod;
+sudo systemctl start mongod;
 
-  # Update to first version
+#sudo apt-get install mongodb-mongosh; # debug tool: connect to DB manually
 
-  sudo /var/www/refacto/update.sh --force --nostart;
+# Install boilerplate
 
-  # Import data
+sudo mkdir -p /var/www/refacto/logs;
+sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
+sudo cp "$BASEDIR/runner.sh" /var/www/refacto/runner.sh;
+sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
 
+sudo chown root:refacto-runner /var/www/refacto/secrets.env /var/www/refacto/update.sh;
+sudo chown refacto-updater:refacto-updater /var/www/refacto/current || true;
+sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
+sudo chown refacto-runner:refacto-runner /var/www/refacto/runner.sh;
+sudo chmod 0400 /var/www/refacto/secrets.env;
+sudo chmod 0544 /var/www/refacto/runner.sh /var/www/refacto/update.sh;
+
+# Update to first version
+
+sudo /var/www/refacto/update.sh --force --nostart;
+
+# Import data
+
+if [ "$LOAD_BACKUP" = "true" ]; then
   if [ -z "$REFACTO_DATA_FILE" ]; then
     set +x;
     echo;
@@ -85,13 +88,18 @@ if ! [ -f /etc/nginx/sites-available/refacto ]; then
   if [ -n "$REFACTO_DATA_FILE" ] && [ "$REFACTO_DATA_FILE" != "none" ]; then
     "$BASEDIR/restore.sh" "$REFACTO_DATA_FILE";
   fi;
-
-  # Start new services
-
-  for PORT in $SERVICE_PORTS; do
-    sudo systemctl start "refacto$PORT.service";
-  done;
 fi;
+
+# Create and start services
+
+for PORT in $SERVICE_PORTS; do
+  NAME="refacto$PORT.service";
+  sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.svc" | \
+    sudo tee "/lib/systemd/system/$NAME" > /dev/null;
+  sudo chmod 0644 "/lib/systemd/system/$NAME";
+  sudo systemctl enable "$NAME";
+  sudo systemctl restart "$NAME";
+done;
 
 # Configure auto-update
 

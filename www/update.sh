@@ -36,8 +36,9 @@ compress_gzip_static() {
 cd "$BASEDIR/static";
 find . -type f | while IFS='' read -r SOURCE_FILE; do
   TARGET_FILE="$INSTALL_TEMP_DIR/$SOURCE_FILE";
-  mkdir -p "${TARGET_FILE%/*}";
-  chmod 0755 "${TARGET_FILE%/*}";
+  TARGET_DIR="$(dirname "$TARGET_FILE")";
+  mkdir -p "$TARGET_DIR";
+  chmod 0755 "$TARGET_DIR";
   case "$SOURCE_FILE" in
   *.txt|*.htm|*.xml)
     sed -e "s/((DOMAIN))/$DOMAIN/g" "$SOURCE_FILE" > "$TARGET_FILE";
@@ -68,7 +69,9 @@ make_error_page() {
 set +x; # avoid super-verbose log output while copying error pages
 while IFS='' read -r LINE; do
   if [ -n "$LINE" ]; then
-    make_error_page "${LINE%%,*}" "${LINE#*,}";
+    CODE="$(echo "$LINE" | cut -d',' -f1)";
+    ERROR="$(echo "$LINE" | cut -d',' -f2)";
+    make_error_page "$CODE" "$ERROR";
   fi;
 done < "$BASEDIR/http_statuses.csv";
 set -x;

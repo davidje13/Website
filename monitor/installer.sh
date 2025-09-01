@@ -13,8 +13,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gcc;
 
 # Make User
 
-if ! [ -d /var/www/monitor ]; then
-  sudo useradd --system --user-group monitor-runner || true;
+if ! id -u monitor-runner >/dev/null 2>&1; then
+  sudo useradd --system --user-group monitor-runner;
 fi;
 
 # Shutdown existing service if found
