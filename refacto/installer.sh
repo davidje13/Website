@@ -5,6 +5,10 @@ BASEDIR="$(dirname "$0")";
 . "$BASEDIR/../common/utils.sh";
 SERVICE_PORTS="4080 4081";
 
+# Disable existing update mechanism (if present) to avoid conflicting actions
+
+sudo systemctl disable --now refacto-updater.timer || true;
+
 # Check / preserve secrets
 
 if ! [ -f "$BASEDIR/../env/refacto.env" ]; then
@@ -50,8 +54,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   jq \
   build-essential;
 
-sudo systemctl enable mongod;
-sudo systemctl start mongod;
+sudo systemctl enable --now mongod;
 
 #sudo apt-get install mongodb-mongosh; # debug tool: connect to DB manually
 
@@ -59,15 +62,13 @@ sudo systemctl start mongod;
 
 sudo mkdir -p /var/www/refacto/logs;
 sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
-sudo cp "$BASEDIR/runner.sh" /var/www/refacto/runner.sh;
 sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
 
 sudo chown root:refacto-runner /var/www/refacto/secrets.env /var/www/refacto/update.sh;
 sudo chown refacto-updater:refacto-updater /var/www/refacto/current || true;
 sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
-sudo chown refacto-runner:refacto-runner /var/www/refacto/runner.sh;
 sudo chmod 0400 /var/www/refacto/secrets.env;
-sudo chmod 0544 /var/www/refacto/runner.sh /var/www/refacto/update.sh;
+sudo chmod 0544 /var/www/refacto/update.sh;
 
 # Update to first version
 
@@ -94,7 +95,7 @@ fi;
 
 for PORT in $SERVICE_PORTS; do
   NAME="refacto$PORT.service";
-  sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.svc" | \
+  sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
   sudo systemctl enable "$NAME";
@@ -103,13 +104,17 @@ done;
 
 # Configure auto-update
 
-sudo cp "$BASEDIR/refacto-pull" /etc/cron.daily/refacto-pull;
-sudo chmod 0755 /etc/cron.daily/refacto-pull;
+sudo cp "$BASEDIR/refacto-updater.service" "$BASEDIR/refacto-updater.timer" /lib/systemd/system/;
+sudo chmod 0644 /lib/systemd/system/refacto-updater.service /lib/systemd/system/refacto-updater.timer;
+sudo systemctl enable refacto-updater.timer; # no --now (do not start updater while we are still installing)
 
 # Configure rotation of mongo logs
 
-sudo cp "$BASEDIR/clean-mongo-log" /etc/cron.daily/clean-mongo-log;
-sudo chmod 0755 /etc/cron.daily/clean-mongo-log;
+sudo cp "$BASEDIR/clean-mongo-log.sh" /var/www/refacto/clean-mongo-log.sh;
+sudo chmod 0755 /var/www/refacto/clean-mongo-log.sh;
+sudo cp "$BASEDIR/clean-mongo-log.service" "$BASEDIR/clean-mongo-log.timer" /lib/systemd/system/;
+sudo chmod 0644 /lib/systemd/system/clean-mongo-log.service /lib/systemd/system/clean-mongo-log.timer;
+sudo systemctl enable --now clean-mongo-log.timer;
 
 # Add NGINX config
 

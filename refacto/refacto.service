@@ -1,0 +1,33 @@
+[Unit]
+Description=Refacto Server ((PORT))
+After=network.target
+
+[Service]
+Type=exec
+User=refacto-runner
+
+# Start
+Environment="PORT=((PORT))"
+Environment="TRUST_PROXY=true"
+EnvironmentFile=/var/www/refacto/secrets.env
+# analytics
+Environment="ANALYTICS_EVENT_DETAIL=message"
+Environment="ANALYTICS_CLIENT_ERROR_DETAIL=version"
+# configure ws optional dependencies (do not look for packages which do not exist)
+Environment="WS_NO_BUFFER_UTIL=true"
+Environment="WS_NO_UTF_8_VALIDATE=true"
+ExecStart=/var/www/refacto/build/index.js
+StandardOutput=append:/var/www/refacto/logs/log((PORT))/current
+StandardError=inherit
+
+# Stop
+KillSignal=SIGINT
+TimeoutStopSec=2
+
+# Restart
+Restart=always
+RestartMaxDelaySec=60
+RestartSteps=60
+
+[Install]
+WantedBy=multi-user.target

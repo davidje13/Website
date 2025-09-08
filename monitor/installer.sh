@@ -19,7 +19,7 @@ fi;
 
 # Shutdown existing service if found
 
-sudo systemctl stop stats-monitor.service || true;
+sudo systemctl disable --now stats-monitor.service || true;
 
 # Install
 
@@ -32,10 +32,6 @@ sudo chmod 0550 /var/www/monitor/monitor;
 
 # Create new service
 
-sudo tee "/lib/systemd/system/stats-monitor.service" < "$BASEDIR/stats-monitor.svc" > /dev/null;
+sudo tee "/lib/systemd/system/stats-monitor.service" < "$BASEDIR/stats-monitor.service" > /dev/null;
 sudo chmod 0644 "/lib/systemd/system/stats-monitor.service";
-sudo systemctl enable stats-monitor.service;
-
-# Start new service
-
-sudo systemctl start stats-monitor.service;
+sudo systemctl enable --now stats-monitor.service;

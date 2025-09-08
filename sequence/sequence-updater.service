@@ -1,0 +1,7 @@
+[Unit]
+Description=Sequence Diagram Updater
+
+[Service]
+Type=oneshot
+ExecStart=/var/www/sequence/update.sh
+After=network-online.target

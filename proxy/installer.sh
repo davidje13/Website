@@ -89,5 +89,4 @@ generate_bomb yaml;
 
 sudo nginx -t;
 
-sudo systemctl enable nginx; # start at boot
-sudo systemctl start nginx;
+sudo systemctl enable --now nginx;

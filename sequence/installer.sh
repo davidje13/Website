@@ -5,6 +5,10 @@ BASEDIR="$(dirname "$0")";
 . "$BASEDIR/../common/utils.sh";
 SERVICE_PORTS="8080 8081";
 
+# Disable existing update mechanism (if present) to avoid conflicting actions
+
+sudo systemctl disable --now sequence-updater.timer || true;
+
 # Make users
 
 if ! id -u sequence-updater >/dev/null 2>&1; then
@@ -41,21 +45,19 @@ fi;
 
 sudo mkdir -p /var/www/sequence/logs;
 
-sudo cp "$BASEDIR/runner.sh" /var/www/sequence/runner.sh;
 sudo cp "$BASEDIR/update.sh" /var/www/sequence/update.sh;
 
 sudo chmod -R g-w /var/www/sequence;
 sudo chown -R sequence-updater:sequence-runner /var/www/sequence;
 sudo chown -R sequence-runner:sequence-runner /var/www/sequence/logs;
-sudo chown sequence-runner:sequence-runner /var/www/sequence/runner.sh;
 sudo chown root:sequence-runner /var/www/sequence/update.sh;
-sudo chmod 0544 /var/www/sequence/runner.sh /var/www/sequence/update.sh;
+sudo chmod 0544 /var/www/sequence/update.sh;
 
 # Start new services
 
 for PORT in $SERVICE_PORTS; do
   NAME="sequence$PORT.service";
-  sed "s/((PORT))/$PORT/g" "$BASEDIR/sequence.svc" | \
+  sed "s/((PORT))/$PORT/g" "$BASEDIR/sequence.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
   sudo systemctl enable "$NAME";
@@ -64,8 +66,9 @@ done;
 
 # Configure auto-update
 
-sudo cp "$BASEDIR/sequence-pull" /etc/cron.daily/sequence-pull;
-sudo chmod 0755 /etc/cron.daily/sequence-pull;
+sudo cp "$BASEDIR/sequence-updater.service" "$BASEDIR/sequence-updater.timer" /lib/systemd/system/;
+sudo chmod 0644 /lib/systemd/system/sequence-updater.service /lib/systemd/system/sequence-updater.timer;
+sudo systemctl enable sequence-updater.timer; # no --now (do not start updater while we are still installing)
 
 # Add NGINX config
 

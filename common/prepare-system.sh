@@ -24,7 +24,6 @@ sudo apt-get remove -y --autoremove iptables awscli python3-awscrt;
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   dnsutils \
-  daemontools \
   certbot \
   nftables;
 

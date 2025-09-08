@@ -1,0 +1,11 @@
+[Unit]
+Description=Sequence Diagram Updater Schedule
+
+[Timer]
+OnCalendar=07,19:40:00
+AccuracySec=600
+RandomizedDelaySec=600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

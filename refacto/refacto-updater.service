@@ -1,0 +1,7 @@
+[Unit]
+Description=Refacto Updater
+
+[Service]
+Type=oneshot
+ExecStart=/var/www/refacto/update.sh
+After=network-online.target

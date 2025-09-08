@@ -1,0 +1,11 @@
+[Unit]
+Description=Refacto Updater Schedule
+
+[Timer]
+OnCalendar=*:00/5:00
+AccuracySec=240
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target

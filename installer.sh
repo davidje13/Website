@@ -78,6 +78,10 @@ for DOMAIN in $(grep -h 'server_name' /etc/nginx/sites-ready/* | sed -e 's/serve
 done | grep -v '^\.' | sort | uniq | sudo tee "/var/www/domains.txt" > /dev/null;
 
 if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
+  # start auto-update mechanisms (will start on next boot anyway even if this does not run)
+  sudo systemctl start sequence-updater.timer || true;
+  sudo systemctl start refacto-updater.timer || true;
+
   set +x;
   echo;
   echo;

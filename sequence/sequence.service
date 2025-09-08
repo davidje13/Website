@@ -1,0 +1,24 @@
+[Unit]
+Description=Sequence Diagram Server ((PORT))
+After=network.target
+
+[Service]
+Type=exec
+User=sequence-runner
+
+# Start
+Environment="FONTDIR=/var/www/sequence/fonts"
+ExecStart=/var/www/sequence/dev-bin/server.mjs ((PORT))
+StandardOutput=append:/var/www/sequence/logs/log((PORT))/current
+StandardError=inherit
+
+# Stop
+KillSignal=SIGINT
+
+# Restart
+Restart=always
+RestartMaxDelaySec=60
+RestartSteps=60
+
+[Install]
+WantedBy=multi-user.target

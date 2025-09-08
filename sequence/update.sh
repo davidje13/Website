@@ -8,8 +8,11 @@ echo 'git fetch --prune' | sudo -u sequence-updater -H -s;
 sleep 1;
 CHANGES="$(echo 'git rev-list HEAD..origin/master --count' | sudo -u sequence-updater -H -s)";
 if [ "$CHANGES" -eq 0 ] && ! echo " $* " | grep ' --force ' >/dev/null; then
+  echo "nothing to update (no changes)";
   exit 0; # nothing to update
 fi;
+
+echo "updating";
 
 echo 'git checkout .' | sudo -u sequence-updater -H -s; # ensure clean git repo
 echo 'git pull --ff-only' | sudo -u sequence-updater -H -s;

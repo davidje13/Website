@@ -1,0 +1,11 @@
+[Unit]
+Description=Clean MongoDB Logs Schedule
+
+[Timer]
+OnCalendar=00:00:00
+AccuracySec=1800
+RandomizedDelaySec=3600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

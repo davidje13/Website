@@ -1,4 +1,7 @@
 #!/bin/sh
+set -e
+
+echo "$(date) - cleaning Mongo logs ($0)";
 
 # rotate /var/log/mongodb/mongod.log
 sudo pkill -SIGUSR1 -u mongodb mongod;

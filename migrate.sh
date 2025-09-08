@@ -106,7 +106,7 @@ restore_hosts;
 # Shut down nginx on new server so that nobody accesses/modifies the current data
 echo "Shutting down new server";
 ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  'sudo systemctl stop nginx && sudo systemctl disable nginx';
+  'sudo systemctl disable --now nginx';
 
 # Update DNS or elastic IP (partial outage begins)
 echo;
@@ -139,14 +139,14 @@ scp -i "$NEW_KEY" backup-refacto-migrate-offline.tar.gz "$NEW_SERVER_USER@$NEW_S
 # Restore from offline backup + start services, request certificates (outage ends once certificates are obtained)
 echo "Restoring offline backup, starting new server, and requesting certificates";
 ssh -Ti "$NEW_KEY" "$NEW_SERVER_USER@$NEW_SERVER" \
-  'Website/refacto/restore.sh backup-refacto-migrate-offline.tar.gz && sudo systemctl enable nginx && sudo systemctl start nginx && sudo Website/proxy/get-certificate.sh';
+  'Website/refacto/restore.sh backup-refacto-migrate-offline.tar.gz && sudo systemctl enable --now nginx && sudo Website/proxy/get-certificate.sh';
 
 echo "$(date) Outage ends";
 
 # Turn off nginx on old server so that any left-over keepalive connections are forced to close
 echo "Turning off nginx on old server";
 ssh -Ti "$OLD_KEY" "$OLD_SERVER_USER@$OLD_SERVER" \
-  'sudo systemctl stop nginx && sudo systemctl disable nginx';
+  'sudo systemctl disable --now nginx';
 
 echo;
 echo "Deployment complete. The old server is still running. You may wish to download logs before terminating it.";

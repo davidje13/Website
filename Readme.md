@@ -275,7 +275,7 @@ Services store logs in:
 - `/var/www/refacto/logs/log*/*`
 - `/var/log/nginx/*`
 
-Sequence and Refacto use `multilog`'s `tai64n` format for timestamps.
+Sequence and Refacto previously used `multilog`'s `tai64n` format for timestamps.
 These are not human-readable, but can be viewed with:
 
 ```sh
@@ -317,7 +317,15 @@ sudo nft list table inet filter
 To view packets sent to unknown ports:
 
 ```sh
-grep ' kernel:' < /var/log/syslog
+journalctl -k --priority=0..warning --boot=all
+```
+
+Other debug logs also end up in the system journal, for example:
+
+```sh
+journalctl -u 'refacto*'
+journalctl -u 'sequence*'
+journalctl -u stats-monitor.service
 ```
 
 General system stats (CPU, RAM, Disk) are collected by a background daemon and stored in /var/www/monitor/logs.

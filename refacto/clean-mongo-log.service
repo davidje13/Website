@@ -1,0 +1,6 @@
+[Unit]
+Description=Clean MongoDB Logs
+
+[Service]
+Type=oneshot
+ExecStart=/var/www/refacto/clean-mongo-log.sh
