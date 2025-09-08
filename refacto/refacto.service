@@ -26,8 +26,6 @@ TimeoutStopSec=2
 
 # Restart
 Restart=always
-RestartMaxDelaySec=60
-RestartSteps=60
 
 [Install]
 WantedBy=multi-user.target

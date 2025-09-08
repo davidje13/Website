@@ -10,7 +10,7 @@ sudo chown -R refacto-updater:refacto-updater "$TEMP_INSTALL_DIR";
 # GitHub rate limit for fetching public release info is 60/hour - we configure our rate in refacto-update.timer
 # https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-unauthenticated-users
 
-echo "curl -f 'https://api.github.com/repos/davidje13/Refacto/releases/latest'" | sudo -u refacto-updater -H -s >"$TEMP_INSTALL_DIR/release_info.json";
+echo "curl -fsSL 'https://api.github.com/repos/davidje13/Refacto/releases/latest'" | sudo -u refacto-updater -H -s >"$TEMP_INSTALL_DIR/release_info.json";
 RELEASE_ID="$(jq -r '.id' <"$TEMP_INSTALL_DIR/release_info.json")";
 if ! echo " $* " | grep ' --force ' >/dev/null && [ -f "$BASEDIR/current" ] && [ "$(cat "$BASEDIR/current")" = "$RELEASE_ID" ]; then
   echo "nothing to update (latest release is still $RELEASE_ID)";
