@@ -18,7 +18,10 @@ fi;
 
 # Remove conflicting packages and unused AWS services
 
-sudo apt-get remove -y --autoremove iptables awscli python3-awscrt;
+# iptables -> nftables
+# awscli & python3-awscrt = unused
+# gnupg = needed to configure external apt sources, but uninstall once this is done (else it keeps running unremovable background processes)
+sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y --autoremove iptables awscli python3-awscrt gnupg;
 
 # Install required packages
 

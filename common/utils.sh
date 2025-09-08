@@ -18,6 +18,12 @@ kill_process_by_name_fragment() {
   fi;
 }
 
+install_gpg() {
+  if ! which gpg >/dev/null; then
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gnupg;
+  fi;
+}
+
 set_node_version() {
   local NODE_VERSION="$1";
   local KEYRING="/etc/apt/keyrings/nodesource.gpg";
@@ -25,6 +31,7 @@ set_node_version() {
   local PIN="/etc/apt/preferences.d/nodesource-pin";
 
   if ! [ -f "$SOURCES" ] || ! grep "node_$NODE_VERSION." "$SOURCES" > /dev/null; then
+    install_gpg;
     curl -fsSL "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key" | sudo gpg --dearmor -o "$KEYRING";
     #gpg --no-default-keyring --keyring "$KEYRING" --list-keys;
     echo "deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | sudo tee "$SOURCES" >/dev/null;
@@ -38,6 +45,7 @@ set_nginx_repo() {
   local PIN="/etc/apt/preferences.d/nginx-pin";
 
   if ! [ -f "$SOURCES" ]; then
+    install_gpg;
     curl -fsSL "https://nginx.org/keys/nginx_signing.key" | sudo gpg --dearmor -o "$KEYRING";
     echo "deb [signed-by=$KEYRING] http://nginx.org/packages/debian $(lsb_release -sc) nginx" | sudo tee "$SOURCES" >/dev/null;
     printf 'Package: nginx\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n' | sudo tee "$PIN" >/dev/null;
@@ -56,6 +64,7 @@ set_mongodb_version() {
   . /usr/lib/os-release; # load VERSION_CODENAME variable
 
   if ! [ -f "$SOURCES" ] || ! grep "mongodb-org/$MONGO_VERSION " "$SOURCES" > /dev/null; then
+    install_gpg;
     curl -fsSL "https://www.mongodb.org/static/pgp/server-$MONGO_VERSION.asc" | sudo gpg --dearmor -o "$KEYRING";
     echo "deb [signed-by=$KEYRING] https://repo.mongodb.org/apt/debian $VERSION_CODENAME/mongodb-org/$MONGO_VERSION main" | sudo tee "$SOURCES" >/dev/null;
   fi;
