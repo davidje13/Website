@@ -6,7 +6,7 @@ BASEDIR="$(dirname "$0")";
 
 # Configure nginx
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx nodejs;
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx nodejs logrotate;
 
 sudo rm /etc/nginx/conf.d/default.conf || true;
 install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;
@@ -16,6 +16,7 @@ install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/proxy.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/ratelimit.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
+install_config "$BASEDIR/config/logrotate/nginx" /etc/logrotate.d || true;
 
 sudo mkdir -p /etc/systemd/system/nginx.service.d;
 install_config "$BASEDIR/config/auto-restart.conf" /etc/systemd/system/nginx.service.d || true;
