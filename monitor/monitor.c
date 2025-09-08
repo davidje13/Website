@@ -32,6 +32,7 @@ int main(int argc, const char* const* argv) {
 	char stringBuffer[STRING_BUFFER_SIZE];
 	uint8_t dataBuffer[DATA_BUFFER_SIZE + MAX_ITEM_SIZE];
 	unsigned int dataBufferLength;
+	int exitCode = 0;
 	FILE *fp;
 
 	if (argc < 2) {
@@ -48,29 +49,38 @@ int main(int argc, const char* const* argv) {
 	memset(&previous, 0, sizeof(previous));
 
 	while (!signalQuit) {
-		const time_t now = sleep_until_next_interval(INTERVAL_SECONDS);
-		if (now == 0) {
-			fprintf(stderr, "Interrupted\n");
+		time_t now;
+		const int err = sleep_until_next_interval(INTERVAL_SECONDS, &now);
+		if (err != 0) {
+			if (err == EINTR) {
+				continue;
+			}
+			fprintf(stderr, "Sleep failed: %d\n", err);
+			exitCode = 1;
 			break;
 		}
 		if (stats_read(&current) != 0) {
 			fprintf(stderr, "Failed to gather stats\n");
+			exitCode = 1;
 			break;
 		}
 		if (n == 1) {
 			const int written = snprintf(stringBuffer, STRING_BUFFER_SIZE, "%s-%llu.log", outputFileBase, (unsigned long long int) (now));
 			if (written < 0 || written >= STRING_BUFFER_SIZE) {
 				fprintf(stderr, "Failed to build output filename\n");
+				exitCode = 1;
 				break;
 			}
 			fp = fopen(stringBuffer, "wb");
 			if (fp == NULL) {
 				fprintf(stderr, "Failed to open file for writing: %s\n", stringBuffer);
+				exitCode = 1;
 				break;
 			}
 			fprintf(stderr, "Beginning file %s\n", stringBuffer);
 			if (strftime(stringBuffer, STRING_BUFFER_SIZE, "%Y-%m-%dT%H:%M:%S%z", gmtime(&now)) == 0) {
 				fprintf(stderr, "Failed to format timestamp\n");
+				exitCode = 1;
 				break;
 			}
 			fprintf(fp, "Time series data file\nBeginTime: %s\nIntervalSeconds: %d\nMemTotalBytes: %lld\nSwapTotalBytes: %lld\nDiskTotalBytes: %lld\nDiskTotalInodes: %lld\nFields: %s\n",
@@ -141,7 +151,7 @@ int main(int argc, const char* const* argv) {
 		fprintf(stderr, "Closing file\n");
 		fclose(fp);
 	}
-	return 1;
+	return exitCode;
 }
 
 int stats_read(stats* output) {

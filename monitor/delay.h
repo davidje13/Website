@@ -6,9 +6,9 @@
 #include <errno.h>
 #include "signals.h"
 
-time_t sleep_until_next_interval(time_t interval);
+int sleep_until_next_interval(time_t interval, time_t *outTime);
 
-time_t sleep_until_next_interval(time_t interval) {
+int sleep_until_next_interval(time_t interval, time_t *outTime) {
 	struct timespec now, duration, remaining;
   time_t next;
 	unsigned int remainingSec;
@@ -20,13 +20,14 @@ time_t sleep_until_next_interval(time_t interval) {
 		remainingSec = sleep(remainingSec);
 		if (remainingSec != 0) {
       if (should_interrupt_sleep()) {
-        return 0;
+        return EINTR;
       }
 		}
 	}
 	if (clock_gettime(CLOCK_REALTIME, &now) != 0) { return 0; }
 	if (now.tv_sec >= next) {
-		return next;
+		*outTime = next;
+		return 0;
 	}
 	duration.tv_sec = 0;
 	duration.tv_nsec = 1000000000ull - now.tv_nsec;
@@ -38,11 +39,12 @@ time_t sleep_until_next_interval(time_t interval) {
 			break;
 		}
 		if (errno != EINTR || should_interrupt_sleep()) {
-			return 0;
+			return errno;
 		}
 		duration.tv_nsec = remaining.tv_nsec;
 	}
-	return next;
+	*outTime = next;
+	return 0;
 }
 
 #endif
