@@ -65,11 +65,12 @@ sudo mkdir -p /var/www/refacto/update;
 sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
 sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
 
-sudo chown root:refacto-runner /var/www/refacto/secrets.env /var/www/refacto/update.sh;
+sudo chown root:refacto-runner /var/www/refacto/secrets.env;
+sudo chown root:refacto-updater /var/www/refacto/update.sh;
 sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
 sudo chown -R refacto-updater:refacto-updater /var/www/refacto/update;
 sudo chmod 0400 /var/www/refacto/secrets.env;
-sudo chmod 0544 /var/www/refacto/update.sh;
+sudo chmod 0754 /var/www/refacto/update.sh;
 
 # Update to first version
 
