@@ -48,19 +48,17 @@ elif [ "$STATUS" != 0 ]; then
   exit "$STATUS"; # error
 fi;
 
-UPDATE_DIR="$UPDATE_DIR" \
-sudo --preserve-env="UPDATE_DIR" -s <<"EOF"
 set -e;
+
 chown -R root:refacto-runner "$UPDATE_DIR/build";
 rm -rf /var/www/refacto/build || true;
 mv "$UPDATE_DIR/build" /var/www/refacto/build;
-EOF
 
 if ! echo " $* " | grep ' --nostart ' >/dev/null; then
   echo "restarting services";
 
-  sudo systemctl restart refacto4080.service;
-  sudo systemctl restart refacto4081.service;
+  systemctl restart refacto4080.service;
+  systemctl restart refacto4081.service;
 fi;
 
 echo "update complete";
