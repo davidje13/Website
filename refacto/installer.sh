@@ -103,7 +103,7 @@ for PORT in $SERVICE_PORTS; do
   LOGFILE="/var/log/refacto/refacto-$PORT.log"
   sudo touch -a "$LOGFILE";
   sudo chmod 0640 "$LOGFILE";
-  sudo chown refacto-runner adm "$LOGFILE";
+  sudo chown refacto-runner:adm "$LOGFILE";
   sed -e "s/((PORT))/$PORT/g" -e "s~((LOGFILE))~$LOGFILE~g" "$BASEDIR/refacto.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
