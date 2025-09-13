@@ -18,7 +18,7 @@ done;
 
 mkdir logs;
 sudo cp /var/log/nginx/* logs;
-sudo cp -R /var/www/refacto/logs/log* logs;
+sudo cp -R /var/log/refacto/* logs;
 sudo cp -R /var/www/sequence/logs/log* logs;
 sudo cp -R /var/www/monitor/logs/stats* logs;
 sudo chmod -R 0700 logs;

@@ -1,0 +1,16 @@
+/var/log/refacto/*.log {
+	# 10 years
+	weekly
+	rotate 520
+	notifempty
+	missingok
+	create 640 refacto-runner adm
+
+	compress
+	delaycompress
+
+	sharedscripts
+	postrotate
+		kill -SIGHUP $(systemctl show --property MainPID --value 'refacto*.service')
+	endscript
+}

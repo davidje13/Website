@@ -9,7 +9,7 @@ User=refacto-runner
 # Start
 Environment="PORT=((PORT))"
 Environment="TRUST_PROXY=true"
-Environment="LOG_FILE=/var/www/refacto/logs/log((PORT))/current"
+Environment="LOG_FILE=((LOGFILE))"
 EnvironmentFile=/var/www/refacto/secrets.env
 # analytics
 Environment="ANALYTICS_EVENT_DETAIL=message"

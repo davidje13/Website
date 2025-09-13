@@ -272,7 +272,7 @@ up the old server:
 Services store logs in:
 
 - `/var/www/sequence/logs/log*/*`
-- `/var/www/refacto/logs/log*/*`
+- `/var/log/refacto/*`
 - `/var/log/nginx/*`
 
 Sequence and Refacto previously used `multilog`'s `tai64n` format for timestamps.

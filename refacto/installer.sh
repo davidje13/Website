@@ -60,17 +60,20 @@ sudo systemctl enable --now mongod;
 
 # Install boilerplate
 
-sudo mkdir -p /var/www/refacto/logs;
 sudo mkdir -p /var/www/refacto/update;
-sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
-sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
-
-sudo chown root:refacto-runner /var/www/refacto/secrets.env;
-sudo chown root:refacto-updater /var/www/refacto/update.sh;
-sudo chown -R refacto-runner:refacto-runner /var/www/refacto/logs;
 sudo chown -R refacto-updater:refacto-updater /var/www/refacto/update;
+
+sudo mv "$BASEDIR/../env/refacto.env" /var/www/refacto/secrets.env;
+sudo chown root:refacto-runner /var/www/refacto/secrets.env;
 sudo chmod 0400 /var/www/refacto/secrets.env;
+
+sudo cp "$BASEDIR/update.sh" /var/www/refacto/update.sh;
+sudo chown root:refacto-updater /var/www/refacto/update.sh;
 sudo chmod 0544 /var/www/refacto/update.sh;
+
+sudo mkdir -p /var/log/refacto;
+sudo chown -R refacto-runner:adm /var/log/refacto;
+sudo chmod 0750 /var/log/refacto;
 
 # Update to first version
 
@@ -97,7 +100,11 @@ fi;
 
 for PORT in $SERVICE_PORTS; do
   NAME="refacto$PORT.service";
-  sed "s/((PORT))/$PORT/g" "$BASEDIR/refacto.service" | \
+  LOGFILE="/var/log/refacto/refacto-$PORT.log"
+  sudo touch -a "$LOGFILE";
+  sudo chmod 0640 "$LOGFILE";
+  sudo chown refacto-runner adm "$LOGFILE";
+  sed -e "s/((PORT))/$PORT/g" -e "s~((LOGFILE))~$LOGFILE~g" "$BASEDIR/refacto.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
   sudo systemctl enable "$NAME";
@@ -110,7 +117,9 @@ sudo cp "$BASEDIR/refacto-updater.service" "$BASEDIR/refacto-updater.timer" /lib
 sudo chmod 0644 /lib/systemd/system/refacto-updater.service /lib/systemd/system/refacto-updater.timer;
 sudo systemctl enable refacto-updater.timer; # no --now (do not start updater while we are still installing)
 
-# Configure rotation of mongo logs
+# Configure rotation of logs
+
+install_config "$BASEDIR/logrotate/refacto" /etc/logrotate.d || true;
 
 sudo cp "$BASEDIR/clean-mongo-log.sh" /var/www/refacto/clean-mongo-log.sh;
 sudo chmod 0755 /var/www/refacto/clean-mongo-log.sh;
