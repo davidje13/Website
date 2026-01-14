@@ -28,7 +28,7 @@ fi;
 
 set_node_version 24;
 set_nginx_repo;
-set_mongodb_version '7.0';
+set_mongodb_version '8.2' '8.0';
 sudo apt-get update;
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y;
 

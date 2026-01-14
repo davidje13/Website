@@ -230,11 +230,19 @@ needed, so you do not have to set up the DNS before running the script.
 
 ## Backup and restore
 
-You can backup and restore the Refacto database using the commands:
+You can backup all state using the command:
 
 ```sh
-Website/refacto/backup.sh # generates backup-*.tar.gz
+Website/backup.sh # generates backup-*.tar.gz
 ```
+
+The output file contains one backup file for each stateful service (by running
+the backup.sh script of the service).
+
+Restoring from a backup depends on the service. Unpack the global backup file,
+and run the relevant restore script:
+
+### Refacto
 
 ```sh
 # restore from backup-2020-10-03T12-00-00.tar.gz
@@ -275,25 +283,6 @@ Services store logs in:
 - `/var/log/refacto/*`
 - `/var/log/nginx/*`
 
-Sequence and Refacto previously used `multilog`'s `tai64n` format for timestamps.
-These are not human-readable, but can be viewed with:
-
-```sh
-tai64nlocal < "my-log-file-here" | less
-```
-
-For example to see how often sequence diagram's render API is called:
-
-```sh
-cat /var/www/sequence/logs/log*/{*.s,current} | grep RENDER | sort
-```
-
-Old logs are `gzip`'ed. These can be viewed with:
-
-```sh
-gunzip -c "my-old-log-file-here.gz" | less
-```
-
 To view all recent nginx error logs:
 
 ```sh
@@ -306,6 +295,12 @@ To view all recent nginx access logs:
 ```sh
 ( cat /var/log/nginx/access.log /var/log/nginx/access.log.1; gunzip -c /var/log/nginx/access.log.*.gz ) \
 | awk '{ print $4 " " $5 " " $1 " " substr($0, length($1 $2 $3 $4 $5) + 6) }' | sort | less
+```
+
+To view all recent Refacto logs:
+
+```sh
+( cat /var/log/refacto/*.log; gunzip -c /var/log/refacto/*.gz ) | sort | less
 ```
 
 To view current firewall stats (e.g. number of packets to particular ports):
@@ -338,6 +333,21 @@ sudo systemctl reload stats-monitor.service
 This will cause the data to be flushed at the next interval, i.e. within the next 10 seconds.
 
 The data is stored in a binary format with an ASCII introduction, and old files can be gzipped to save space.
+
+### Old Log Formats
+
+Sequence and Refacto previously used `multilog`'s `tai64n` format for timestamps.
+These are not human-readable, but can be viewed with:
+
+```sh
+tai64nlocal < "my-log-file-here" | less
+```
+
+For example to see how often sequence diagram's render API is called:
+
+```sh
+cat /var/www/sequence/logs/log*/{*.s,current} | grep RENDER | sort
+```
 
 ## Post Setup
 

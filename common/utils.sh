@@ -26,7 +26,7 @@ install_gpg() {
 
 set_node_version() {
   local NODE_VERSION="$1";
-  local KEYRING="/etc/apt/keyrings/nodesource.gpg";
+  local KEYRING="/etc/apt/keyrings/nodesource-$NODE_VERSION.gpg";
   local SOURCES="/etc/apt/sources.list.d/nodesource.list";
   local PIN="/etc/apt/preferences.d/nodesource-pin";
 
@@ -55,17 +55,18 @@ set_nginx_repo() {
 set_mongodb_version() {
   # MongoDB is not available for Debian ARM (https://www.mongodb.com/try/download/community-edition/releases)
   # Request to add it from several years ago: https://feedback.mongodb.com/forums/924280-database/suggestions/46410079-arm-support
-  # So for now we need to stick to Intel - maybe switch from Mongo to NodeJS's built-in SQLite later to be able to use ARM for cost savings
+  # So for now we need to stick to Intel - consider an alternative DB to be able to use ARM for cost savings
 
   local MONGO_VERSION="$1";
-  local KEYRING="/etc/apt/keyrings/mongodb-org.gpg";
+  local MONGO_SIGN_VERSION="${2:-$MONGO_VERSION}";
+  local KEYRING="/etc/apt/keyrings/mongodb-org-${MONGO_SIGN_VERSION}.gpg";
   local SOURCES="/etc/apt/sources.list.d/mongodb-org.list";
 
   . /usr/lib/os-release; # load VERSION_CODENAME variable
 
   if ! [ -f "$SOURCES" ] || ! grep "mongodb-org/$MONGO_VERSION " "$SOURCES" > /dev/null; then
     install_gpg;
-    curl -fsSL "https://www.mongodb.org/static/pgp/server-$MONGO_VERSION.asc" | sudo gpg --dearmor -o "$KEYRING";
+    curl -fsSL "https://www.mongodb.org/static/pgp/server-$MONGO_SIGN_VERSION.asc" | sudo gpg --dearmor -o "$KEYRING";
     echo "deb [signed-by=$KEYRING] https://repo.mongodb.org/apt/debian $VERSION_CODENAME/mongodb-org/$MONGO_VERSION main" | sudo tee "$SOURCES" >/dev/null;
   fi;
 }

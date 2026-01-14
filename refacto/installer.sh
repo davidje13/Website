@@ -51,12 +51,28 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   nodejs \
   mongodb-org-server \
   mongodb-database-tools \
+  mongodb-mongosh \
   jq \
   build-essential;
 
+# disable telemetry when using mongosh tool
+mongosh --nodb --eval 'disableTelemetry()';
+
+# set max connections (use mongosh --eval 'db.serverStatus().connections' to see current state)
+if ! grep 'maxIncomingConnections' < /etc/mongod.conf > /dev/null; then
+  sed -e 's/net\:/net\:\n  maxIncomingConnections: 1000/' < /etc/mongod.conf | \
+    sudo tee /etc/mongod.conf > /dev/null;
+fi;
+
 sudo systemctl enable --now mongod;
 
-#sudo apt-get install mongodb-mongosh; # debug tool: connect to DB manually
+# note: after upgrading mongo to a new major version, run:
+#
+#  mongosh --eval 'db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )';
+#
+# to check the feature compatibility version. When ready to commit to the new version (NOTE: prevents downgrades), run:
+#
+#  mongosh --eval 'db.adminCommand( { setFeatureCompatibilityVersion: "8.0", confirm: true } )';
 
 # Install boilerplate
 

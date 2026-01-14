@@ -35,9 +35,6 @@ echo "download from $DOWNLOAD_URL";
 curl -fsSL "$DOWNLOAD_URL" >build.tar.gz;
 tar -xf build.tar.gz;
 rm build.tar.gz;
-
-echo "install dependencies";
-npm install --omit=dev;
 chmod -R g-w .;
 echo "$RELEASE_ID" > "../current";
 EOF
