@@ -300,7 +300,7 @@ To view all recent nginx access logs:
 To view all recent Refacto logs:
 
 ```sh
-( cat /var/log/refacto/*.log; gunzip -c /var/log/refacto/*.gz ) | sort | less
+( cat /var/log/refacto/*.log /var/log/refacto/*.log.1; gunzip -c /var/log/refacto/*.gz ) | sort | less
 ```
 
 To view current firewall stats (e.g. number of packets to particular ports):

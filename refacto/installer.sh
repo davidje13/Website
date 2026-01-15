@@ -60,19 +60,19 @@ mongosh --nodb --eval 'disableTelemetry()';
 
 # set max connections (use mongosh --eval 'db.serverStatus().connections' to see current state)
 if ! grep 'maxIncomingConnections' < /etc/mongod.conf > /dev/null; then
-  sed -e 's/net\:/net\:\n  maxIncomingConnections: 1000/' < /etc/mongod.conf | \
-    sudo tee /etc/mongod.conf > /dev/null;
+  sudo sed -i -e 's/^net\:/net\:\n  maxIncomingConnections: 1000/' /etc/mongod.conf;
+fi;
+
+# could configure transparent huge pages here for a performance boost:
+# https://www.mongodb.com/docs/manual/administration/tcmalloc-performance/#enable-transparent-hugepages--thp-
+
+# remove deprecated feature to reduce attack surface
+if ! grep 'javascriptEnabled' < /etc/mongod.conf > /dev/null; then
+  printf '\nsecurity:\n  javascriptEnabled: false\n' | \
+    sudo tee -a /etc/mongod.conf > /dev/null;
 fi;
 
 sudo systemctl enable --now mongod;
-
-# note: after upgrading mongo to a new major version, run:
-#
-#  mongosh --eval 'db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )';
-#
-# to check the feature compatibility version. When ready to commit to the new version (NOTE: prevents downgrades), run:
-#
-#  mongosh --eval 'db.adminCommand( { setFeatureCompatibilityVersion: "8.0", confirm: true } )';
 
 # Install boilerplate
 
@@ -110,6 +110,39 @@ if [ "$LOAD_BACKUP" = "true" ]; then
   if [ -n "$REFACTO_DATA_FILE" ] && [ "$REFACTO_DATA_FILE" != "none" ]; then
     "$BASEDIR/restore.sh" "$REFACTO_DATA_FILE";
   fi;
+fi;
+
+# Configure mongo user-based access
+
+if ! grep 'authorization: enabled' < /etc/mongod.conf > /dev/null; then
+  # generated passwords are local to this deployment - they do not need to be copied to new instances, as the users will be created fresh
+  ADMIN_PASSWORD="$(openssl rand -base64 30 | tr '/+' '_-')";
+  ADMIN_PASSWORD_FILE="$BASEDIR/../env/mongo-admin-password";
+  sudo touch "$ADMIN_PASSWORD_FILE";
+  sudo chmod 0600 "$ADMIN_PASSWORD_FILE";
+  echo "$ADMIN_PASSWORD" | sudo tee "$ADMIN_PASSWORD_FILE" > /dev/null;
+  printf "%s\n" "$ADMIN_PASSWORD" | mongosh admin \
+    --eval 'db.createUser({user:"admin",pwd:passwordPrompt(),roles:["root"],mechanisms:["SCRAM-SHA-256"]})';
+
+  BACKUP_PASSWORD="$(openssl rand -base64 30 | tr '/+' '_-')";
+  BACKUP_PASSWORD_FILE="$BASEDIR/../env/mongo-backup-password";
+  sudo touch "$BACKUP_PASSWORD_FILE";
+  sudo chmod 0600 "$BACKUP_PASSWORD_FILE";
+  echo "$BACKUP_PASSWORD" | sudo tee "$BACKUP_PASSWORD_FILE" > /dev/null;
+  printf "%s\n" "$ADMIN_PASSWORD" "$BACKUP_PASSWORD" | mongosh admin \
+    --eval 'db.auth("admin",passwordPrompt())' \
+    --eval 'db.createUser({user:"backup",pwd:passwordPrompt(),roles:["backup"],mechanisms:["SCRAM-SHA-256"]})';
+
+  REFACTO_PASSWORD="$(openssl rand -base64 30 | tr '/+' '_-')";
+  printf "%s\n" "$ADMIN_PASSWORD" "$REFACTO_PASSWORD" | mongosh admin \
+    --eval 'db.auth("admin",passwordPrompt())' \
+    --eval 'use refacto' \
+    --eval 'db.createUser({user:"refacto",pwd:passwordPrompt(),roles:[{"db":"refacto","role":"readWrite"},{"db":"refacto","role":"dbAdmin"}],mechanisms:["SCRAM-SHA-256"]})';
+
+  sudo sed -i -e 's/^security\:/security\:\n  authorization: enabled/' /etc/mongod.conf;
+
+  sudo systemctl restart mongod;
+  sudo sed -i -E 's/^DB_URL=mongodb:\/\/(.*@)?localhost:/DB_URL=mongodb:\/\/refacto:'"$REFACTO_PASSWORD"'@localhost/' /var/www/refacto/secrets.env;
 fi;
 
 # Create and start services
