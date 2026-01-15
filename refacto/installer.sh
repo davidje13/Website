@@ -142,7 +142,7 @@ if ! grep 'authorization: enabled' < /etc/mongod.conf > /dev/null; then
   sudo sed -i -e 's/^security\:/security\:\n  authorization: enabled/' /etc/mongod.conf;
 
   sudo systemctl restart mongod;
-  sudo sed -i -E 's/^DB_URL=mongodb:\/\/(.*@)?localhost:/DB_URL=mongodb:\/\/refacto:'"$REFACTO_PASSWORD"'@localhost/' /var/www/refacto/secrets.env;
+  sudo sed -i -E 's/^DB_URL=mongodb:\/\/(.*@)?localhost:/DB_URL=mongodb:\/\/refacto:'"$REFACTO_PASSWORD"'@localhost:/' /var/www/refacto/secrets.env;
 fi;
 
 # Create and start services
