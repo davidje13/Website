@@ -36,6 +36,10 @@ echo 'set viminfo=""' | sudo tee /etc/vim/vimrc.local >/dev/null;
 echo 'export LESSHISTFILE=-' | sudo tee /etc/profile.d/lockdown.sh >/dev/null;
 rm "$HOME/.viminfo" "$HOME/.lesshst" || true;
 
+# Disable unused local DNS fallbacks
+
+install_config "$BASEDIR/config/60-disable-local-resolve.conf" /etc/systemd/resolved.conf.d || true;
+
 # Configure system
 
 install_config "$BASEDIR/config/20auto-upgrades-local" /etc/apt/apt.conf.d || true;

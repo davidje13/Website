@@ -1,7 +1,11 @@
 install_config() {
   local SOURCE="$1";
-  local TARGET="$2/$(basename "$SOURCE")";
+  local TARGET_DIR="$2";
+  local TARGET="$TARGET_DIR/$(basename "$SOURCE")";
   local PERM="${3:-0644}";
+  if ! [ -d "$TARGET_DIR" ]; then
+    sudo mkdir -p "$TARGET_DIR";
+  fi;
   if diff "$SOURCE" "$TARGET" >&2; then
     return 1;
   fi;
