@@ -29,7 +29,7 @@ if ! [ -f /etc/nginx/sites-available/sequence ]; then
 
   mkdir -p ~/SequenceDiagram;
   git clone https://github.com/davidje13/SequenceDiagram.git ~/SequenceDiagram;
-  cd ~/SequenceDiagram && DISABLE_OPENCOLLECTIVE=1 npm install --omit=dev; cd - > /dev/null;
+  cd ~/SequenceDiagram && DISABLE_OPENCOLLECTIVE=1 npm install --ignore-scripts --omit=dev; cd - > /dev/null;
 
   # Shutdown existing services if found
 
