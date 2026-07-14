@@ -7,6 +7,7 @@ Type=exec
 User=web-listener-runner
 
 # Start
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/home/web-listener-runner/.local/bin"
 ExecStart=/home/web-listener-runner/.local/bin/web-listener --config-file /var/www/web-listener/sites/config.json --port ((PORT))
 StandardOutput=append:/var/www/web-listener/logs/log((PORT))/current
 StandardError=append:/var/www/web-listener/logs/log((PORT))/current
