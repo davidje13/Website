@@ -23,9 +23,8 @@ export default requestHandler(async (req, res) => {
     throw new HTTPError(400, { body: 'invalid detail' });
   }
 
-  const b64Len = Math.ceil(1024 * 4 / 3);
-  if (signature.length > b64Len + 4 || signature.length < b64Len) {
-    throw new HTTPError(400, { body: 'invalid signature' });
+  if (signature.length !== 692) {
+    throw new HTTPError(400, { body: `invalid signature length (${signature.length})` });
   }
 
   const verifier = createVerify('RSA-SHA256');
@@ -37,10 +36,10 @@ export default requestHandler(async (req, res) => {
   const now = Date.now();
   const time = Date.parse(rawTime);
   if (time > now + MAX_CLOCK_SKEW) {
-    throw new HTTPError(400, { body: 'timestamp is in the future' });
+    throw new HTTPError(400, { body: `timestamp ${new Date(time).toISOString()} is in the future` });
   }
   if (time < now - MAX_REQUEST_AGE) {
-    throw new HTTPError(400, { body: 'timestamp is too old' });
+    throw new HTTPError(400, { body: `timestamp ${new Date(time).toISOString()} is too old` });
   }
 
   try {
@@ -81,11 +80,9 @@ function scheduleUpdate() {
     // this specific command is enabled for the web-listener user via sudoers
     const proc = spawn('sudo', ['/usr/bin/systemctl', 'start', 'web-listener-updater'], { stdio: 'ignore', timeout: 10000 });
     proc.once('error', reject);
-    proc.once('exit', (code, signal) => {
+    proc.once('exit', (code) => {
       if (code) {
         reject(new Error(`exit code ${code}`));
-      } else if (signal) {
-        reject(new Error(`signal ${signal}`));
       } else {
         resolve();
       }
@@ -97,7 +94,7 @@ function throttledScheduleUpdate() {
   if (throttlePromise) {
     return throttlePromise;
   }
-  const delay = lastRun + THROTTLE_TIME - now;
+  const delay = lastRun + THROTTLE_TIME - Date.now();
   if (delay >= 0) {
     throttlePromise = new Promise((resolve) => setTimeout(resolve, delay)).then(scheduleUpdate);
     return throttlePromise;
