@@ -14,18 +14,23 @@ export default requestHandler(async (req, res) => {
 
   const detail = fields.getString('detail');
   const signature = fields.getString('signature');
-  if (!detail || !signature || signature.length !== 1024) {
-    throw new HTTPError(400, { body: 'invalid request' });
+  if (!detail || !signature) {
+    throw new HTTPError(400, { body: 'missing required parameter' });
   }
 
   const [rawTime, service] = detail.split(';');
   if (!ISO_TIMESTAMP.test(rawTime) || !service) {
-    throw new HTTPError(400, { body: 'invalid request' });
+    throw new HTTPError(400, { body: 'invalid detail' });
+  }
+
+  const b64Len = Math.ceil(1024 * 4 / 3);
+  if (signature.length > b64Len + 4 || signature.length < b64Len) {
+    throw new HTTPError(400, { body: 'invalid signature' });
   }
 
   const verifier = createVerify('RSA-SHA256');
   verifier.update(detail, 'utf-8');
-  if (!verifier.verify(DEPLOY_PUBLIC, signature, 'hex')) {
+  if (!verifier.verify(DEPLOY_PUBLIC, signature, 'base64')) {
     throw new HTTPError(400, { body: 'invalid signature' });
   }
 
