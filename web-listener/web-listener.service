@@ -1,0 +1,21 @@
+[Unit]
+Description=Web Listener Server ((PORT))
+After=network.target
+
+[Service]
+Type=exec
+User=web-listener-runner
+
+# Start
+ExecStart=npx web-listener --config-file /var/www/web-listener/sites/config.json --port ((PORT))
+StandardOutput=append:/var/www/web-listener/logs/log((PORT))/current
+StandardError=append:/var/www/web-listener/logs/log((PORT))/current
+
+# Stop
+KillSignal=SIGINT
+
+# Restart
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

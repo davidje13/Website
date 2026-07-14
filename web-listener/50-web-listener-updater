@@ -1,0 +1,2 @@
+Cmnd_Alias WEB_LISTENER_UPDATER = /usr/bin/systemctl start web-listener-updater
+web-listener-runner ALL=(root) NOPASSWD: WEB_LISTENER_UPDATER

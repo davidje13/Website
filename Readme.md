@@ -279,7 +279,7 @@ up the old server:
 
 Services store logs in:
 
-- `/var/www/sequence/logs/log*/*`
+- `/var/www/web-listener/logs/log*/*`
 - `/var/log/refacto/*`
 - `/var/log/nginx/*`
 
@@ -319,7 +319,7 @@ Other debug logs also end up in the system journal, for example:
 
 ```sh
 journalctl -u 'refacto*'
-journalctl -u 'sequence*'
+journalctl -u 'web-listener*'
 journalctl -u stats-monitor.service
 ```
 
@@ -333,21 +333,6 @@ sudo systemctl reload stats-monitor.service
 This will cause the data to be flushed at the next interval, i.e. within the next 10 seconds.
 
 The data is stored in a binary format with an ASCII introduction, and old files can be gzipped to save space.
-
-### Old Log Formats
-
-Sequence and Refacto previously used `multilog`'s `tai64n` format for timestamps.
-These are not human-readable, but can be viewed with:
-
-```sh
-tai64nlocal < "my-log-file-here" | less
-```
-
-For example to see how often sequence diagram's render API is called:
-
-```sh
-cat /var/www/sequence/logs/log*/{*.s,current} | grep RENDER | sort
-```
 
 ## Post Setup
 

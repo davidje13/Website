@@ -180,5 +180,12 @@ sudo systemctl enable --now clean-mongo-log.timer;
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
   sudo tee /etc/nginx/sites-available/refacto > /dev/null;
-
 sudo ln -s /etc/nginx/sites-available/refacto /etc/nginx/sites-ready/refacto;
+
+sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/root-http-redirect.conf" | \
+  sudo tee /etc/nginx/site-extras-available/root-http-redirect > /dev/null;
+sudo ln -s /etc/nginx/site-extras-available/root-http-redirect /etc/nginx/site-extras-ready/root-http-redirect;
+
+sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/root-https-redirect.conf" | \
+  sudo tee /etc/nginx/site-extras-available/root-https-redirect > /dev/null;
+sudo ln -s /etc/nginx/site-extras-available/root-https-redirect /etc/nginx/site-extras-ready/root-https-redirect;

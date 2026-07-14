@@ -5,3 +5,5 @@ xcuserdata/
 !/env/*.template.env
 monitor/monitor
 skip-to-cert
+private.pem
+private.pass
