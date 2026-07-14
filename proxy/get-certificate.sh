@@ -30,6 +30,7 @@ is_dns_ready() {
 
 reload_nginx() {
   rm /etc/nginx/sites-enabled/* || true;
+  rm /etc/nginx/site-extras-enabled/* || true;
   cp -P /etc/nginx/sites-ready/* /etc/nginx/sites-enabled;
   cp -P /etc/nginx/site-extras-ready/* /etc/nginx/site-extras-enabled;
   nginx -t;

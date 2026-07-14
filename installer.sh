@@ -56,6 +56,7 @@ fi;
 
 "$BASEDIR/common/prepare-system.sh";
 sudo rm -f /etc/nginx/sites-ready/* || true;
+sudo rm -f /etc/nginx/site-extras-ready/* || true;
 DOMAIN="$DOMAIN" "$BASEDIR/proxy/installer.sh";
 
 # Install monitor
