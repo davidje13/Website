@@ -4,6 +4,7 @@ BASEDIR="$(dirname "$0")";
 set -e;
 
 OLD_DIRS="$(ls /var/www/web-listener/sites)";
+NEW_DIR="v$(date -u '+%Y%m%d%H%M%S')";
 
 mkdir "/var/www/web-listener/sites/$NEW_DIR";
 chown web-listener-updater:web-listener-runner "/var/www/web-listener/sites/$NEW_DIR";
