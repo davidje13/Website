@@ -27,7 +27,7 @@ done;
   echo '  "servers":[{"port":8080,"mount":[';
   for SITE in $(ls /var/www/web-listener/updaters); do
     if [ -d "/var/www/web-listener/updaters/$SITE" ]; then
-      printf '    {"type":"delegate","path":"%s","config":{"file":"/var/www/web-listener/sites/%s/%s/web-bundle.zip/config.json"}},\n' "$SITE" "$NEW_DIR" "$SITE";
+      printf '    {"type":"delegate","path":"/%s","config":{"file":"/var/www/web-listener/sites/%s/%s/web-bundle.zip/config.json"}},\n' "$SITE" "$NEW_DIR" "$SITE";
     fi;
   done;
   echo '    {"type":"custom","method":"POST","path":"/","import":"/var/www/web-listener/deploy.mjs"}';
