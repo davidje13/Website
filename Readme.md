@@ -182,6 +182,7 @@ Full guide from AWS: <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migra
 | CNAME | `retros.<domain>`   | `<domain>`                  | 7 days |
 | CNAME | `refacto.<domain>`  | `<domain>`                  | 7 days |
 | CNAME | `sequence.<domain>` | `<domain>`                  | 7 days |
+| CNAME | `qr.<domain>`       | `<domain>`                  | 7 days |
 | CAA   | `<domain>`          | `0 issue "letsencrypt.org"` | 7 days |
 
 If the domain will not send email, the following should also be added:
