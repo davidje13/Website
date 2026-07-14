@@ -31,7 +31,7 @@ export default requestHandler(async (req, res) => {
   const verifier = createVerify('RSA-SHA256');
   verifier.update(detail, 'utf-8');
   if (!verifier.verify(DEPLOY_PUBLIC, signature, 'base64')) {
-    throw new HTTPError(400, { body: 'invalid signature' });
+    throw new HTTPError(400, { body: 'incorrect signature' });
   }
 
   const now = Date.now();
