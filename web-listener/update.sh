@@ -3,8 +3,7 @@ BASEDIR="$(dirname "$0")";
 
 set -e;
 
-OLD_DIRS="$(echo /var/www/web-listener/sites/v*)";
-NEW_DIR="v$(date -u '+%Y%m%d%H%M%S')";
+OLD_DIRS="$(ls /var/www/web-listener/sites)";
 
 mkdir "/var/www/web-listener/sites/$NEW_DIR";
 chown web-listener-updater:web-listener-runner "/var/www/web-listener/sites/$NEW_DIR";
@@ -20,7 +19,7 @@ for SITE in $(ls /var/www/web-listener/updaters); do
       exit 1;
     fi;
   fi;
-done
+done;
 
 {
   echo '{';
@@ -48,10 +47,13 @@ if ! echo " $* " | grep ' --nostart ' >/dev/null; then
   systemctl restart web-listener8081.service;
 fi;
 
-if [ -n "$OLD_DIRS" ]; then
-  # run as web-listener-updater rather than root to avoid risk of deleting
-  # unexpected files if a sites/ folder has a space in the name (by accident or malice)
-  sudo -u web-listener-updater -H rm -r $OLD_DIRS;
-fi;
+for OLD_DIR in $OLD_DIRS; do
+  if [ -d "/var/www/web-listener/sites/$OLD_DIR" ]; then
+    # run as web-listener-updater rather than root to avoid risk of deleting
+    # unexpected files if a sites/ folder has a space in the name (by accident or malice)
+    echo "Removing old deployment: $OLD_DIR";
+    sudo -u web-listener-updater -H rm -r "/var/www/web-listener/sites/$OLD_DIR";
+  fi;
+done;
 
 echo "update complete";

@@ -8,7 +8,6 @@ SERVICE_PORTS="8080 8081";
 # Disable existing update mechanism (if present) to avoid conflicting actions
 
 sudo systemctl disable --now web-listener-updater.timer || true;
-sudo systemctl disable --now web-listener-updater.service || true;
 
 # Make users
 
@@ -22,8 +21,8 @@ fi;
 
 # Load dependencies
 
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unzip nodejs;
 if ! test -f /home/web-listener-runner/.local/bin/web-listener >/dev/null; then
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs;
   sudo -u web-listener-runner -H npm config set prefix '~/.local/';
 fi;
 sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.3.2;
@@ -93,7 +92,6 @@ done;
 
 sudo cp "$BASEDIR/web-listener-updater.service" "$BASEDIR/web-listener-updater.timer" /lib/systemd/system/;
 sudo chmod 0644 /lib/systemd/system/web-listener-updater.service /lib/systemd/system/web-listener-updater.timer;
-sudo systemctl enable web-listener-updater.service;
 sudo systemctl enable web-listener-updater.timer; # no --now (do not start updater while we are still installing)
 
 # Add NGINX config
