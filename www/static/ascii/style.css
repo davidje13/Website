@@ -1,0 +1,105 @@
+body {
+  font: 1em sans-serif;
+  margin: 16px;
+}
+
+h1 {
+  display: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: max(0.5em, min(2em, min(1.6vw, 1.7vh)));
+}
+
+th {
+  font-weight: normal;
+  text-align: center;
+  border-bottom: 0.125em solid #000000;
+  padding: 0 0 0.25em;
+}
+
+th.b {
+  min-width: 2.5em;
+}
+th.d {
+  min-width: 2em;
+}
+th.h {
+  min-width: 2em;
+}
+th.c {
+  min-width: 3em;
+}
+
+td {
+  padding: 0.125em 0.25em;
+}
+
+td.b {
+  font: 0.7em monospace;
+  text-align: center;
+  color: #008000;
+}
+
+td.d {
+  font-family: monospace;
+  text-align: right;
+  color: #0000AA;
+}
+
+td.h {
+  font-family: monospace;
+  text-align: center;
+  color: #AA0000;
+}
+
+td.c {
+  font-size: 1.2em;
+  text-align: center;
+  font-weight: bold;
+  color: #008080;
+}
+
+td.c abbr {
+  font-size: 0.8em;
+  font-weight: 300;
+
+  &::before {
+    content: '[';
+  }
+
+  &::after {
+    content: ']';
+  }
+}
+
+td.e, td.t {
+  font: 0.9em monospace;
+  white-space: pre;
+  color: #800080;
+}
+
+.l {
+  padding: 0;
+  border-right: 0.125em solid #000000;
+}
+
+tbody tr:nth-child(2n) {
+  background: #F8F8F8;
+}
+
+tbody tr:hover {
+  background: #DDEEFF;
+}
+
+@media (max-width: 899px) {
+  table {
+    font-size: max(0.5em, min(2em, min(2vw, 1.7vh)));
+  }
+
+  .b {
+    display: none;
+  }
+}

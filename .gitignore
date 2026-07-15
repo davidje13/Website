@@ -7,3 +7,4 @@ monitor/monitor
 skip-to-cert
 private.pem
 private.pass
+/www/static/ascii/index.htm

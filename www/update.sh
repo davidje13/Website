@@ -33,6 +33,8 @@ compress_gzip_static() {
   fi;
 }
 
+"$BASEDIR/ascii.gen.mjs" > "$BASEDIR/static/ascii/index.htm";
+
 cd "$BASEDIR/static";
 find . -type f | while IFS='' read -r SOURCE_FILE; do
   TARGET_FILE="$INSTALL_TEMP_DIR/$SOURCE_FILE";

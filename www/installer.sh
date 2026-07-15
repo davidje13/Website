@@ -5,6 +5,8 @@ BASEDIR="$(dirname "$0")";
 
 DOMAIN="$DOMAIN" "$BASEDIR/update.sh";
 
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs;
+
 # Add NGINX config
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/site.conf" | \
