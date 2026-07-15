@@ -25,7 +25,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unzip nodejs;
 if ! test -f /home/web-listener-runner/.local/bin/web-listener >/dev/null; then
   sudo -u web-listener-runner -H npm config set prefix '~/.local/';
 fi;
-sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.3.3;
+sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.4.0;
 
 # Install boilerplate
 
