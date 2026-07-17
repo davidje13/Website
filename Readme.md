@@ -173,17 +173,18 @@ Full guide from AWS: <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migra
 
 (skip `AAAA` record if IPv6 has not been configured)
 
-| type  | name                | value                       | ttl    |
-|-------|---------------------|-----------------------------|--------|
-| A     | `<domain>`          | `<elastic ip>`              | 1 hour |
-| AAAA  | `<domain>`          | `<ipv6>`                    | 1 hour |
-| CNAME | `www.<domain>`      | `<domain>`                  | 7 days |
-| CNAME | `retro.<domain>`    | `<domain>`                  | 7 days |
-| CNAME | `retros.<domain>`   | `<domain>`                  | 7 days |
-| CNAME | `refacto.<domain>`  | `<domain>`                  | 7 days |
-| CNAME | `sequence.<domain>` | `<domain>`                  | 7 days |
-| CNAME | `qr.<domain>`       | `<domain>`                  | 7 days |
-| CAA   | `<domain>`          | `0 issue "letsencrypt.org"` | 7 days |
+| type  | name                 | value                       | ttl    |
+|-------|----------------------|-----------------------------|--------|
+| A     | `<domain>`           | `<elastic ip>`              | 1 hour |
+| AAAA  | `<domain>`           | `<ipv6>`                    | 1 hour |
+| CNAME | `www.<domain>`       | `<domain>`                  | 7 days |
+| CNAME | `retro.<domain>`     | `<domain>`                  | 7 days |
+| CNAME | `retros.<domain>`    | `<domain>`                  | 7 days |
+| CNAME | `refacto.<domain>`   | `<domain>`                  | 7 days |
+| CNAME | `sequence.<domain>`  | `<domain>`                  | 7 days |
+| CNAME | `qr.<domain>`        | `<domain>`                  | 7 days |
+| CNAME | `reference.<domain>` | `<domain>`                  | 7 days |
+| CAA   | `<domain>`           | `0 issue "letsencrypt.org"` | 7 days |
 
 If the domain will not send email, the following should also be added:
 
