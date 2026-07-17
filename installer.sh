@@ -81,6 +81,7 @@ for DOMAIN in $(grep -h 'server_name' /etc/nginx/sites-ready/* | sed -e 's/serve
 done | grep -v '^\.' | sort | uniq | sudo tee "/var/www/domains.txt" > /dev/null;
 
 # start auto-update mechanisms
+sudo systemctl daemon-reload;
 sudo systemctl start web-listener-updater.timer || true;
 sudo systemctl start refacto-updater.timer || true;
 

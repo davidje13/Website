@@ -84,8 +84,13 @@ for PORT in $SERVICE_PORTS; do
   sed "s/((PORT))/$PORT/g" "$BASEDIR/web-listener.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
-  sudo systemctl enable "$NAME";
-  sudo systemctl restart "$NAME";
+done;
+
+sudo systemctl daemon-reload;
+
+for PORT in $SERVICE_PORTS; do
+  sudo systemctl enable "web-listener$PORT.service";
+  sudo systemctl restart "web-listener$PORT.service";
 done;
 
 # Configure auto-update

@@ -156,8 +156,13 @@ for PORT in $SERVICE_PORTS; do
   sed -e "s/((PORT))/$PORT/g" -e "s~((LOGFILE))~$LOGFILE~g" "$BASEDIR/refacto.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
-  sudo systemctl enable "$NAME";
-  sudo systemctl restart "$NAME";
+done;
+
+sudo systemctl daemon-reload;
+
+for PORT in $SERVICE_PORTS; do
+  sudo systemctl enable "refacto$PORT.service";
+  sudo systemctl restart "refacto$PORT.service";
 done;
 
 # Configure auto-update

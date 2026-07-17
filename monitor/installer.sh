@@ -34,4 +34,5 @@ sudo chmod 0550 /var/www/monitor/monitor;
 
 sudo tee "/lib/systemd/system/stats-monitor.service" < "$BASEDIR/stats-monitor.service" > /dev/null;
 sudo chmod 0644 "/lib/systemd/system/stats-monitor.service";
+sudo systemctl daemon-reload;
 sudo systemctl enable --now stats-monitor.service;

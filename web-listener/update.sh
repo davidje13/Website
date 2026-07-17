@@ -1,8 +1,7 @@
 #!/bin/sh
-BASEDIR="$(dirname "$0")";
-
 set -e;
 
+BASEDIR="$(dirname "$0")";
 OLD_DIRS="$(ls /var/www/web-listener/sites)";
 NEW_DIR="v$(date -u '+%Y%m%d%H%M%S')";
 
