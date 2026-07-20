@@ -4,6 +4,7 @@ set -e;
 BASEDIR="$(dirname "$0")";
 OLD_DIRS="$(ls /var/www/web-listener/sites)";
 NEW_DIR="v$(date -u '+%Y%m%d%H%M%S')";
+CONFIG_FILE="/var/www/web-listener/sites/config.json";
 
 mkdir "/var/www/web-listener/sites/$NEW_DIR";
 chown web-listener-updater:web-listener-runner "/var/www/web-listener/sites/$NEW_DIR";
@@ -21,6 +22,10 @@ for SITE in $(ls /var/www/web-listener/updaters); do
   fi;
 done;
 
+if [ -f "$CONFIG_FILE" ]; then
+  mv "$CONFIG_FILE" "$CONFIG_FILE.backup";
+fi;
+
 {
   echo '{';
   echo '  "servers":[{"port":8080,"mount":[';
@@ -33,12 +38,22 @@ done;
   echo '  ]}],';
   echo '  "logFormat": "json"';
   echo '}';
-} > /var/www/web-listener/sites/config.json;
-chmod 0644 /var/www/web-listener/sites/config.json;
-chown web-listener-updater:web-listener-runner /var/www/web-listener/sites/config.json;
+} > "$CONFIG_FILE";
+chmod 0644 "$CONFIG_FILE";
+chown web-listener-updater:web-listener-runner "$CONFIG_FILE";
 
 chmod -R g-w "/var/www/web-listener/sites/$NEW_DIR";
 chgrp -R web-listener-runner "/var/www/web-listener/sites/$NEW_DIR";
+
+if ! sudo -u web-listener-runner /home/web-listener-runner/.local/bin/web-listener -c "$CONFIG_FILE" --no-serve; then
+  echo "Config validation failed.";
+  rm "$CONFIG_FILE";
+  if [ -f "$CONFIG_FILE.backup" ]; then
+    echo "Rolling back.";
+    mv "$CONFIG_FILE.backup" "$CONFIG_FILE";
+  fi;
+  exit 1;
+fi;
 
 if ! echo " $* " | grep ' --nostart ' >/dev/null; then
   echo "restarting services";
@@ -54,6 +69,7 @@ for OLD_DIR in $OLD_DIRS; do
     echo "Removing old deployment: $OLD_DIR";
     sudo -u web-listener-updater -H rm -r "/var/www/web-listener/sites/$OLD_DIR";
   fi;
+  rm "$CONFIG_FILE.backup" || true;
 done;
 
 echo "update complete";
