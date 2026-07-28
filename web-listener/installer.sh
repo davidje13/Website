@@ -15,17 +15,17 @@ if ! id -u web-listener-updater >/dev/null 2>&1; then
   sudo useradd --create-home --user-group web-listener-updater;
 fi;
 if ! id -u web-listener-runner >/dev/null 2>&1; then
-  sudo useradd --create-home --system --user-group web-listener-runner;
-  sudo -u web-listener-runner -H sh -c 'mkdir -p ~/.local/bin';
+  sudo useradd --system --user-group web-listener-runner;
 fi;
 
 # Load dependencies
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unzip nodejs;
-if ! test -f /home/web-listener-runner/.local/bin/web-listener >/dev/null; then
-  sudo -u web-listener-runner -H npm config set prefix '~/.local/';
+if ! test -f /home/web-listener-updater/.local/bin/web-listener >/dev/null; then
+  sudo -u web-listener-updater -H sh -c 'mkdir -p ~/.local/bin';
+  sudo -u web-listener-updater -H npm config set prefix '~/.local/';
 fi;
-sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.5.0;
+sudo -u web-listener-updater -H npm install -g --ignore-scripts web-listener@1.5.0;
 
 # Install boilerplate
 

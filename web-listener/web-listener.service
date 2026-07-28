@@ -7,8 +7,8 @@ Type=exec
 User=web-listener-runner
 
 # Start
-Environment="PATH=/usr/local/bin:/usr/bin:/bin:/home/web-listener-runner/.local/bin"
-ExecStart=/home/web-listener-runner/.local/bin/web-listener --config-file /var/www/web-listener/sites/config.json --port "((PORT))" --host 127.0.0.1 --log-file "((LOGFILE))"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/home/web-listener-updater/.local/bin"
+ExecStart=/home/web-listener-updater/.local/bin/web-listener --config-file /var/www/web-listener/sites/config.json --port "((PORT))" --host 127.0.0.1 --log-file "((LOGFILE))"
 ExecReload=/usr/bin/kill -HUP $MAINPID
 
 # Stop

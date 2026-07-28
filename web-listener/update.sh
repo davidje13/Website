@@ -45,7 +45,7 @@ chown web-listener-updater:web-listener-runner "$CONFIG_FILE";
 chmod -R g-w "/var/www/web-listener/sites/$NEW_DIR";
 chgrp -R web-listener-runner "/var/www/web-listener/sites/$NEW_DIR";
 
-if ! sudo -u web-listener-runner /home/web-listener-runner/.local/bin/web-listener -c "$CONFIG_FILE" --no-serve; then
+if ! sudo -u web-listener-runner /home/web-listener-updater/.local/bin/web-listener -c "$CONFIG_FILE" --no-serve; then
   echo "Config validation failed.";
   rm "$CONFIG_FILE";
   if [ -f "$CONFIG_FILE.backup" ]; then
