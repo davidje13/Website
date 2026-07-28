@@ -25,7 +25,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unzip nodejs;
 if ! test -f /home/web-listener-runner/.local/bin/web-listener >/dev/null; then
   sudo -u web-listener-runner -H npm config set prefix '~/.local/';
 fi;
-sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.4.3;
+sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.5.0;
 
 # Install boilerplate
 
@@ -108,6 +108,10 @@ sudo ln -s /etc/nginx/sites-available/web-listener /etc/nginx/sites-ready/web-li
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/root-https-deploy.conf" | \
   sudo tee /etc/nginx/site-extras-available/root-https-deploy > /dev/null;
 sudo ln -s /etc/nginx/site-extras-available/root-https-deploy /etc/nginx/site-extras-ready/root-https-deploy;
+
+sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/root-https-web-listener.conf" | \
+  sudo tee /etc/nginx/site-extras-available/root-https-web-listener > /dev/null;
+sudo ln -s /etc/nginx/site-extras-available/root-https-web-listener /etc/nginx/site-extras-ready/root-https-web-listener;
 
 for SITE in $(ls "$BASEDIR/sites"); do
   if [ -d "$BASEDIR/sites/$SITE" ]; then
