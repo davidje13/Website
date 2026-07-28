@@ -1,0 +1,16 @@
+/var/log/web-listener/*.log {
+	# 10 years
+	weekly
+	rotate 520
+	notifempty
+	missingok
+	create 640 web-listener-runner adm
+
+	compress
+	delaycompress
+
+	sharedscripts
+	postrotate
+		kill -SIGUSR2 $(systemctl show --property MainPID --value 'web-listener*.service')
+	endscript
+}

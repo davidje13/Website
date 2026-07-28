@@ -36,7 +36,7 @@ fi;
   done;
   echo '    {"type":"custom","method":"POST","path":"/","import":"/var/www/web-listener/deploy.mjs"}';
   echo '  ]}],';
-  echo '  "logFormat": "json"';
+  echo '  "log":{"format":"json"}';
   echo '}';
 } > "$CONFIG_FILE";
 chmod 0644 "$CONFIG_FILE";

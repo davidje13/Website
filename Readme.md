@@ -281,7 +281,7 @@ up the old server:
 
 Services store logs in:
 
-- `/var/www/web-listener/logs/log*/*`
+- `/var/log/web-listener/*`
 - `/var/log/refacto/*`
 - `/var/log/nginx/*`
 

@@ -29,14 +29,9 @@ sudo -u web-listener-runner -H npm install -g --ignore-scripts web-listener@1.5.
 
 # Install boilerplate
 
-sudo mkdir -p /var/www/web-listener/logs;
 sudo mkdir -p /var/www/web-listener/sites;
 sudo rm -r /var/www/web-listener/updaters || true;
 sudo mkdir /var/www/web-listener/updaters;
-
-for PORT in $SERVICE_PORTS; do
-  sudo mkdir -p /var/www/web-listener/logs/log$PORT;
-done;
 
 sudo cp "$BASEDIR/update.sh" /var/www/web-listener/update.sh;
 sudo cp "$BASEDIR/deploy/deploy.mjs" /var/www/web-listener/deploy.mjs;
@@ -54,7 +49,10 @@ sudo chown -R root:web-listener-updater \
   /var/www/web-listener/updaters \
   /var/www/web-listener/update.sh;
 sudo chown -R web-listener-updater:web-listener-runner /var/www/web-listener/sites;
-sudo chown -R web-listener-runner:web-listener-runner /var/www/web-listener/logs;
+
+sudo mkdir -p /var/log/web-listener;
+sudo chown -R web-listener-runner:adm /var/log/web-listener;
+sudo chmod 0750 /var/log/web-listener;
 
 install_config "$BASEDIR/50-web-listener-updater" /etc/sudoers.d 0440 || true;
 
@@ -81,7 +79,11 @@ sudo /var/www/web-listener/update.sh --force --nostart;
 
 for PORT in $SERVICE_PORTS; do
   NAME="web-listener$PORT.service";
-  sed "s/((PORT))/$PORT/g" "$BASEDIR/web-listener.service" | \
+  LOGFILE="/var/log/web-listener/web-listener-$PORT.log"
+  sudo touch -a "$LOGFILE";
+  sudo chmod 0640 "$LOGFILE";
+  sudo chown web-listener-runner:adm "$LOGFILE";
+  sed -e "s/((PORT))/$PORT/g" -e "s~((LOGFILE))~$LOGFILE~g" "$BASEDIR/web-listener.service" | \
     sudo tee "/lib/systemd/system/$NAME" > /dev/null;
   sudo chmod 0644 "/lib/systemd/system/$NAME";
 done;
@@ -98,6 +100,10 @@ done;
 sudo cp "$BASEDIR/web-listener-updater.service" "$BASEDIR/web-listener-updater.timer" /lib/systemd/system/;
 sudo chmod 0644 /lib/systemd/system/web-listener-updater.service /lib/systemd/system/web-listener-updater.timer;
 sudo systemctl enable web-listener-updater.timer; # no --now (do not start updater while we are still installing)
+
+# Configure rotation of logs
+
+install_config "$BASEDIR/logrotate/web-listener" /etc/logrotate.d || true;
 
 # Add NGINX config
 
