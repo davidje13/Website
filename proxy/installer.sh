@@ -74,12 +74,12 @@ generate_bomb() {
   local BOMB_TEMP="$HOME";
   local EXTENSION="$1";
 
-  node "$BASEDIR/generate-bomb.mjs" "$EXTENSION" > "$BOMB_TEMP/bomb.$EXTENSION";
+  "$BASEDIR/generate-bomb.mjs" "$EXTENSION" > "$BOMB_TEMP/bomb.$EXTENSION";
   install_web_file "$BOMB_TEMP/bomb.$EXTENSION";
 
   # (disabled for now because gzip loads full content in memory, and these instances are small)
   if false; then
-    node "$BASEDIR/generate-bomb.mjs" "$EXTENSION" --zipped | gzip -nc9 > "$BOMB_TEMP/bomb.$EXTENSION.gz";
+    "$BASEDIR/generate-bomb.mjs" "$EXTENSION" --zipped | gzip -nc9 > "$BOMB_TEMP/bomb.$EXTENSION.gz";
   fi;
   # pick up gzipped file if it was added manually
   if [ -f "$BOMB_TEMP/bomb.$EXTENSION.gz" ]; then

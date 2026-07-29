@@ -1,0 +1,5 @@
+[
+  { "name": "qr", "url": "https://gitlab.com/api/v4/projects/davidje13%2Flean-qr/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/qr.pem" },
+  { "name": "reference", "url": "https://gitlab.com/api/v4/projects/davidje13%2Freference/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/reference.pem" },
+  { "name": "sequence", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fsequence-diagram/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/sequence.pem" }
+]

@@ -1,3 +1,5 @@
+#!/usr/bin/env -S node --disable-proto=delete --disallow-code-generation-from-strings --force-node-api-uncaught-exceptions-policy --no-addons --disable-sigusr1
+
 const ext = process.argv[2];
 const zipped = process.argv[3] === '--zipped';
 const rep = 10000;

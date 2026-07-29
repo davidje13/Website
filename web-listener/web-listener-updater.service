@@ -4,4 +4,6 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/var/www/web-listener/update.sh
+User=web-listener-updater
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/home/web-listener-updater/.local/bin"
+ExecStart=/var/www/web-listener/update.mjs

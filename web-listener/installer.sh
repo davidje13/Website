@@ -17,6 +17,7 @@ fi;
 if ! id -u web-listener-runner >/dev/null 2>&1; then
   sudo useradd --system --user-group web-listener-runner;
 fi;
+sudo usermod -a -G web-listener-runner web-listener-updater; # required so that updater can set group for installed files
 
 # Load dependencies
 
@@ -30,24 +31,26 @@ sudo -u web-listener-updater -H npm install -g --ignore-scripts web-listener@1.5
 # Install boilerplate
 
 sudo mkdir -p /var/www/web-listener/sites;
-sudo rm -r /var/www/web-listener/updaters || true;
-sudo mkdir /var/www/web-listener/updaters;
+sudo mkdir -p /var/www/web-listener/update/work;
 
-sudo cp "$BASEDIR/update.sh" /var/www/web-listener/update.sh;
-sudo cp "$BASEDIR/deploy/deploy.mjs" /var/www/web-listener/deploy.mjs;
-sudo cp "$BASEDIR/deploy/public.pem" /var/www/web-listener/public.pem;
+sudo cp \
+  "$BASEDIR/update.mjs" \
+  "$BASEDIR/sites.json" \
+  "$BASEDIR/deploy/deploy.mjs" \
+  "$BASEDIR/deploy/public.pem" \
+  /var/www/web-listener/;
 
 sudo chmod -R g-w /var/www/web-listener;
-sudo chmod 0744 /var/www/web-listener/update.sh;
-sudo chmod 0644 /var/www/web-listener/deploy.mjs;
+sudo chmod 0744 /var/www/web-listener/update.mjs;
+sudo chmod 0644 /var/www/web-listener/deploy.mjs /var/www/web-listener/sites.json;
 sudo chmod 0640 /var/www/web-listener/public.pem;
 sudo chown root:web-listener-runner \
   /var/www/web-listener \
   /var/www/web-listener/deploy.mjs \
   /var/www/web-listener/public.pem;
-sudo chown -R root:web-listener-updater \
-  /var/www/web-listener/updaters \
-  /var/www/web-listener/update.sh;
+sudo chown root:web-listener-updater /var/www/web-listener/update.mjs;
+sudo chown root:web-listener-updater /var/www/web-listener/update;
+sudo chown -R web-listener-updater:web-listener-updater /var/www/web-listener/update/work;
 sudo chown -R web-listener-updater:web-listener-runner /var/www/web-listener/sites;
 
 sudo mkdir -p /var/log/web-listener;
@@ -60,20 +63,16 @@ install_config "$BASEDIR/50-web-listener-updater" /etc/sudoers.d 0440 || true;
 
 for SITE in $(ls "$BASEDIR/sites"); do
   if [ -d "$BASEDIR/sites/$SITE" ]; then
-    sudo mkdir -p "/var/www/web-listener/updaters/$SITE";
-    sudo cp "$BASEDIR/sites/$SITE/update.sh" "/var/www/web-listener/updaters/$SITE/update.sh";
-    sudo cp "$BASEDIR/sites/$SITE/public.pem" "/var/www/web-listener/updaters/$SITE/public.pem";
-    sudo chmod 0755 "/var/www/web-listener/updaters/$SITE";
-    sudo chmod 0654 "/var/www/web-listener/updaters/$SITE/update.sh";
-    sudo chmod 0640 "/var/www/web-listener/updaters/$SITE/public.pem";
-    sudo chown -R root:web-listener-updater "/var/www/web-listener/updaters/$SITE";
+    sudo cp "$BASEDIR/sites/$SITE/public.pem" "/var/www/web-listener/update/$SITE.pem";
+    sudo chmod 0640 "/var/www/web-listener/update/$SITE.pem";
+    sudo chown root:web-listener-updater "/var/www/web-listener/update/$SITE.pem";
 
     sed -e "s/((DOMAIN))/$DOMAIN/g" -e "s/((SITE))/$SITE/g" "$BASEDIR/site-template.conf" | \
       sudo tee "/etc/nginx/sites-available/web-listener-$SITE" > /dev/null;
   fi;
 done;
 
-sudo /var/www/web-listener/update.sh --force --nostart;
+sudo -u web-listener-updater /var/www/web-listener/update.mjs --nostart;
 
 # Start new services
 

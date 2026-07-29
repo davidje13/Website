@@ -305,6 +305,12 @@ To view all recent Refacto logs:
 ( cat /var/log/refacto/*.log /var/log/refacto/*.log.1; gunzip -c /var/log/refacto/*.gz ) | sort | less
 ```
 
+To view all recent Web-Listener logs:
+
+```sh
+( cat /var/log/web-listener/*.log /var/log/web-listener/*.log.1; gunzip -c /var/log/web-listener/*.gz ) | sort | less
+```
+
 To view current firewall stats (e.g. number of packets to particular ports):
 
 ```sh
