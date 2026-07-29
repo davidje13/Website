@@ -41,7 +41,7 @@ sudo cp \
   /var/www/web-listener/;
 
 sudo chmod -R g-w /var/www/web-listener;
-sudo chmod 0744 /var/www/web-listener/update.mjs;
+sudo chmod 0754 /var/www/web-listener/update.mjs;
 sudo chmod 0644 /var/www/web-listener/deploy.mjs /var/www/web-listener/sites.json;
 sudo chmod 0640 /var/www/web-listener/public.pem;
 sudo chown root:web-listener-runner \
