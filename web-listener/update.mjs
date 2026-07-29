@@ -12,7 +12,7 @@ const workDir = join(selfDir, 'update', 'work');
 const stateFile = join(workDir, 'state.json');
 const sitesDir = resolve(selfDir, './sites');
 const configFile = join(sitesDir, 'config.json');
-const WEB_LISTENER_BINARY = 'web-listener';
+const WEB_LISTENER_BINARY = '/home/web-listener-updater/.local/bin/web-listener';
 const RUNNER_GID = await getGID('web-listener-runner');
 
 const sites = JSON.parse(await readFile(join(selfDir, 'sites.json'), { encoding: 'utf-8' }));
