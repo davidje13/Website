@@ -237,17 +237,18 @@ async function validateSignatures(dir, publicKeyFile) {
 }
 
 async function setPermissionGroupRecursive(dir, permission, group) {
+  await chmod(
+    dir,
+    permission |
+      ((permission & 0o400) ? 0o100 : 0) |
+      ((permission & 0o040) ? 0o010 : 0) |
+      ((permission & 0o004) ? 0o001 : 0),
+  );
+  await chown(dir, -1, group);
+
   for (const sub of await readdir(dir, { encoding: 'utf-8', withFileTypes: true })) {
     const fullPath = join(dir, sub.name);
     if (sub.isDirectory()) {
-      await chmod(
-        fullPath,
-        permission |
-          ((permission & 0o400) ? 0o100 : 0) |
-          ((permission & 0o040) ? 0o010 : 0) |
-          ((permission & 0o004) ? 0o001 : 0),
-      );
-      await chown(fullPath, -1, group);
       await setPermissionGroupRecursive(fullPath, permission, group);
     } else if (sub.isFile()) {
       await chmod(fullPath, permission);
