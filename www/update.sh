@@ -115,7 +115,7 @@ if [ ! -f "$ASSETS_DIR/NotoColorEmoji.license" ]; then
   curl "https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/Noto.license";
 fi;
 for ASSET in $ASSET_SOURCES; do
-  wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR" "$ASSET";
+  wget --no-directories --timestamping -P "$ASSETS_DIR" "$ASSET";
   FILE="$ASSETS_DIR/$(basename "$ASSET")";
   if [ ! -f "$FILE.gz" ] || [ "$FILE" -nt "$FILE.gz" ]; then
     rm "$FILE.gz" || true;
