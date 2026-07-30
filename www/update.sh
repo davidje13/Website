@@ -78,44 +78,44 @@ done < "$BASEDIR/http_statuses.csv";
 set -x;
 
 ASSET_SOURCES="$(cat <<EOF
-https://github.com/googlefonts/noto-emoji/raw/refs/heads/main/fonts/NotoColorEmoji_WindowsCompatible.ttf
-https://github.com/google/fonts/raw/refs/heads/main/ofl/notoemoji/NotoEmoji%5Bwght%5D.ttf
-https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Sans/SubsetOTF/HK/NotoSansHK-Regular.otf
-https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Sans/SubsetOTF/JP/NotoSansJP-Regular.otf
-https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Sans/SubsetOTF/KR/NotoSansKR-Regular.otf
-https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Sans/SubsetOTF/SC/NotoSansSC-Regular.otf
-https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Sans/SubsetOTF/TC/NotoSansTC-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/megamerge/NotoSansHistorical-Regular.ttf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/megamerge/NotoSansLiving-Regular.ttf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoMusic/unhinted/otf/NotoMusic-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSansDuployan/unhinted/otf/NotoSansDuployan-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSansSignWriting/unhinted/otf/NotoSansSignWriting-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSansSymbols2/unhinted/otf/NotoSansSymbols2-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifDivesAkuru/unhinted/otf/NotoSerifDivesAkuru-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifDogra/unhinted/otf/NotoSerifDogra-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifHentaigana/unhinted/otf/NotoSerifHentaigana-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifKhitanSmallScript/unhinted/otf/NotoSerifKhitanSmallScript-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifMakasar/unhinted/otf/NotoSerifMakasar-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifNPHmong/unhinted/otf/NotoSerifNPHmong-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifOldUyghur/unhinted/otf/NotoSerifOldUyghur-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifOttomanSiyaq/unhinted/otf/NotoSerifOttomanSiyaq-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifTangut/unhinted/otf/NotoSerifTangut-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifTodhri/unhinted/otf/NotoSerifTodhri-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoSerifToto/unhinted/otf/NotoSerifToto-Regular.otf
-https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoZnamennyMusicalNotation/unhinted/otf/NotoZnamennyMusicalNotation-Regular.otf
+https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/NotoColorEmoji_WindowsCompatible.ttf
+https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/NotoEmoji%5Bwght%5D.ttf
+https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/HK/NotoSansHK-Regular.otf
+https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/JP/NotoSansJP-Regular.otf
+https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/KR/NotoSansKR-Regular.otf
+https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/SC/NotoSansSC-Regular.otf
+https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/TC/NotoSansTC-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/megamerge/NotoSansHistorical-Regular.ttf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/megamerge/NotoSansLiving-Regular.ttf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoMusic/unhinted/otf/NotoMusic-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSansDuployan/unhinted/otf/NotoSansDuployan-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSansSignWriting/unhinted/otf/NotoSansSignWriting-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSansSymbols2/unhinted/otf/NotoSansSymbols2-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifDivesAkuru/unhinted/otf/NotoSerifDivesAkuru-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifDogra/unhinted/otf/NotoSerifDogra-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifHentaigana/unhinted/otf/NotoSerifHentaigana-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifKhitanSmallScript/unhinted/otf/NotoSerifKhitanSmallScript-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifMakasar/unhinted/otf/NotoSerifMakasar-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifNPHmong/unhinted/otf/NotoSerifNPHmong-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifOldUyghur/unhinted/otf/NotoSerifOldUyghur-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifOttomanSiyaq/unhinted/otf/NotoSerifOttomanSiyaq-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifTangut/unhinted/otf/NotoSerifTangut-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifTodhri/unhinted/otf/NotoSerifTodhri-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoSerifToto/unhinted/otf/NotoSerifToto-Regular.otf
+https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/NotoZnamennyMusicalNotation/unhinted/otf/NotoZnamennyMusicalNotation-Regular.otf
 EOF
 )";
 
 sudo mkdir -p "$ASSETS_DIR";
 sudo chown -R "$(whoami):nginx" "$ASSETS_DIR";
 if [ ! -f "$ASSETS_DIR/NotoColorEmoji.license" ]; then
-  curl "https://github.com/googlefonts/noto-emoji/raw/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/NotoColorEmoji.license";
-  curl "https://github.com/google/fonts/raw/refs/heads/main/ofl/notoemoji/OFL.txt" > "$ASSETS_DIR/NotoEmoji.license";
-  curl "https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Sans/LICENSE" > "$ASSETS_DIR/NotoCJK.license";
-  curl "https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/Noto.license";
+  curl "https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/NotoColorEmoji.license";
+  curl "https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/OFL.txt" > "$ASSETS_DIR/NotoEmoji.license";
+  curl "https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/LICENSE" > "$ASSETS_DIR/NotoCJK.license";
+  curl "https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/Noto.license";
 fi;
 for ASSET in $ASSET_SOURCES; do
-  wget --no-directories --timestamping -P "$ASSETS_DIR" "$ASSET";
+  wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR" "$ASSET";
   FILE="$ASSETS_DIR/$(basename "$ASSET")";
   if [ ! -f "$FILE.gz" ] || [ "$FILE" -nt "$FILE.gz" ]; then
     rm "$FILE.gz" || true;
