@@ -115,8 +115,11 @@ if [ ! -f "$ASSETS_DIR/NotoColorEmoji.license" ]; then
   curl -fsSL "https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/Noto.license";
 fi;
 for ASSET in $ASSET_SOURCES; do
-  wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR" "$ASSET";
   FILE="$ASSETS_DIR/$(basename "$ASSET")";
+  if [ ! -f "$FILE" ]; then
+    # ideally we would rely on --timestamping to fetch files if they have changed, but githubusercontent does not check if-modified-since
+    wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR" "$ASSET";
+  fi;
   if [ ! -f "$FILE.gz" ] || [ "$FILE" -nt "$FILE.gz" ]; then
     rm "$FILE.gz" || true;
     compress_gzip_static "$FILE";
