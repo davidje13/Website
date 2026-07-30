@@ -79,7 +79,7 @@ set -x;
 
 ASSET_SOURCES="$(cat <<EOF
 https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/NotoColorEmoji_WindowsCompatible.ttf
-https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/NotoEmoji%5Bwght%5D.ttf
+https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/NotoEmoji[wght].ttf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/HK/NotoSansHK-Regular.otf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/JP/NotoSansJP-Regular.otf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/KR/NotoSansKR-Regular.otf
@@ -109,10 +109,10 @@ EOF
 sudo mkdir -p "$ASSETS_DIR";
 sudo chown -R "$(whoami):nginx" "$ASSETS_DIR";
 if [ ! -f "$ASSETS_DIR/NotoColorEmoji.license" ]; then
-  curl "https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/NotoColorEmoji.license";
-  curl "https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/OFL.txt" > "$ASSETS_DIR/NotoEmoji.license";
-  curl "https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/LICENSE" > "$ASSETS_DIR/NotoCJK.license";
-  curl "https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/Noto.license";
+  curl -fsSL "https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/NotoColorEmoji.license";
+  curl -fsSL "https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/OFL.txt" > "$ASSETS_DIR/NotoEmoji.license";
+  curl -fsSL "https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/LICENSE" > "$ASSETS_DIR/NotoCJK.license";
+  curl -fsSL "https://raw.githubusercontent.com/notofonts/notofonts.github.io/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/Noto.license";
 fi;
 for ASSET in $ASSET_SOURCES; do
   wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR" "$ASSET";
