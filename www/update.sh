@@ -78,7 +78,8 @@ done < "$BASEDIR/http_statuses.csv";
 set -x;
 
 ASSET_SOURCES="$(cat <<EOF
-https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/NotoColorEmoji.ttf
+https://raw.githubusercontent.com/adobe-fonts/adobe-notdef/refs/heads/master/AND-Regular.otf
+https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notocoloremoji/NotoColorEmoji-Regular.ttf
 https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/NotoEmoji[wght].ttf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/HK/NotoSansHK-Regular.otf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/JP/NotoSansJP-Regular.otf
@@ -108,7 +109,8 @@ EOF
 
 sudo mkdir -p "$ASSETS_DIR";
 sudo chown -R "$(whoami):nginx" "$ASSETS_DIR";
-if [ ! -f "$ASSETS_DIR/NotoColorEmoji.license" ]; then
+if [ ! -f "$ASSETS_DIR/AND.license" ]; then
+  curl -fsSL "https://raw.githubusercontent.com/adobe-fonts/adobe-notdef/refs/heads/master/LICENSE.md" > "$ASSETS_DIR/AND.license";
   curl -fsSL "https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/LICENSE" > "$ASSETS_DIR/NotoColorEmoji.license";
   curl -fsSL "https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/OFL.txt" > "$ASSETS_DIR/NotoEmoji.license";
   curl -fsSL "https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/LICENSE" > "$ASSETS_DIR/NotoCJK.license";
