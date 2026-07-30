@@ -78,7 +78,7 @@ done < "$BASEDIR/http_statuses.csv";
 set -x;
 
 ASSET_SOURCES="$(cat <<EOF
-https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/NotoColorEmoji_WindowsCompatible.ttf
+https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/fonts/NotoColorEmoji.ttf
 https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notoemoji/NotoEmoji[wght].ttf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/HK/NotoSansHK-Regular.otf
 https://raw.githubusercontent.com/notofonts/noto-cjk/refs/heads/main/Sans/SubsetOTF/JP/NotoSansJP-Regular.otf
