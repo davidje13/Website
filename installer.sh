@@ -129,3 +129,7 @@ fi;
 # https://www.nginx.com/blog/rate-limiting-nginx/
 # https://www.nginx.com/blog/avoiding-top-10-nginx-configuration-mistakes/
 # https://github.com/Skyedra/UnspamifyUbuntu
+# https://wiki.debian.org/ZRam
+# https://wiki.archlinux.org/title/Zram
+# https://docs.kernel.org/admin-guide/blockdev/zram.html
+# https://chrisdown.name/2026/03/24/zswap-vs-zram-when-to-use-what.html#zram-on-fedora

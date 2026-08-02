@@ -51,3 +51,20 @@ sudo sysctl --system;
 install_config "$BASEDIR/config/nftables.conf" /etc 0744 || true;
 sudo systemctl enable nftables;
 sudo systemctl restart nftables;
+
+# configure zram
+# zswap is not available on this base image (`grep -i zswap "/boot/config-$(uname -r)"` shows '# CONFIG_ZSWAP is not set'), so we use zram with no disk swap instead (a-la Fedora):
+install_config "$BASEDIR/config/99-zram.conf" /etc/modules-load.d || true;
+install_config "$BASEDIR/config/99-zram-params.conf" /etc/modprobe.d || true;
+if install_config "$BASEDIR/config/99-zram.rules" /etc/udev/rules.d; then
+  echo '/dev/zram0 none swap defaults,discard,pri=100,x-systemd.makefs 0 0' | sudo tee -a /etc/fstab >/dev/null;
+fi;
+
+# configure zram for current boot:
+if [ ! -e /dev/zram0 ]; then
+  sudo modprobe zram num_devices=1;
+  sudo zramctl /dev/zram0 --algorithm zstd --size 1G; # we cannot set algorithm parameters (zramctl is too old); in the future we could add '--algorithm-params level=2' for improved speed with minimal loss of compression (also need to update 99-zram.rules)
+  echo '512M' | sudo tee /sys/block/zram0/mem_limit >/dev/null;
+  sudo mkswap -U clear /dev/zram0;
+  sudo swapon --discard --priority 100 /dev/zram0;
+fi;
