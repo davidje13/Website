@@ -1,5 +1,5 @@
-Cmnd_Alias WEB_LISTENER_UPDATER = /usr/bin/systemctl start web-listener-updater
-web-listener-runner ALL=(root) NOPASSWD: WEB_LISTENER_UPDATER
+Cmnd_Alias TRIGGER_UPDATERS = /usr/bin/systemctl start web-listener-updater, /usr/bin/systemctl start asset-updater
+web-listener-runner ALL=(root) NOPASSWD: TRIGGER_UPDATERS
 
 Cmnd_Alias WEB_LISTENER_RESTART = /usr/bin/systemctl restart web-listener8080, /usr/bin/systemctl restart web-listener8081
 web-listener-updater ALL=(root) NOPASSWD: WEB_LISTENER_RESTART

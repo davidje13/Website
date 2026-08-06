@@ -61,7 +61,7 @@ if install_config "$BASEDIR/config/99-zram.rules" /etc/udev/rules.d; then
 fi;
 
 # configure zram for current boot:
-if [ ! -e /dev/zram0 ]; then
+if ! [ -e /dev/zram0 ]; then
   sudo modprobe zram num_devices=1;
   sudo zramctl /dev/zram0 --algorithm zstd --size 1G; # we cannot set algorithm parameters (zramctl is too old); in the future we could add '--algorithm-params level=2' for improved speed with minimal loss of compression (also need to update 99-zram.rules)
   echo '512M' | sudo tee /sys/block/zram0/mem_limit >/dev/null;

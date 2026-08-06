@@ -1,0 +1,11 @@
+[Unit]
+Description=Assets Updater Schedule
+
+[Timer]
+OnCalendar=07:20:00
+AccuracySec=600
+RandomizedDelaySec=600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

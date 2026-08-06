@@ -1,0 +1,8 @@
+[Unit]
+Description=Assets Updater
+After=network.target
+
+[Service]
+Type=oneshot
+User=assets-updater
+ExecStart=/var/www/assets/update.sh

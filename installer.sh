@@ -67,6 +67,7 @@ DOMAIN="$DOMAIN" "$BASEDIR/proxy/installer.sh";
 # Install applications
 
 DOMAIN="$DOMAIN" "$BASEDIR/www/installer.sh";
+DOMAIN="$DOMAIN" "$BASEDIR/assets/installer.sh";
 DOMAIN="$DOMAIN" "$BASEDIR/web-listener/installer.sh";
 DOMAIN="$DOMAIN" "$BASEDIR/refacto/installer.sh";
 if [ -d "$HOME/additional-sites" ]; then
@@ -84,6 +85,7 @@ done | grep -v '^\.' | sort | uniq | sudo tee "/var/www/domains.txt" > /dev/null
 
 # start auto-update mechanisms
 sudo systemctl daemon-reload;
+sudo systemctl start assets-updater.timer || true;
 sudo systemctl start web-listener-updater.timer || true;
 sudo systemctl start refacto-updater.timer || true;
 

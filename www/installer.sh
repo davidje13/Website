@@ -3,9 +3,9 @@ set -ex
 
 BASEDIR="$(dirname "$0")";
 
-DOMAIN="$DOMAIN" "$BASEDIR/update.sh";
+# Update to first version
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs;
+DOMAIN="$DOMAIN" "$BASEDIR/update.sh";
 
 # Add NGINX config
 

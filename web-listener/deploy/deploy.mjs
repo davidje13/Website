@@ -43,7 +43,11 @@ export default requestHandler(async (req, res) => {
   }
 
   try {
-    await throttledScheduleUpdate();
+    if (service === 'assets') {
+      await assetUpdate();
+    } else {
+      await webListenerUpdate();
+    }
   } catch (error) {
     throw new HTTPError(500, {
       body: 'failed to trigger update job',
@@ -68,36 +72,40 @@ const ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/;
 const MAX_CLOCK_SKEW = 60 * 1000;
 const MAX_REQUEST_AGE = 10 * 60 * 1000;
 
-const THROTTLE_TIME = 10 * 1000;
-let throttlePromise = null;
-let lastRun = 0;
+const throttleCommand = (command, throttleTime) => {
+  let throttlePromise = null;
+  let lastRun = 0;
 
-function scheduleUpdate() {
-  lastRun = Date.now();
-  throttlePromise = null;
+  function run() {
+    lastRun = Date.now();
+    throttlePromise = null;
 
-  return new Promise((resolve, reject) => {
-    // this specific command is enabled for the web-listener user via sudoers
-    const proc = spawn('sudo', ['/usr/bin/systemctl', 'start', 'web-listener-updater'], { stdio: 'ignore', timeout: 10000 });
-    proc.once('error', reject);
-    proc.once('exit', (code) => {
-      if (code) {
-        reject(new Error(`exit code ${code}`));
-      } else {
-        resolve();
-      }
+    return new Promise((resolve, reject) => {
+      const proc = spawn('sudo', command, { stdio: 'ignore', timeout: 10000 });
+      proc.once('error', reject);
+      proc.once('exit', (code) => {
+        if (code) {
+          reject(new Error(`exit code ${code}`));
+        } else {
+          resolve();
+        }
+      });
     });
-  });
+  }
+
+  return()=> {
+    if (throttlePromise) {
+      return throttlePromise;
+    }
+    const delay = lastRun + throttleTime - Date.now();
+    if (delay >= 0) {
+      throttlePromise = new Promise((resolve) => setTimeout(resolve, delay)).then(run);
+      return throttlePromise;
+    }
+    return run();
+  }
 }
 
-function throttledScheduleUpdate() {
-  if (throttlePromise) {
-    return throttlePromise;
-  }
-  const delay = lastRun + THROTTLE_TIME - Date.now();
-  if (delay >= 0) {
-    throttlePromise = new Promise((resolve) => setTimeout(resolve, delay)).then(scheduleUpdate);
-    return throttlePromise;
-  }
-  return scheduleUpdate();
-}
+// these specific commands are enabled for the web-listener-runner user via sudoers
+const webListenerUpdate = throttleCommand(['/usr/bin/systemctl', 'start', 'web-listener-updater'], 10 * 1000);
+const assetUpdate = throttleCommand(['/usr/bin/systemctl', 'start', 'asset-updater'], 10 * 1000);
