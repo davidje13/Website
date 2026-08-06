@@ -61,7 +61,7 @@ for ASSET in $ASSET_SOURCES; do
   FILE="$ASSETS_DIR/content/$(basename "$ASSET")";
   if ! [ -f "$FILE" ]; then
     # ideally we would rely on --timestamping to fetch files if they have changed, but githubusercontent does not check if-modified-since
-    wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR" "$ASSET";
+    wget --no-directories --timestamping --max-redirect=0 -P "$ASSETS_DIR/content" "$ASSET";
     chmod 0644 "$ASSET";
   fi;
   if ! [ -f "$FILE.gz" ] || [ "$FILE" -nt "$FILE.gz" ]; then
