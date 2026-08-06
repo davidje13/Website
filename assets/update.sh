@@ -77,10 +77,13 @@ curl 'https://registry.npmjs.org/web-listener' | \
   while IFS='' read -r LINE; do
     if [ -n "$LINE" ]; then
       VERSION="$(echo "$LINE" | cut -d'@' -f1 | sed 's/[^A-Za-z0-9.]//g')";
+      if [ "$VERSION" = "0.1.0" ] || [ "$VERSION" = "0.2.0" ]; then
+        continue;
+      fi;
       URL="$(echo "$LINE" | cut -d'@' -f2-)";
       FILE="$ASSETS_DIR/schema/web-listener.$VERSION.json";
       if ! [ -f "$FILE" ]; then
-        curl "$URL" | tar -xzO --include package/schema.json > "$FILE";
+        curl "$URL" | tar -xzO package/schema.json > "$FILE";
         chmod 0644 "$FILE";
         compress_gzip_static "$FILE";
       fi;
