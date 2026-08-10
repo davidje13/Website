@@ -113,12 +113,12 @@ if ! [ -f /etc/letsencrypt/live/all/fullchain.pem ]; then
   set -x;
 fi;
 
+# TODO: update to latest certbot to be able to use --preferred-profile tlsserver
 echo "Requesting certificate...";
 certbot certonly \
   --non-interactive \
   --agree-tos \
   --register-unsafely-without-email \
-  --preferred-profile tlsserver \
   --keep-until-expiring \
   --expand \
   --cert-name all \
