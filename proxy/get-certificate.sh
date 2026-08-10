@@ -113,8 +113,16 @@ if ! [ -f /etc/letsencrypt/live/all/fullchain.pem ]; then
   set -x;
 fi;
 
-# TODO: update to latest certbot to be able to use --preferred-profile tlsserver
 echo "Requesting certificate...";
+
+# TODO: use wildcard certificate for *.davidje13.com
+# see https://certbot-dns-route53.readthedocs.io/en/stable/index.html
+# see https://letsencrypt.org/docs/challenge-types/#dns-01-challenge
+# see https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/specifying-conditions-route53.html
+
+# TODO: update to latest certbot to be able to use --preferred-profile tlsserver
+# see https://letsencrypt.org/docs/profiles/#tlsserver
+
 certbot certonly \
   --non-interactive \
   --agree-tos \
