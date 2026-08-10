@@ -118,6 +118,7 @@ certbot certonly \
   --non-interactive \
   --agree-tos \
   --register-unsafely-without-email \
+  --preferred-profile tlsserver \
   --keep-until-expiring \
   --expand \
   --cert-name all \
