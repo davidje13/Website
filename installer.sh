@@ -86,6 +86,14 @@ for DOMAIN in $(grep -h 'server_name' /etc/nginx/sites-ready/* | sed -e 's/serve
   echo "$DOMAIN";
 done | grep -v '^\.' | sort | uniq | sudo tee "/var/www/domains.txt" > /dev/null;
 
+{
+  echo "$DOMAIN";
+  echo "*.$DOMAIN";
+} | sudo tee "/var/www/wild-domains.txt" > /dev/null;
+
+grep "$DOMAIN" < /var/www/domains.txt | sudo tee "/var/www/primary-domains.txt" > /dev/null;
+grep -v "$DOMAIN" < /var/www/domains.txt | sudo tee "/var/www/extra-domains.txt" > /dev/null;
+
 # start auto-update mechanisms
 sudo systemctl daemon-reload;
 sudo systemctl start assets-updater.timer || true;
@@ -121,6 +129,9 @@ fi;
 # http://tumblr.intranation.com/post/766288369/using-nginx-reverse-proxy
 # https://certbot.eff.org/
 # https://letsencrypt.org/docs/profiles/#tlsserver
+# https://certbot-dns-route53.readthedocs.io/en/stable/index.html
+# https://letsencrypt.org/docs/challenge-types/#dns-01-challenge
+# https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/specifying-conditions-route53.html
 # https://help.ubuntu.com/lts/serverguide/automatic-updates.html
 # https://github.com/mvo5/unattended-upgrades
 # https://cloud-images.ubuntu.com/locator/ec2/

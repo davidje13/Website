@@ -58,6 +58,35 @@ sudo -u certbot-runner python3 -m venv /opt/certbot/;
 sudo -u certbot-runner XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade pip;
 sudo -u certbot-runner XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53;
 
+if ! [ -f /opt/certbot/aws.config ] && ! [ -f /etc/letsencrypt/live/wild/fullchain.pem ]; then
+  set +x;
+  echo >&2;
+  echo "An AWS access key and secret are needed for certbot to manage DNS records." >&2;
+  echo "Create a non-console IAM user with the following policy:" >&2;
+  echo >&2;
+  sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/dns-policy.json" >&2;
+  echo >&2;
+  echo "Create an access key for the user and enter it below." >&2;
+  echo >&2;
+  echo "If skipped, the https certificate will not be a wildcard certificate, and will be limited to 25 domains." >&2;
+  printf "Enter the aws_access_key_id (or blank): " >&2;
+  read ACCESS_KEY;
+  echo >&2;
+  if [ -n "$ACCESS_KEY" ]; then
+    printf "Enter the aws_secret_access_key: " >&2;
+    read SECRET_ACCESS_KEY;
+    echo >&2;
+    printf "[default]\naws_access_key_id=%s\naws_secret_access_key=%s\n" "$ACCESS_KEY" "$SECRET_ACCESS_KEY" | sudo tee /opt/certbot/aws.config >/dev/null;
+    set -x;
+    unset ACCESS_KEY SECRET_ACCESS_KEY;
+    sudo chmod 0400 /opt/certbot/aws.config;
+    sudo chown certbot-runner:certbot-runner /opt/certbot/aws.config;
+  else
+    echo "No access key given. Will use https validation." >&2;
+    set -x;
+  fi;
+fi;
+
 sudo cp "$BASEDIR/config/certbot-update.service" "$BASEDIR/config/certbot-update.timer" /lib/systemd/system/;
 sudo chmod 0644 /lib/systemd/system/certbot-update.service /lib/systemd/system/certbot-update.timer;
 sudo systemctl enable --now certbot-update.timer;

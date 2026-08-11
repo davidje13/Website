@@ -86,15 +86,22 @@ EOF
     -out /var/www/selfsigned/site.crt;
   rm /var/www/selfsigned/*.conf /var/www/selfsigned/*.csr /var/www/selfsigned/root.key;
 
-  cat > /etc/nginx/sites-available/ssl-keys.inc <<EOF ;
+  cat > /etc/nginx/sites-available/ssl-keys-extra.inc <<EOF ;
 # self-signed key
 ssl_certificate /var/www/selfsigned/site.crt;
 ssl_certificate_key /var/www/selfsigned/site.key;
 EOF
+
+  cat > /etc/nginx/sites-available/ssl-keys-wild.inc <<EOF ;
+# self-signed key
+ssl_certificate /var/www/selfsigned/site.crt;
+ssl_certificate_key /var/www/selfsigned/site.key;
+EOF
+
   echo "Using a self-signed certificate: /var/www/root.crt" >&2;
 }
 
-if ! [ -f /etc/letsencrypt/live/all/fullchain.pem ]; then
+if [ "$(wc -l < /var/www/extra-domains.txt)" -gt 0 ] || ! [ -f /opt/certbot/aws.config ] && ! [ -f /etc/letsencrypt/live/extra/fullchain.pem ]; then
   set +x;
   if ! is_dns_ready; then
     if echo " $* " | grep ' --immediate ' >/dev/null; then
@@ -115,27 +122,63 @@ fi;
 
 echo "Requesting certificate...";
 
-# TODO: use wildcard certificate for *.davidje13.com
-# see https://certbot-dns-route53.readthedocs.io/en/stable/index.html
-# see https://letsencrypt.org/docs/challenge-types/#dns-01-challenge
-# see https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/specifying-conditions-route53.html
+if [ "$(wc -l < /var/www/extra-domains.txt)" -gt 0 ]; then
+  < "/var/www/extra-domains.txt" sed 's/[^a-zA-Z0-9.].*//' \
+  | grep '.\+' \
+  | sed 's/\(.*\)/-d "\1"/' \
+  | xargs -x sudo -u certbot-runner /opt/certbot/bin/certbot certonly \
+    --non-interactive \
+    --agree-tos \
+    --register-unsafely-without-email \
+    --preferred-profile tlsserver \
+    --keep-until-expiring \
+    --expand \
+    --cert-name extra \
+    --webroot \
+    -w /var/www/http;
 
-sudo -u certbot-runner /opt/certbot/bin/certbot certonly \
-  --non-interactive \
-  --agree-tos \
-  --register-unsafely-without-email \
-  --preferred-profile tlsserver \
-  --keep-until-expiring \
-  --expand \
-  --cert-name all \
-  --webroot \
-  -w /var/www/http \
-  $(< "/var/www/domains.txt" sed 's/[^a-zA-Z0-9.].*//' | grep '.\+' | sed 's/^/-d /');
-
-cat > /etc/nginx/sites-available/ssl-keys.inc <<EOF ;
+  cat > /etc/nginx/sites-available/ssl-keys-extra.inc <<EOF ;
 # certbot-generated files
-ssl_certificate /etc/letsencrypt/live/all/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/all/privkey.pem;
+ssl_certificate /etc/letsencrypt/live/extra/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/extra/privkey.pem;
+EOF
+else
+  rm /etc/nginx/sites-available/ssl-keys-extra.inc 2>/dev/null || true;
+fi;
+
+if [ -f /opt/certbot/aws.config ]; then
+  < "/var/www/wild-domains.txt" sed 's/[^a-zA-Z0-9.*].*//' \
+  | grep '.\+' \
+  | sed 's/\(.*\)/-d "\1"/' \
+  | xargs -x sudo -u certbot-runner AWS_CONFIG_FILE=/opt/certbot/aws.config /opt/certbot/bin/certbot certonly \
+    --non-interactive \
+    --agree-tos \
+    --register-unsafely-without-email \
+    --preferred-profile tlsserver \
+    --keep-until-expiring \
+    --expand \
+    --cert-name wild \
+    --dns-route53;
+else
+  < "/var/www/primary-domains.txt" sed 's/[^a-zA-Z0-9.].*//' \
+  | grep '.\+' \
+  | sed 's/\(.*\)/-d "\1"/' \
+  | xargs -x sudo -u certbot-runner /opt/certbot/bin/certbot certonly \
+    --non-interactive \
+    --agree-tos \
+    --register-unsafely-without-email \
+    --preferred-profile tlsserver \
+    --keep-until-expiring \
+    --expand \
+    --cert-name wild \
+    --webroot \
+    -w /var/www/http;
+fi;
+
+cat > /etc/nginx/sites-available/ssl-keys-wild.inc <<EOF ;
+# certbot-generated files
+ssl_certificate /etc/letsencrypt/live/wild/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/wild/privkey.pem;
 EOF
 
 # Enable applications

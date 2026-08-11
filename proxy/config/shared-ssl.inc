@@ -7,8 +7,6 @@ ssl_dhparam /etc/nginx/dhparam.pem;
 # Reduce server load by using shared cache
 ssl_session_cache shared:SSL:5m;
 
-include /etc/nginx/sites-available/ssl-keys.inc;
-
 # HSTS Preloading
 add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 
