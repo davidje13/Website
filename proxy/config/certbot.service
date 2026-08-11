@@ -1,0 +1,9 @@
+[Unit]
+Description=Certbot
+After=network.target
+
+[Service]
+Type=oneshot
+User=certbot-runner
+ExecStart=/usr/bin/certbot -q renew --no-random-sleep-on-renew
+PrivateTmp=true

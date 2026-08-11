@@ -120,13 +120,11 @@ echo "Requesting certificate...";
 # see https://letsencrypt.org/docs/challenge-types/#dns-01-challenge
 # see https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/specifying-conditions-route53.html
 
-# TODO: update to latest certbot to be able to use --preferred-profile tlsserver
-# see https://letsencrypt.org/docs/profiles/#tlsserver
-
-certbot certonly \
+sudo -u certbot-runner /opt/certbot/bin/certbot certonly \
   --non-interactive \
   --agree-tos \
   --register-unsafely-without-email \
+  --preferred-profile tlsserver \
   --keep-until-expiring \
   --expand \
   --cert-name all \

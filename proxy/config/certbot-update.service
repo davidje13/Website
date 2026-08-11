@@ -1,0 +1,9 @@
+[Unit]
+Description=Update certbot to latest version
+After=network.target
+
+[Service]
+Type=oneshot
+User=certbot-runner
+ExecStart=/opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53
+PrivateTmp=true

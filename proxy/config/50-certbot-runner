@@ -1,0 +1,2 @@
+Cmnd_Alias RELOAD_NGINX = /usr/sbin/nginx -s reload
+certbot-runner ALL=(root) NOPASSWD: RELOAD_NGINX

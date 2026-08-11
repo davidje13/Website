@@ -54,6 +54,9 @@ if [ -z "$DOMAIN" ]; then
   exit 1;
 fi;
 
+# Prevent certbot trying to renew certificates while we're installing
+sudo systemctl disable --now certbot.timer || true;
+
 # Configure system
 
 "$BASEDIR/common/prepare-system.sh";
@@ -90,11 +93,13 @@ sudo systemctl start web-listener-updater.timer || true;
 sudo systemctl start refacto-updater.timer || true;
 
 if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
+  sudo systemctl start certbot.timer || true;
   set +x;
   echo;
   echo;
   echo "Done.";
 elif [ -z "NO_DNS_POLL" ]; then
+  sudo systemctl start certbot.timer || true;
   echo;
   echo;
   printf "Poll until DNS is ready? [y/N]: ";
@@ -115,6 +120,7 @@ fi;
 # https://bjornjohansen.no/redirect-to-https-with-nginx
 # http://tumblr.intranation.com/post/766288369/using-nginx-reverse-proxy
 # https://certbot.eff.org/
+# https://letsencrypt.org/docs/profiles/#tlsserver
 # https://help.ubuntu.com/lts/serverguide/automatic-updates.html
 # https://github.com/mvo5/unattended-upgrades
 # https://cloud-images.ubuntu.com/locator/ec2/

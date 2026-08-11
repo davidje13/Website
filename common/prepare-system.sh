@@ -26,13 +26,13 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 remove -y -
   iptables \
   awscli \
   python3-awscrt \
-  gnupg;
+  gnupg \
+  certbot;
 
 # Install required packages
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y \
   dnsutils \
-  certbot \
   nftables;
 
 # Disable extraneous home files which may leak sensitive data
