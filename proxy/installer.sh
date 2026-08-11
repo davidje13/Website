@@ -46,17 +46,17 @@ install_config "$BASEDIR/config/hacker.inc" /etc/nginx/sites-available || true;
 # Install certbot
 
 sudo systemctl disable --now certbot-update.timer || true;
-if ! id -u certbot-updater >/dev/null 2>&1; then
-  sudo useradd --system --user-group certbot-updater;
+if ! id -u certbot-runner >/dev/null 2>&1; then
+  sudo useradd --system --user-group certbot-runner;
 fi;
 install_config "$BASEDIR/config/50-certbot-runner" /etc/sudoers.d 0440 || true;
 
 sudo mkdir -p /opt/certbot/.cache /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt;
 sudo chmod 0700 /var/log/letsencrypt;
-sudo chown -R certbot-updater:certbot-updater /opt/certbot /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt;
-sudo -u certbot-updater python3 -m venv /opt/certbot/;
-sudo -u certbot-updater XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade pip;
-sudo -u certbot-updater XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53;
+sudo chown -R certbot-runner:certbot-runner /opt/certbot /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt;
+sudo -u certbot-runner python3 -m venv /opt/certbot/;
+sudo -u certbot-runner XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade pip;
+sudo -u certbot-runner XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53;
 
 sudo cp "$BASEDIR/config/certbot-update.service" "$BASEDIR/config/certbot-update.timer" /lib/systemd/system/;
 sudo chmod 0644 /lib/systemd/system/certbot-update.service /lib/systemd/system/certbot-update.timer;
