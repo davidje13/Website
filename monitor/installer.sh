@@ -5,7 +5,7 @@ BASEDIR="$(dirname "$0")";
 
 # Load dependencies
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gcc;
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y gcc;
 
 # Build
 

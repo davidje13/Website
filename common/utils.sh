@@ -24,7 +24,7 @@ kill_process_by_name_fragment() {
 
 install_gpg() {
   if ! which gpg >/dev/null; then
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y gnupg;
+    sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y gnupg;
   fi;
 }
 

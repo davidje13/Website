@@ -21,11 +21,16 @@ fi;
 # iptables -> nftables
 # awscli & python3-awscrt = unused
 # gnupg = needed to configure external apt sources, but uninstall once this is done (else it keeps running unremovable background processes)
-sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y --autoremove iptables awscli python3-awscrt gnupg;
+# certbot = we install this directly with pip to get the latest version
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 remove -y --autoremove \
+  iptables \
+  awscli \
+  python3-awscrt \
+  gnupg;
 
 # Install required packages
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y \
   dnsutils \
   certbot \
   nftables;

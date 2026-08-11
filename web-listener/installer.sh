@@ -18,10 +18,11 @@ if ! id -u web-listener-runner >/dev/null 2>&1; then
   sudo useradd --system --user-group web-listener-runner;
 fi;
 sudo usermod -a -G web-listener-runner web-listener-updater; # required so that updater can set group for installed files
+install_config "$BASEDIR/50-web-listener-updater" /etc/sudoers.d 0440 || true;
 
 # Load dependencies
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unzip nodejs;
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y unzip nodejs;
 if ! test -f /home/web-listener-updater/.local/bin/web-listener >/dev/null; then
   sudo -u web-listener-updater -H sh -c 'mkdir -p ~/.local/bin';
   sudo -u web-listener-updater -H npm config set prefix '~/.local/';
@@ -56,8 +57,6 @@ sudo chown -R web-listener-updater:web-listener-runner /var/www/web-listener/sit
 sudo mkdir -p /var/log/web-listener;
 sudo chown -R web-listener-runner:adm /var/log/web-listener;
 sudo chmod 0750 /var/log/web-listener;
-
-install_config "$BASEDIR/50-web-listener-updater" /etc/sudoers.d 0440 || true;
 
 # Update to first version
 

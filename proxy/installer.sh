@@ -6,7 +6,7 @@ BASEDIR="$(dirname "$0")";
 
 # Configure nginx
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nginx nodejs logrotate;
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y nginx nodejs logrotate;
 
 sudo rm /etc/nginx/conf.d/default.conf || true;
 install_config "$BASEDIR/config/nginx.conf" /etc/nginx || true;

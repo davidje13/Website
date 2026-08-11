@@ -47,7 +47,7 @@ fi;
 
 # Load dependencies
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y \
   nodejs \
   mongodb-org-server \
   mongodb-database-tools \

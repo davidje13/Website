@@ -34,8 +34,8 @@ set_nginx_repo;
 # change with:
 # sudo cat env/mongo-admin-password | mongosh admin -u admin --eval 'db.adminCommand({setFeatureCompatibilityVersion:"8.2",confirm:true})'
 set_mongodb_version '8.3' '8.0';
-sudo apt-get update;
-sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y;
+sudo apt-get -o DPkg::Lock::Timeout=5 update;
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 dist-upgrade -y;
 
 if [ -f /var/run/reboot-required ]; then
   set +x;
