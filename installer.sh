@@ -108,12 +108,14 @@ if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   echo "Done.";
 elif [ -z "$NO_DNS_POLL" ]; then
   sudo systemctl start certbot.timer || true;
+  set +x;
   echo;
   echo;
   printf "Poll until DNS is ready? [y/N]: ";
   read POLL;
   echo;
   if [ "$POLL" = "y" ]; then
+    set -x;
     nohup sudo "$BASEDIR/proxy/get-certificate.sh" </dev/null >"$HOME/get-certificate.log" 2>&1 &
     set +x;
     echo "Created background task waiting for $DOMAIN DNS to point to this instance (see ~/get-certificate.log)";

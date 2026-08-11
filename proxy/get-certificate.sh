@@ -110,13 +110,13 @@ if [ "$(wc -l < /var/www/extra-domains.txt)" -gt 0 ] || ! [ -f /opt/certbot/aws.
       reload_nginx;
       exit 1;
     fi;
-  fi;
 
-  sleep 10;
-  while ! is_dns_ready; do
-    echo "DNS not ready - ensure domain DNS points to this instance.";
     sleep 10;
-  done;
+    while ! is_dns_ready; do
+      echo "DNS not ready - ensure domain DNS points to this instance.";
+      sleep 10;
+    done;
+  fi;
   set -x;
 fi;
 
