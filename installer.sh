@@ -106,7 +106,7 @@ if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   echo;
   echo;
   echo "Done.";
-elif [ -z "NO_DNS_POLL" ]; then
+elif [ -z "$NO_DNS_POLL" ]; then
   sudo systemctl start certbot.timer || true;
   echo;
   echo;
