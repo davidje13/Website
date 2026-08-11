@@ -5,5 +5,6 @@ After=network.target
 [Service]
 Type=oneshot
 User=certbot-runner
+Environment="XDG_CACHE_HOME=/opt/certbot/.cache"
 ExecStart=/opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53
 PrivateTmp=true
