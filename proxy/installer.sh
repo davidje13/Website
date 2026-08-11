@@ -55,7 +55,7 @@ sudo mkdir -p /opt/certbot /etc/letsencrypt /var/log/letsencrypt /var/lib/letsen
 sudo chmod 0700 /var/log/letsencrypt;
 sudo chown -R certbot-updater:certbot-updater /opt/certbot /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt;
 sudo -u certbot-updater python3 -m venv /opt/certbot/;
-sudo -u certbot-updater /opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D pip;
+sudo -u certbot-updater /opt/certbot/bin/pip install --upgrade pip;
 sudo -u certbot-updater /opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53;
 
 sudo cp "$BASEDIR/certbot-update.service" "$BASEDIR/certbot-update.timer" /lib/systemd/system/;
