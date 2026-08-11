@@ -99,6 +99,7 @@ sudo systemctl enable certbot.timer; # no --now (do not start updater while we a
 
 sudo mkdir -p /var/www/http/.well-known/acme-challenge;
 sudo chown -R root:nginx /var/www/http;
+sudo chown -R certbot-runner:nginx /var/www/http/.well-known/acme-challenge;
 
 sed "s/((DOMAIN))/$DOMAIN/g" "$BASEDIR/config/http.conf" | \
   sudo tee /etc/nginx/sites-available/http > /dev/null;
