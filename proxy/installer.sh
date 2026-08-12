@@ -15,6 +15,7 @@ install_config "$BASEDIR/config/log.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/mime.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/proxy.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/ratelimit.conf" /etc/nginx/conf.d || true;
+install_config "$BASEDIR/config/ssl.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/logrotate/nginx" /etc/logrotate.d || true;
 install_config "$BASEDIR/config/logrotate/certbot" /etc/logrotate.d || true;
