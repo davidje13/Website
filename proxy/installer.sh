@@ -17,6 +17,7 @@ install_config "$BASEDIR/config/proxy.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/ratelimit.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/badagents.conf" /etc/nginx/conf.d || true;
 install_config "$BASEDIR/config/logrotate/nginx" /etc/logrotate.d || true;
+install_config "$BASEDIR/config/logrotate/certbot" /etc/logrotate.d || true;
 
 sudo mkdir -p /etc/systemd/system/nginx.service.d;
 install_config "$BASEDIR/config/auto-restart.conf" /etc/systemd/system/nginx.service.d || true;
@@ -54,6 +55,8 @@ install_config "$BASEDIR/config/50-certbot-runner" /etc/sudoers.d 0440 || true;
 sudo mkdir -p /opt/certbot/.cache /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt;
 sudo chmod 0700 /var/log/letsencrypt;
 sudo chown -R certbot-runner:certbot-runner /opt/certbot /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt;
+install_config "$BASEDIR/config/cli.ini" /etc/letsencrypt || true;
+sudo chown root:certbot-runner /etc/letsencrypt/cli.ini;
 sudo -u certbot-runner python3 -m venv /opt/certbot/;
 sudo -u certbot-runner XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade pip;
 sudo -u certbot-runner XDG_CACHE_HOME=/opt/certbot/.cache /opt/certbot/bin/pip install --upgrade --uploaded-prior-to=P30D certbot certbot-dns-route53;
