@@ -132,7 +132,6 @@ if [ "$(wc -l < /var/www/extra-domains.txt)" -gt 0 ]; then
     --register-unsafely-without-email \
     --preferred-profile tlsserver \
     --keep-until-expiring \
-    --expand \
     --cert-name extra \
     --webroot \
     -w /var/www/http;
@@ -156,7 +155,6 @@ if [ -f /opt/certbot/aws.config ]; then
     --register-unsafely-without-email \
     --preferred-profile tlsserver \
     --keep-until-expiring \
-    --expand \
     --cert-name wild \
     --dns-route53;
 else
@@ -169,7 +167,6 @@ else
     --register-unsafely-without-email \
     --preferred-profile tlsserver \
     --keep-until-expiring \
-    --expand \
     --cert-name wild \
     --webroot \
     -w /var/www/http;
