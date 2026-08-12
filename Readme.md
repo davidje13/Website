@@ -115,6 +115,16 @@ After creation:
 - assign an IPv6 address (see below, from step 5 if IPv6 already configured for VPC)
 - Disable metadata (Actions &rarr; Instance settings &rarr; Modify instance metadata options)
   Note: do not disable this when creating the instance, as it is required by AWS for configuring SSH keys.
+- optionally purchase a savings plan to reduce costs in exchange for a minimum commitment:
+  - open <https://aws.amazon.com/savingsplans/compute-pricing/>;
+    switch to the "EC2 Instance Savings Plans" tab;
+    filter for "t3" instances in the chosen region;
+    note the "Savings Plans rate" for "t3.micro" (e.g. currently $0.0069 for a 1 year commitment in London).
+  - open <https://us-east-1.console.aws.amazon.com/costmanagement/home#/savings-plans/overview>;
+    click "Purchase a Savings Plan";
+    enter the same details (note: the "Hourly commitment" is the reduced rate noted in the previous step);
+    add to basket and buy (the page may warn that it is not recommended — AWS' recommender does not work for
+    hourly rates below $1 / hour — check the details carefully and proceed).
 
 ## CloudWatch
 
