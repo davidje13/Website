@@ -1,0 +1,9 @@
+// these options are documented at the top of /usr/lib/apt/apt.systemd.daily
+
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+
+// limit cache growth
+APT::Periodic::MinAge "2";
+APT::Periodic::MaxAge "30";
+APT::Periodic::MaxSize "256";

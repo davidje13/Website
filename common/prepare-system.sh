@@ -47,7 +47,7 @@ install_config "$BASEDIR/config/60-disable-local-resolve.conf" /etc/systemd/reso
 
 # Configure system
 
-install_config "$BASEDIR/config/20auto-upgrades-local" /etc/apt/apt.conf.d || true;
+install_config "$BASEDIR/config/21auto-upgrades-local" /etc/apt/apt.conf.d || true;
 install_config "$BASEDIR/config/51unattended-upgrades-local" /etc/apt/apt.conf.d || true;
 install_config "$BASEDIR/config/50-swappiness.conf" /etc/sysctl.d || true;
 install_config "$BASEDIR/config/50-hardening.conf" /etc/sysctl.d || true;
