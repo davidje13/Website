@@ -58,19 +58,36 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y 
 # disable telemetry when using mongosh tool
 mongosh --nodb --eval 'disableTelemetry()';
 
+set_mongo_config() {
+  local GROUP="$1";
+  local KEY="$2";
+  local VALUE="$3";
+
+  if ! grep "^  $KEY: $VALUE$" < /etc/mongod.conf > /dev/null; then
+    if ! grep "^$GROUP:" < /etc/mongod.conf > /dev/null; then
+      printf '\n%s:\n' "$GROUP" | sudo tee -a /etc/mongod.conf > /dev/null;
+    fi;
+    if grep "^  $KEY:" < /etc/mongod.conf > /dev/null; then
+      sudo sed -i -e "s/^  $KEY:.*$/  $KEY: $VALUE/" /etc/mongod.conf;
+    else
+      sudo sed -i -e "s/^$GROUP\:/$GROUP\:\n  $KEY: $VALUE/" /etc/mongod.conf;
+    fi;
+  fi;
+}
+
 # set max connections (use mongosh --eval 'db.serverStatus().connections' to see current state)
-if ! grep 'maxIncomingConnections' < /etc/mongod.conf > /dev/null; then
-  sudo sed -i -e 's/^net\:/net\:\n  maxIncomingConnections: 1000/' /etc/mongod.conf;
-fi;
+set_mongo_config 'net' 'maxIncomingConnections' '1000';
+
+# limit size of diagnostics data (see https://www.mongodb.com/docs/manual/reference/parameters/#diagnostic-parameters)
+set_mongo_config 'setParameter' 'diagnosticDataCollectionDirectorySizeMB' '64';
+set_mongo_config 'setParameter' 'diagnosticDataCollectionFileSizeMB' '10';
+set_mongo_config 'setParameter' 'diagnosticDataCollectionPeriodMillis' '10000';
 
 # could configure transparent huge pages here for a performance boost:
 # https://www.mongodb.com/docs/manual/administration/tcmalloc-performance/#enable-transparent-hugepages--thp-
 
 # remove deprecated feature to reduce attack surface
-if ! grep 'javascriptEnabled' < /etc/mongod.conf > /dev/null; then
-  printf '\nsecurity:\n  javascriptEnabled: false\n' | \
-    sudo tee -a /etc/mongod.conf > /dev/null;
-fi;
+set_mongo_config 'security' 'javascriptEnabled' 'false';
 
 sudo systemctl enable --now mongod;
 
@@ -139,7 +156,7 @@ if ! grep 'authorization: enabled' < /etc/mongod.conf > /dev/null; then
     --eval 'use refacto' \
     --eval 'db.createUser({user:"refacto",pwd:passwordPrompt(),roles:[{"db":"refacto","role":"readWrite"},{"db":"refacto","role":"dbAdmin"}],mechanisms:["SCRAM-SHA-256"]})';
 
-  sudo sed -i -e 's/^security\:/security\:\n  authorization: enabled/' /etc/mongod.conf;
+  set_mongo_config 'security' 'authorization' 'enabled';
 
   sudo systemctl restart mongod;
   sudo sed -i -E 's/^DB_URL=mongodb:\/\/(.*@)?localhost:/DB_URL=mongodb:\/\/refacto:'"$REFACTO_PASSWORD"'@localhost:/' /var/www/refacto/secrets.env;
