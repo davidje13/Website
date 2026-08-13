@@ -57,6 +57,9 @@ install_config "$BASEDIR/config/nftables.conf" /etc 0744 || true;
 sudo systemctl enable nftables;
 sudo systemctl restart nftables;
 
+# limit journal growth
+install_config "$BASEDIR/config/50-limit-journal.conf" /etc/systemd/journald.conf.d || true;
+
 # configure zram
 # zswap is not available on this base image (`grep -i zswap "/boot/config-$(uname -r)"` shows '# CONFIG_ZSWAP is not set'), so we use zram with no disk swap instead (a-la Fedora):
 install_config "$BASEDIR/config/99-zram.conf" /etc/modules-load.d || true;
