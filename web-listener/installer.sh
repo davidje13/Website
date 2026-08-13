@@ -18,6 +18,7 @@ if ! id -u web-listener-runner >/dev/null 2>&1; then
   sudo useradd --system --user-group web-listener-runner --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 sudo usermod -a -G web-listener-runner web-listener-updater; # required so that updater can set group for installed files
+install_config "$BASEDIR/50-web-listener-runner" /etc/sudoers.d 0440 || true;
 install_config "$BASEDIR/50-web-listener-updater" /etc/sudoers.d 0440 || true;
 
 # Load dependencies

@@ -2,9 +2,9 @@
 Description=Refacto Updater Schedule
 
 [Timer]
-OnCalendar=*:00/5:00
-AccuracySec=240
-RandomizedDelaySec=60
+OnCalendar=07:00:00
+AccuracySec=600
+RandomizedDelaySec=600
 Persistent=true
 
 [Install]

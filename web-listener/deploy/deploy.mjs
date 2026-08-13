@@ -43,10 +43,15 @@ export default requestHandler(async (req, res) => {
   }
 
   try {
-    if (service === 'assets') {
-      await assetUpdate();
-    } else {
-      await webListenerUpdate();
+    switch (service) {
+      case 'assets':
+        await assetUpdate();
+        break;
+      case 'refacto':
+        await refactoUpdate();
+        break;
+      default:
+        await webListenerUpdate();
     }
   } catch (error) {
     throw new HTTPError(500, {
@@ -109,3 +114,4 @@ const throttleCommand = (command, throttleTime) => {
 // these specific commands are enabled for the web-listener-runner user via sudoers
 const webListenerUpdate = throttleCommand(['/usr/bin/systemctl', 'start', 'web-listener-updater'], 10 * 1000);
 const assetUpdate = throttleCommand(['/usr/bin/systemctl', 'start', 'asset-updater'], 10 * 1000);
+const refactoUpdate = throttleCommand(['/usr/bin/systemctl', 'start', 'refacto-updater'], 10 * 1000);
