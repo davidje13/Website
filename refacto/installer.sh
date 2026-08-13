@@ -39,10 +39,10 @@ fi;
 # Make users
 
 if ! id -u refacto-updater >/dev/null 2>&1; then
-  sudo useradd --create-home --user-group refacto-updater;
+  sudo useradd --system --user-group refacto-updater --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 if ! id -u refacto-runner >/dev/null 2>&1; then
-  sudo useradd --system --user-group refacto-runner;
+  sudo useradd --system --user-group refacto-runner --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 
 # Load dependencies

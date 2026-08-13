@@ -12,7 +12,7 @@ BASEDIR="$(dirname "$0")";
 # Make users
 
 if ! id -u assets-updater >/dev/null 2>&1; then
-  sudo useradd --system --user-group assets-updater;
+  sudo useradd --system --user-group assets-updater --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 
 # Install boilerplate

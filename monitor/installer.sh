@@ -14,7 +14,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=5 install -y 
 # Make User
 
 if ! id -u monitor-runner >/dev/null 2>&1; then
-  sudo useradd --system --user-group monitor-runner;
+  sudo useradd --system --user-group monitor-runner --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 
 # Shutdown existing service if found

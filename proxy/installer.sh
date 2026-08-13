@@ -49,7 +49,7 @@ install_config "$BASEDIR/config/hacker.inc" /etc/nginx/sites-available || true;
 
 sudo systemctl disable --now certbot-update.timer || true;
 if ! id -u certbot-runner >/dev/null 2>&1; then
-  sudo useradd --system --user-group certbot-runner;
+  sudo useradd --system --user-group certbot-runner --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 install_config "$BASEDIR/config/50-certbot-runner" /etc/sudoers.d 0440 || true;
 

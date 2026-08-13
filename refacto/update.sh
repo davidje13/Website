@@ -11,9 +11,7 @@ UPDATE_DIR="$BASEDIR/update";
 # GitHub rate limit for fetching public release info is 60/hour - we configure our rate in refacto-update.timer
 # https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-unauthenticated-users
 
-FORCE_UPDATE="$FORCE_UPDATE" \
-UPDATE_DIR="$UPDATE_DIR" \
-sudo --preserve-env="FORCE_UPDATE,UPDATE_DIR" -u refacto-updater -H -s <<"EOF"
+SHELL=/bin/sh sudo -u refacto-updater -s FORCE_UPDATE="$FORCE_UPDATE" UPDATE_DIR="$UPDATE_DIR" <<"EOF"
 set -e;
 
 CURRENT_RELEASE_ID="$(cat "$UPDATE_DIR/current" 2>/dev/null || echo 'none')";

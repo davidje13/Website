@@ -12,10 +12,10 @@ sudo systemctl disable --now web-listener-updater.timer || true;
 # Make users
 
 if ! id -u web-listener-updater >/dev/null 2>&1; then
-  sudo useradd --create-home --user-group web-listener-updater;
+  sudo useradd --system --user-group web-listener-updater --shell /usr/sbin/nologin --create-home;
 fi;
 if ! id -u web-listener-runner >/dev/null 2>&1; then
-  sudo useradd --system --user-group web-listener-runner;
+  sudo useradd --system --user-group web-listener-runner --shell /usr/sbin/nologin --home /nonexistent;
 fi;
 sudo usermod -a -G web-listener-runner web-listener-updater; # required so that updater can set group for installed files
 install_config "$BASEDIR/50-web-listener-updater" /etc/sudoers.d 0440 || true;
