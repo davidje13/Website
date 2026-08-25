@@ -1,4 +1,5 @@
 [
+  { "name": "blog", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fblog/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/blog.pem" },
   { "name": "blot", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fspinblot/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/blot.pem" },
   { "name": "chance", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fchance/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/chance.pem" },
   { "name": "countdown", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fcountdown/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/countdown.pem" },
