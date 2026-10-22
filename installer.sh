@@ -100,6 +100,11 @@ sudo systemctl start assets-updater.timer || true;
 sudo systemctl start web-listener-updater.timer || true;
 sudo systemctl start refacto-updater.timer || true;
 
+# prevent GPG Agent running in background all the time; gpg is only needed when setting up new repositories
+if which gpg >/dev/null; then
+  sudo apt-get -o DPkg::Lock::Timeout=5 remove -y --autoremove gpg;
+fi;
+
 if sudo "$BASEDIR/proxy/get-certificate.sh" --immediate; then
   sudo systemctl start certbot.timer || true;
   set +x;
