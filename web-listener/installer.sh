@@ -28,7 +28,7 @@ if ! test -f /home/web-listener-updater/.local/bin/web-listener >/dev/null; then
   sudo -u web-listener-updater -H sh -c 'mkdir -p ~/.local/bin';
   sudo -u web-listener-updater -H npm config set prefix '~/.local/';
 fi;
-sudo -u web-listener-updater -H npm install -g --ignore-scripts web-listener@1.5.1;
+sudo -u web-listener-updater -H npm install -g --ignore-scripts web-listener@1.5.4;
 
 # Install boilerplate
 
