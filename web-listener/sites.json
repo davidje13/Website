@@ -3,6 +3,7 @@
   { "name": "blot", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fspinblot/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/blot.pem" },
   { "name": "chance", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fchance/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/chance.pem" },
   { "name": "countdown", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fcountdown/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/countdown.pem" },
+  { "name": "knit", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fknit/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/knit.pem" },
   { "name": "minesweeper", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fminesweeper/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/minesweeper.pem" },
   { "name": "png", "url": "https://gitlab.com/api/v4/projects/davidje13%2Fpng-analyser/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/png.pem" },
   { "name": "qr", "url": "https://gitlab.com/api/v4/projects/davidje13%2Flean-qr/jobs/artifacts/main/download?job=sign", "publicKeyFile": "./update/qr.pem" },
