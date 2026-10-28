@@ -1,5 +1,6 @@
 root /var/www/http;
 gzip_static on;
+add_header Vary "Accept-Encoding";
 keepalive_timeout 0s;
 lingering_close off;
 
