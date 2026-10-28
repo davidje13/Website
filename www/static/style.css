@@ -46,7 +46,7 @@ a.item:nth-of-type(8n + 8) { --hover-col: hsl(180, 80%, 83%); }
 	a.item:nth-of-type(8n + 8) { --hover-col: #000000; --tile-text-active: hsl(180, 80%, 60%); --tile-link-active: hsl(180, 50%, 50%); }
 }
 
-h1, h2, p, a, section, ul, li {
+h1, h2, h3, p, a, section, ul, li {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -83,12 +83,13 @@ body::before {
 
 h1 {
 	margin: 0 0 2rem;
-	font: bolder 2rem sans-serif;
+	font: 2.4rem sans-serif;
 }
 
 h2 {
-	margin: 0 0 1rem;
-	font: bolder 1.5rem sans-serif;
+	margin: 5rem 0 1rem;
+	font: 1.6rem sans-serif;
+	line-height: 1.4;
 }
 
 section {
@@ -204,9 +205,11 @@ a.item:hover {
 		transform: rotate(-60deg);
 	}
 
-	.item h2 {
-		margin: 0 -0.8rem;
-		min-height: 3rem;
+	.item h3 {
+		margin: 0 -0.8rem -0.4rem;
+		min-height: 3.4rem;
+		font: bold 1.5rem sans-serif;
+		line-height: 1.2;
 	}
 	.item .info {
 		margin: 0 -2.5rem;
